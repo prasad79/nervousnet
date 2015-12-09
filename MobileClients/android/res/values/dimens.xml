@@ -1,0 +1,16 @@
+<resources>
+
+    <dimen name="activity_horizontal_margin">10dp</dimen>
+    <dimen name="activity_vertical_margin">10dp</dimen>
+    <dimen name="action_bar_title_text_size">16sp</dimen>
+    <dimen name="action_bar_subtitle_text_size">12sp</dimen>
+    <dimen name="text_view_text_size">14sp</dimen>
+    <dimen name="edit_text_size">14sp</dimen>
+    <dimen name="user_profile_width">14sp</dimen>
+    <dimen name="user_profile_height">14sp</dimen>
+    <dimen name="listitem_horizontal_margin">5dp</dimen>
+    <dimen name="listitem_vertical_margin">5dp</dimen>
+    <dimen name="griditem_size">150dp</dimen>
+    <dimen name="text_view_txt_size">12sp</dimen>
+
+</resources>

@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="ch.ethz.coss.nervousnet"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <uses-sdk
+        android:minSdkVersion="17"
+        android:targetSdkVersion="21" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/nn_theme"
+        android:name="Application" >
+        <activity
+            android:name="StartUpActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name="ch.ethz.coss.nervousnet.vm.NervousnetVMService"
+            android:process=":nervousnetvm" >
+            <intent-filter>
+                <action android:name="ch.ethz.nervousnet.VM" />
+            </intent-filter>
+        </service>
+         <activity
+            android:name=".BaseActivity"
+            android:label="@string/app_name"
+            android:configChanges="orientation" >
+            
+        </activity>
+        <activity
+            android:name=".ui.MainActivity"
+            android:label="@string/app_name" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ch.ethz.coss.nervousnet.BaseActivity" />
+        </activity>
+
+        <activity
+            android:name=".ui.SensorsActivity"
+            android:label="@string/title_activity_sensors"
+            android:parentActivityName=".BaseActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ch.ethz.coss.nervousnet.BaseActivity" />
+        </activity>
+        <activity
+            android:name=".ui.AnalyticsActivity"
+            android:label="@string/title_activity_sensors"
+            android:parentActivityName=".BaseActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ch.ethz.coss.nervousnet.BaseActivity" />
+        </activity>
+        <activity
+            android:name=".ui.ShowcaseActivity"
+            android:label="@string/title_activity_sensors"
+            android:parentActivityName=".BaseActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ch.ethz.coss.nervousnet.BaseActivity" />
+        </activity>
+        <activity
+            android:name=".ui.SettingsActivity"
+            android:label="@string/title_activity_sensors"
+            android:parentActivityName=".BaseActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ch.ethz.coss.nervousnet.BaseActivity" />
+        </activity>
+        <activity
+            android:name=".ui.HelpActivity"
+            android:label="@string/title_activity_sensors"
+            android:parentActivityName=".BaseActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ch.ethz.coss.nervousnet.BaseActivity" />
+        </activity>
+        <activity
+            android:name=".ui.AboutActivity"
+            android:label="@string/title_activity_sensors"
+            android:parentActivityName=".BaseActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ch.ethz.coss.nervousnet.BaseActivity" />
+        </activity>
+        
+        <activity
+            android:name=".ui.ShowSensorListActivity"
+            android:label="@string/title_activity_sensors"
+            android:parentActivityName=".BaseActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ch.ethz.coss.nervousnet.BaseActivity" />
+        </activity>
+        <activity
+            android:name=".ui.BaseSensorActivity"
+            android:label="@string/title_activity_base_sensor"
+            android:parentActivityName=".BaseActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ch.ethz.coss.nervousnet.BaseActivity" />
+        </activity>
+        <activity
+            android:name="ch.ethz.coss.nervousnet.ui.AccSensorActivity"
+            android:label="@string/title_activity_acc_sensor"
+            android:parentActivityName=".BaseSensorActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="BaseSensorActivity" />
+        </activity>
+             <activity
+            android:name="ch.ethz.coss.nervousnet.ui.BatterySensorActivity"
+            android:label="@string/title_activity_acc_sensor"
+            android:parentActivityName=".BaseSensorActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="BaseSensorActivity" />
+        </activity>
+             <activity
+            android:name="ch.ethz.coss.nervousnet.ui.GyroscopeSensorActivity"
+            android:label="@string/title_activity_acc_sensor"
+            android:parentActivityName=".BaseSensorActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="BaseSensorActivity" />
+        </activity>
+        <activity
+            android:name="ch.ethz.coss.nervousnet.ui.HumiditySensorActivity"
+            android:label="@string/title_activity_acc_sensor"
+            android:parentActivityName=".BaseSensorActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="BaseSensorActivity" />
+        </activity><activity
+            android:name="ch.ethz.coss.nervousnet.ui.LightSensorActivity"
+            android:label="@string/title_activity_acc_sensor"
+            android:parentActivityName=".BaseSensorActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="BaseSensorActivity" />
+        </activity><activity
+            android:name="ch.ethz.coss.nervousnet.ui.MagneticActivity"
+            android:label="@string/title_activity_acc_sensor"
+            android:parentActivityName=".BaseSensorActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="BaseSensorActivity" />
+        </activity><activity
+            android:name="ch.ethz.coss.nervousnet.ui.ProximityActivity"
+            android:label="@string/title_activity_acc_sensor"
+            android:parentActivityName=".BaseSensorActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="BaseSensorActivity" />
+        </activity>
+        <activity
+            android:name="ch.ethz.coss.nervousnet.ui.TemperatureActivity"
+            android:label="@string/title_activity_acc_sensor"
+            android:parentActivityName=".BaseSensorActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="BaseSensorActivity" />
+        </activity>
+        <activity
+            android:name="ch.ethz.coss.nervousnet.ui.NoiseActivity"
+            android:label="@string/title_activity_acc_sensor"
+            android:parentActivityName=".BaseSensorActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="BaseSensorActivity" />
+        </activity>
+        <activity
+            android:name="ch.ethz.coss.nervousnet.ui.PressureActivity"
+            android:label="@string/title_activity_acc_sensor"
+            android:parentActivityName=".BaseSensorActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="BaseSensorActivity" />
+        </activity>
+        <activity
+            android:name="ch.ethz.coss.nervousnet.ui.ConnectivityActivity"
+            android:label="@string/title_activity_acc_sensor"
+            android:parentActivityName=".BaseSensorActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="BaseSensorActivity" />
+        </activity>
+        <activity
+            android:name="ch.ethz.coss.nervousnet.ui.BLEBeaconActivity"
+            android:label="@string/title_activity_acc_sensor"
+            android:parentActivityName=".BaseSensorActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="BaseSensorActivity" />
+        </activity>
+    </application>
+
+</manifest>
