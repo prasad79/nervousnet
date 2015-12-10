@@ -65,9 +65,7 @@ public class NervousnetVMService extends Service {
 	@Override
 	public void onDestroy() {
 		Log.d("NervousnetVMService", "onDestroy - Service destroyed");
-		if (timer != null) {
-			timer.cancel();
-		}
+
 		runnable = null;
 		handler = null;
 		
@@ -77,23 +75,14 @@ public class NervousnetVMService extends Service {
 		Toast.makeText(NervousnetVMService.this,"Service destroyed", Toast.LENGTH_LONG).show();
 	}
 
-	
-	private Timer timer = new Timer();
+
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startid) {
+		Log.d("NervousnetVMService", "onStartCommand calle");
 
-		System.out.println("help");
-		Toast.makeText(NervousnetVMService.this, "Started!", Toast.LENGTH_LONG);
-		// timer.scheduleAtFixedRate(new TimerTask() {
-		//
-		// @Override
-		// public void run() {
-		// counter++;
-		// Toast.makeText(NervousnetVMService.this, ""+counter,
-		// Toast.LENGTH_LONG);
-		// }
-		// }, 0, UPDATE_INTERVAL);
+		if(Constants.DEBUG)
+		Toast.makeText(NervousnetVMService.this, "onStartCommand called!", Toast.LENGTH_LONG).show();
 		return START_STICKY;
 	}
 	

@@ -1,4 +1,4 @@
-package ch.ethz.coss.nervousnet;
+package ch.ethz.coss.nervousnet.example;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -12,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.text.Html;
 import android.util.Log;
 import android.widget.TextView;
+import ch.ethz.coss.nervousnet.example.R;
 
 /**
  * This class allows the app to display the Terms of Use Dialog. 

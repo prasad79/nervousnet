@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ch.ethz.coss.nervousnet;
+package ch.ethz.coss.nervousnet.example;
 
 /**
  * @author prasad

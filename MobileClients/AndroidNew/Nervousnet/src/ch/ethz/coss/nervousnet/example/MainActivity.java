@@ -1,4 +1,4 @@
-package ch.ethz.coss.nervousnet;
+package ch.ethz.coss.nervousnet.example;
 
 
 import android.app.Activity;
@@ -13,7 +13,8 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
-import ch.ethz.coss.nervousnet.service.NervousnetRemote;
+import ch.ethz.coss.nervousnet.example.R;
+import ch.ethz.coss.nervousnet.vm.NervousnetRemote;
 
 public class MainActivity extends Activity {
 	protected NervousnetRemote mService;
@@ -67,12 +68,12 @@ public class MainActivity extends Activity {
 			{
 				Intent it = new Intent();
 //				it.setPackage("ch.ethz.coss.nervousnet.service");
-				it.setClassName("ch.ethz.coss.nervousnet.service", "ch.ethz.coss.nervousnet.service.NervousnetVMService");
+				it.setClassName("ch.ethz.coss.nervousnet", "ch.ethz.coss.nervousnet.vm.NervousnetVMService");
 //				it.setAction("ch.ethz.nervousnet.VM");
 				
 				  try {
 
-					    Boolean flag = bindService(it, mServiceConnection , Context.BIND_AUTO_CREATE );
+					    Boolean flag = bindService(it, mServiceConnection , 0 );
 					    Log.d("DEBUG", flag.toString());  // will return "true"
 						if(!flag)
 							Toast.makeText(MainActivity.this, "Please check if the Nervousnet Remote Service is installed and running.", Toast.LENGTH_SHORT).show();

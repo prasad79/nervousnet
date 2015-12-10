@@ -1,4 +1,4 @@
-package ch.ethz.coss.nervousnet;
+package ch.ethz.coss.nervousnet.example;
 
 import android.app.Activity;
 import android.content.Intent;

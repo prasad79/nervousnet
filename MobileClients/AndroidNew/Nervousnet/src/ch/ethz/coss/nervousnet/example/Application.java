@@ -1,4 +1,4 @@
-package ch.ethz.coss.nervousnet;
+package ch.ethz.coss.nervousnet.example;
 
 public class Application extends android.app.Application {
 

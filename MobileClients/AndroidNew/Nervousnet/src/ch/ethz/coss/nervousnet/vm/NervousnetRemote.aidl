@@ -1,4 +1,4 @@
-package ch.ethz.coss.nervousnet.service;
+package ch.ethz.coss.nervousnet.vm;
 
 	interface NervousnetRemote
 	{
