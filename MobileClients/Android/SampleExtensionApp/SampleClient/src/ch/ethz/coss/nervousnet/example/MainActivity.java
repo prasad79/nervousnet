@@ -14,6 +14,7 @@ import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 import ch.ethz.coss.nervousnet.example.R;
+import ch.ethz.coss.nervousnet.vm.BatteryReading;
 import ch.ethz.coss.nervousnet.vm.NervousnetRemote;
 
 public class MainActivity extends Activity {
@@ -55,7 +56,11 @@ public class MainActivity extends Activity {
 					// TODO Auto-generated method stub
 					mService = NervousnetRemote.Stub.asInterface((IBinder) service);
 					try {
-						counter.setText(mService.getCounter()+"");
+						BatteryReading reading = mService.getBatteryReading();
+						if(reading != null)
+						counter.setText(reading.toString()+"");
+						else
+							counter.setText("Null object returned");
 					} catch (RemoteException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
