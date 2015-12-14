@@ -10,8 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.BatteryManager;
-import ch.ethz.coss.nervousnet.sensors.model.BatteryReading;
-import ch.ethz.coss.nervousnet.sensors.model.SensorReading;
+import ch.ethz.coss.nervousnet.vm.BatteryReading;
 
 public class BatterySensor implements SensorStatusImplementation{
 	
@@ -98,7 +97,7 @@ public class BatterySensor implements SensorStatusImplementation{
 	/**
 	 * @return
 	 */
-	public SensorReading getReading() {
+	public BatteryReading getReading() {
 		// TODO Auto-generated method stub
 		return reading;
 	}

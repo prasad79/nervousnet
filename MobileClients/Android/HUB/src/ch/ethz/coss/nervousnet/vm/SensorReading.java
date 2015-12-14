@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ch.ethz.coss.nervousnet.sensors.model;
+package ch.ethz.coss.nervousnet.vm;
 
 import android.os.Parcelable;
 

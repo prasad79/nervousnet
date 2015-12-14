@@ -4,6 +4,7 @@
 package ch.ethz.coss.nervousnet.sensors.model;
 
 import android.os.Parcel;
+import ch.ethz.coss.nervousnet.vm.SensorReading;
 
 /**
  * @author prasad

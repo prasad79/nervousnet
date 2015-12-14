@@ -14,8 +14,6 @@ import android.widget.Toast;
 import ch.ethz.coss.nervousnet.Constants;
 import ch.ethz.coss.nervousnet.sensors.BatterySensor;
 import ch.ethz.coss.nervousnet.sensors.BatterySensor.BatteryListener;
-import ch.ethz.coss.nervousnet.sensors.model.BatteryReading;
-import ch.ethz.coss.nervousnet.sensors.model.SensorReading;
 
 public class NervousnetVMService extends Service implements BatteryListener, SensorListener{
 
@@ -49,15 +47,14 @@ public class NervousnetVMService extends Service implements BatteryListener, Sen
 			return counter;
 		}
 		
-		public SensorReading getSensorReading(long sensorID) {
-			
-			if(sensorID == BatterySensor.SENSOR_ID) {
+		@Override
+		public BatteryReading getBatteryReading() {
+			Log.d("TEST","Sending Battery Reading "+sensorBattery.getReading());
 				return sensorBattery.getReading();
-			}
-			
-			return null;
-			
 		}
+			
+			
+		
 
 	};
 

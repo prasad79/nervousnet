@@ -3,7 +3,7 @@
  */
 package ch.ethz.coss.nervousnet.sensors;
 
-import ch.ethz.coss.nervousnet.sensors.model.SensorReading;
+import ch.ethz.coss.nervousnet.vm.SensorReading;
 
 /**
  * @author prasad
