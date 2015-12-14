@@ -10,11 +10,17 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.BatteryManager;
+import ch.ethz.coss.nervousnet.sensors.model.BatteryReading;
+import ch.ethz.coss.nervousnet.sensors.model.SensorReading;
 
-public class BatterySensor {
+public class BatterySensor implements SensorStatusImplementation{
+	
+	public static final long SENSOR_ID = 0x0000000000000001L;
 
 	private Context context;
 
+	private BatteryReading reading;
+	
 	public BatterySensor(Context context) {
 		this.context = context;
 	}
@@ -23,8 +29,7 @@ public class BatterySensor {
 	private Lock listenerMutex = new ReentrantLock();
 
 	public interface BatteryListener {
-		public void batterySensorDataReady(long timestamp, float batteryPercent, boolean isCharging,
-				boolean isUsbCharge, boolean isAcCharge);
+		public void batterySensorDataReady(BatteryReading reading);
 	}
 
 	public void addListener(BatteryListener listener) {
@@ -48,8 +53,10 @@ public class BatterySensor {
 	public void dataReady(long timestamp, float batteryPercent, boolean isCharging, boolean isUsbCharge,
 			boolean isAcCharge) {
 		listenerMutex.lock();
+		reading = new BatteryReading(timestamp, batteryPercent, isCharging, isUsbCharge, isAcCharge);
+		
 		for (BatteryListener listener : listenerList) {
-			listener.batterySensorDataReady(timestamp, batteryPercent, isCharging, isUsbCharge, isAcCharge);
+			listener.batterySensorDataReady(reading);
 		}
 		listenerMutex.unlock();
 	}
@@ -77,6 +84,23 @@ public class BatterySensor {
 
 	public void start() {
 		new BatteryTask().execute();
+	}
+
+	/* (non-Javadoc)
+	 * @see ch.ethz.coss.nervousnet.sensors.SensorStatusImplementation#doCollect()
+	 */
+	@Override
+	public void doCollect() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * @return
+	 */
+	public SensorReading getReading() {
+		// TODO Auto-generated method stub
+		return reading;
 	}
 
 }

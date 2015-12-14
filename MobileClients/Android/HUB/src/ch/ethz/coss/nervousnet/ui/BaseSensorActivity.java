@@ -1,6 +1,5 @@
 package ch.ethz.coss.nervousnet.ui;
 
-import android.hardware.Sensor;
 import android.os.Bundle;
 import android.widget.TextView;
 import ch.ethz.coss.nervousnet.BaseActivity;
@@ -14,11 +13,9 @@ public class BaseSensorActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 
 	}
-	
-	
-	
-	protected void setSensorStatus(int type){
-		if(!NervousnetVMServiceHandler.isSensorSupported(type)){
+
+	protected void setSensorStatus(int type) {
+		if (!NervousnetVMServiceHandler.isSensorSupported(type)) {
 			TextView tv = (TextView) findViewById(R.id.statusTF);
 			tv.setText("Sensor not supported by your mobile phone.");
 		}

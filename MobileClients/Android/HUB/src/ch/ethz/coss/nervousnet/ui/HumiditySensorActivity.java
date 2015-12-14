@@ -10,7 +10,7 @@ public class HumiditySensorActivity extends BaseSensorActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_humid_sensor);
-		
+
 		setSensorStatus(Sensor.TYPE_RELATIVE_HUMIDITY);
 	}
 

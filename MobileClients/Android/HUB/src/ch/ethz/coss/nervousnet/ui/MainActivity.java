@@ -11,9 +11,9 @@ import android.widget.GridView;
 import android.widget.Toast;
 import ch.ethz.coss.nervousnet.BaseActivity;
 import ch.ethz.coss.nervousnet.Constants;
-import ch.ethz.coss.nervousnet.vm.NervousnetRemote;
 import ch.ethz.coss.nervousnet.R;
 import ch.ethz.coss.nervousnet.ui.adapters.ImageAdapter;
+import ch.ethz.coss.nervousnet.vm.NervousnetRemote;
 
 public class MainActivity extends BaseActivity {
 	protected NervousnetRemote mService;

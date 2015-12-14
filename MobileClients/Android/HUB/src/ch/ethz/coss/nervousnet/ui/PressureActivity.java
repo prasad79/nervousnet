@@ -10,8 +10,7 @@ public class PressureActivity extends BaseSensorActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_pressure_sensor);
-		
-		
+
 		setSensorStatus(Sensor.TYPE_PRESSURE);
 	}
 

@@ -8,18 +8,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.CompoundButton;
 import android.widget.Switch;
-import android.widget.ToggleButton;
-import ch.ethz.coss.nervousnet.sensors.SensorDescBLEBeacon;
 import ch.ethz.coss.nervousnet.vm.NervousnetVMService;
 import ch.ethz.coss.nervousnet.vm.NervousnetVMServiceHandler;
-import ch.ethz.coss.nervousnet.vm.SensorCollectStatus;
-import ch.ethz.coss.nervousnet.vm.SensorConfiguration;
 
 /**
  * @author prasad
@@ -28,7 +22,6 @@ import ch.ethz.coss.nervousnet.vm.SensorConfiguration;
 public class BaseActivity extends Activity {
 
 	protected static Switch mainSwitch;
-	
 
 	protected View parentView;
 
@@ -37,7 +30,6 @@ public class BaseActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		updateActionBar();
 
-	
 	}
 
 	private void updateActionBar() {
@@ -53,18 +45,19 @@ public class BaseActivity extends Activity {
 		actionBar.setCustomView(v);
 
 		mainSwitch = (Switch) findViewById(R.id.mainSwitch);
-		if(NervousnetVMServiceHandler.getInstance().isNervousNetVMServiceRunning(BaseActivity.this, NervousnetVMService.class))
+		if (NervousnetVMServiceHandler.getInstance().isNervousNetVMServiceRunning(BaseActivity.this,
+				NervousnetVMService.class))
 			mainSwitch.setChecked(true);
-		
+
 		mainSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-		    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-		    	NervousnetVMServiceHandler.getInstance().startStopSensorService(isChecked, BaseActivity.this);
-		    }
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				NervousnetVMServiceHandler.getInstance().startStopSensorService(isChecked, BaseActivity.this);
+			}
 		});
-		
-		
+
 	}
-	
+
 	protected void startNextActivity(Intent intent) {
 		intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 		startActivity(intent);

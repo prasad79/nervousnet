@@ -23,7 +23,7 @@ public class ShowSensorListActivity extends BaseActivity {
 	SensorManager smm;
 	List<Sensor> sensor;
 	ListView lv;
-	
+
 	Hashtable<Integer, Sensor> hSensors = new Hashtable<Integer, Sensor>();
 
 	@Override
@@ -33,10 +33,10 @@ public class ShowSensorListActivity extends BaseActivity {
 		smm = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		lv = (ListView) findViewById(R.id.listView1);
 		sensor = smm.getSensorList(Sensor.TYPE_ALL);
-		
-		 for(int i=0; i<sensor.size(); i++){
-			 hSensors.put(sensor.get(i).getType(), sensor.get(i));
-		  }
+
+		for (int i = 0; i < sensor.size(); i++) {
+			hSensors.put(sensor.get(i).getType(), sensor.get(i));
+		}
 		lv.setAdapter(new ArrayAdapter<Sensor>(this, android.R.layout.simple_list_item_1, sensor));
 	}
 }

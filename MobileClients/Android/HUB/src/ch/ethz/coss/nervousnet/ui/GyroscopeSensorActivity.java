@@ -10,7 +10,7 @@ public class GyroscopeSensorActivity extends BaseSensorActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_gyro_sensor);
-		
+
 		setSensorStatus(Sensor.TYPE_GYROSCOPE);
 	}
 

@@ -10,8 +10,7 @@ public class LightSensorActivity extends BaseSensorActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_light_sensor);
-		
-		
+
 		setSensorStatus(Sensor.TYPE_LIGHT);
 	}
 
