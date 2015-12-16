@@ -10,10 +10,9 @@ import ch.ethz.coss.nervousnet.vm.SensorReading;
  *
  */
 public interface SensorStatusImplementation {
-	
-	
+
 	public void doCollect();
-	
+
 	public SensorReading getReading();
 
 }

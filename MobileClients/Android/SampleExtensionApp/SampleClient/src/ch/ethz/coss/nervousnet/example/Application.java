@@ -3,14 +3,13 @@ package ch.ethz.coss.nervousnet.example;
 public class Application extends android.app.Application {
 
 	public Application() {
-		
+
 	}
 
 	@Override
 	public void onCreate() {
 
 		super.onCreate();
-
 
 		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
 			@Override
@@ -21,13 +20,9 @@ public class Application extends android.app.Application {
 
 	}
 
-
-
 	private void handleUncaughtException(Thread thread, Throwable e) {
 		e.printStackTrace();
 		System.exit(0);
 	}
-
-
 
 }

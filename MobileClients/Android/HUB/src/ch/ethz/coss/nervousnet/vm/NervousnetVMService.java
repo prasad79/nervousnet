@@ -15,26 +15,24 @@ import ch.ethz.coss.nervousnet.Constants;
 import ch.ethz.coss.nervousnet.sensors.BatterySensor;
 import ch.ethz.coss.nervousnet.sensors.BatterySensor.BatteryListener;
 
-public class NervousnetVMService extends Service implements BatteryListener, SensorListener{
+public class NervousnetVMService extends Service implements BatteryListener, SensorListener {
 
-	
 	private static String LOG_TAG = "NervousnetVMService";
 	private static int SERVICE_STATE = 0; // 0 - NOT RUNNING, 1 - RUNNING
 	private int START_ID = 0;
 
 	private static int counter = 0;
-	
+
 	private SensorManager sensorManager = null;
 
 	private PowerManager.WakeLock wakeLock;
-	
+
 	private HandlerThread hthread;
 	private static Handler handler;
 	private static Runnable runnable;
 	private static Runnable run;
 	private final int runTime = 1000;
-	
-	
+
 	private BatterySensor sensorBattery = null;
 
 	@Override
@@ -47,19 +45,19 @@ public class NervousnetVMService extends Service implements BatteryListener, Sen
 		public int getCounter() {
 			return counter;
 		}
-		
+
 		@Override
 		public BatteryReading getBatteryReading() {
-			Log.d("NervousnetVMService","Sending Battery Reading "+sensorBattery.getReading());
-			
-			if(sensorBattery == null)
+			Log.d("NervousnetVMService", "Sending Battery Reading " + sensorBattery.getReading());
+
+			if (sensorBattery == null)
 				return new BatteryReading(System.currentTimeMillis(), (float) 0.95, true, true, true);
-			
-				return sensorBattery.getReading();
+
+			return sensorBattery.getReading();
 		}
 
-		
-		public float getBatteryPercent(){
+		@Override
+		public float getBatteryPercent() {
 			return sensorBattery.getReading().getBatteryPercent();
 		}
 
@@ -70,13 +68,13 @@ public class NervousnetVMService extends Service implements BatteryListener, Sen
 		Log.d("NervousnetVMService", "oncreate - Service started");
 		super.onCreate();
 		SERVICE_STATE = 1;
-		
+
 		// Prepare the wakelock
 		PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
 		wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, LOG_TAG);
 		hthread = new HandlerThread("HandlerThread");
 		hthread.start();
-		
+
 		// Acquire wakelock, some sensors on some phones need this
 		if (!wakeLock.isHeld()) {
 			wakeLock.acquire();
@@ -93,17 +91,13 @@ public class NervousnetVMService extends Service implements BatteryListener, Sen
 			}
 		};
 		handler.post(runnable);
-		
-		
+
 		scheduleSensor(BatterySensor.SENSOR_ID);
 
 		if (Constants.DEBUG)
 			Toast.makeText(NervousnetVMService.this, "Service started", Toast.LENGTH_LONG).show();
 
 	}
-	
-	
-
 
 	@Override
 	public void onDestroy() {
@@ -113,29 +107,25 @@ public class NervousnetVMService extends Service implements BatteryListener, Sen
 		handler = null;
 		SERVICE_STATE = 0;
 
-		
-		// Release the wakelock here, just to be safe, in order something went wrong
+		// Release the wakelock here, just to be safe, in order something went
+		// wrong
 		if (wakeLock.isHeld()) {
-					wakeLock.release();
-				}
-				sensorManager.unregisterListener(this);
-				hthread.quit();
-					
+			wakeLock.release();
+		}
+		sensorManager.unregisterListener(this);
+		hthread.quit();
+
 		if (Constants.DEBUG)
 			Toast.makeText(NervousnetVMService.this, "Service destroyed", Toast.LENGTH_LONG).show();
 	}
 
-	
-	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startid) {
 		Log.d("NervousnetVMService", "onStartCommand called");
 		START_ID = startid;
 		if (Constants.DEBUG)
 			Toast.makeText(NervousnetVMService.this, "onStartCommand called!", Toast.LENGTH_LONG).show();
-		
-		
-		
+
 		return START_STICKY;
 	}
 
@@ -156,170 +146,189 @@ public class NervousnetVMService extends Service implements BatteryListener, Sen
 		Intent sensorIntent = new Intent(context, NervousnetVMService.class);
 		context.stopService(sensorIntent);
 	}
-	
+
 	private void scheduleSensor(final long sensorId) {
 		run = new Runnable() {
 			@Override
 			public void run() {
-				
-					if(sensorId == BatterySensor.SENSOR_ID){
-						startBatterySensor();	
-					}
-					
-					counter = 0;
-				
+
+				if (sensorId == BatterySensor.SENSOR_ID) {
+					startBatterySensor();
+				}
+
+				counter = 0;
+
 				Log.d("NervousnetVMService", "Running Schedule Sensor thread");
 				Toast.makeText(NervousnetVMService.this, "" + counter, Toast.LENGTH_LONG).show();
-				
+
 			}
 		};
 		handler.postDelayed(run, 10000);
 	}
-	
-	
-//	private void scheduleSensor(final long sensorId) {
-//		handler = new Handler(hthread.getLooper());
-//		final Runnable run = new Runnable() {
-//			@Override
-//			public void run() {
-//				boolean doCollect = false;
-//				SensorCollectStatus sensorCollectStatus = null;
-//				long startTime = System.currentTimeMillis();
-//
-//				if (sensorId == SensorDescAccelerometer.SENSOR_ID) {
-//					scAccelerometer.setMeasureStart(startTime);					
-//					doCollect = scAccelerometer.isCollect();
-//					doCollect = doCollect ? sensorManager.registerListener(sensorListenerClass, sensorAccelerometer, SensorManager.SENSOR_DELAY_NORMAL) : false;					
-//					sensorCollectStatus = scAccelerometer;					
-//				} else if (sensorId == SensorDescPressure.SENSOR_ID) {
-//					scPressure.setMeasureStart(startTime);
-//					doCollect = scPressure.isCollect();
-//					doCollect = doCollect ? sensorManager.registerListener(sensorListenerClass, sensorPressure, SensorManager.SENSOR_DELAY_NORMAL) : false;
-//					sensorCollectStatus = scPressure;					
-//				} else if (sensorId == SensorDescGyroscope.SENSOR_ID) {					
-//					doCollect = scGyroscope.isCollect();					
-//					doCollect = doCollect ? sensorManager.registerListener(sensorListenerClass, sensorGyroscope, SensorManager.SENSOR_DELAY_NORMAL) : false;					
-//					sensorCollectStatus = scGyroscope;					
-//				} else if (sensorId == SensorDescHumidity.SENSOR_ID) {
-//					scHumidity.setMeasureStart(startTime);
-//					doCollect = scHumidity.isCollect();
-//					doCollect = doCollect ? sensorManager.registerListener(sensorListenerClass, sensorHumidity, SensorManager.SENSOR_DELAY_NORMAL) : false;
-//					sensorCollectStatus = scHumidity;					
-//				} else if (sensorId == SensorDescLight.SENSOR_ID) {
-//					scLight.setMeasureStart(startTime);
-//					doCollect = scLight.isCollect();
-//					doCollect = doCollect ? sensorManager.registerListener(sensorListenerClass, sensorLight, SensorManager.SENSOR_DELAY_NORMAL) : false;
-//					sensorCollectStatus = scLight;					
-//				} else if (sensorId == SensorDescMagnetic.SENSOR_ID) {
-//					scMagnet.setMeasureStart(startTime);
-//					doCollect = scMagnet.isCollect();					
-//					doCollect = doCollect ? sensorManager.registerListener(sensorListenerClass, sensorMagnet, SensorManager.SENSOR_DELAY_NORMAL) : false;
-//					sensorCollectStatus = scMagnet;										
-//				} else if (sensorId == SensorDescProximity.SENSOR_ID) {
-//					scProximity.setMeasureStart(startTime);
-//					doCollect = scProximity.isCollect();
-//					doCollect = doCollect ? sensorManager.registerListener(sensorListenerClass, sensorProximity, SensorManager.SENSOR_DELAY_NORMAL) : false;
-//					sensorCollectStatus = scProximity;					
-//				} else if (sensorId == SensorDescTemperature.SENSOR_ID) {
-//					scTemperature.setMeasureStart(startTime);
-//					doCollect = scTemperature.isCollect();					
-//					doCollect = doCollect ? sensorManager.registerListener(sensorListenerClass, sensorTemperature, SensorManager.SENSOR_DELAY_NORMAL) : false;
-//					sensorCollectStatus = scTemperature;					
-//				} else if (sensorId == SensorDescBattery.SENSOR_ID) {
-//					scBattery.setMeasureStart(startTime);
-//					doCollect = scBattery.isCollect();
-//					if (doCollect) {
-//						sensorBattery.clearListeners();
-//						sensorBattery.addListener(sensorListenerClass);
-//						sensorBattery.start();
-//					}
-//					sensorCollectStatus = scBattery;
-//				} else if (sensorId == SensorDescConnectivity.SENSOR_ID) {
-//					scConnectivity.setMeasureStart(startTime);
-//					doCollect = scConnectivity.isCollect();
-//					if (doCollect) {
-//						sensorConnectivity.clearListeners();
-//						sensorConnectivity.addListener(sensorListenerClass);
-//						sensorConnectivity.start();
-//					}
-//					sensorCollectStatus = scConnectivity;
-//				} else if (sensorId == SensorDescBLEBeacon.SENSOR_ID) {
-//					scBLEBeacon.setMeasureStart(startTime);
-//					doCollect = scBLEBeacon.isCollect();
-//					if (doCollect) {
-//						sensorBLEBeacon.clearListeners();
-//						sensorBLEBeacon.addListener(sensorListenerClass);
-//						// Update this variable if the BLE sensor is currently unavailable
-//						doCollect = sensorBLEBeacon.startScanning(Math.max(scBLEBeacon.getMeasureDuration(), 2000));
-//					}
-//					// TODO Fix for now, agressive BLE scanning
-////					scBLEBeacon.setMeasureInterval(3000);
-//					sensorCollectStatus = scBLEBeacon;
-//				} else if (sensorId == SensorDescNoise.SENSOR_ID) {
-//					scNoise.setMeasureStart(startTime);
-//					doCollect = scNoise.isCollect();
-//					if (doCollect) {
-//						sensorNoise.clearListeners();
-//						sensorNoise.addListener(sensorListenerClass);
-//						// Noise sensor doesn't really make sense with less than 500ms
-//						sensorNoise.startRecording(Math.max(scNoise.getMeasureDuration(), 500));
-//					}
-//					sensorCollectStatus = scNoise;
-//				}
-//
-//				if (doCollect && sensorCollectStatus != null) {
-//					sensorCollected.put(sensorId, sensorCollectStatus);
-//				}
-//
-//				if (sensorCollectStatus != null) {
-//					long interval = sensorCollectStatus.getMeasureInterval();
-//					Log.d(LOG_TAG, "Logging sensor " + String.valueOf(sensorId) + " started with interval " + String.valueOf(interval) + " ms");
-//					handler.postDelayed(this, interval);
-//				}
-//
-//			}
-//		};
-//		// 10 seconds initial delay
-//		handler.postDelayed(run, 10000);
-//	}
 
-	/* (non-Javadoc)
-	 * @see ch.ethz.coss.nervousnet.sensors.BatterySensor.BatteryListener#batterySensorDataReady(long, float, boolean, boolean, boolean)
+	// private void scheduleSensor(final long sensorId) {
+	// handler = new Handler(hthread.getLooper());
+	// final Runnable run = new Runnable() {
+	// @Override
+	// public void run() {
+	// boolean doCollect = false;
+	// SensorCollectStatus sensorCollectStatus = null;
+	// long startTime = System.currentTimeMillis();
+	//
+	// if (sensorId == SensorDescAccelerometer.SENSOR_ID) {
+	// scAccelerometer.setMeasureStart(startTime);
+	// doCollect = scAccelerometer.isCollect();
+	// doCollect = doCollect ?
+	// sensorManager.registerListener(sensorListenerClass, sensorAccelerometer,
+	// SensorManager.SENSOR_DELAY_NORMAL) : false;
+	// sensorCollectStatus = scAccelerometer;
+	// } else if (sensorId == SensorDescPressure.SENSOR_ID) {
+	// scPressure.setMeasureStart(startTime);
+	// doCollect = scPressure.isCollect();
+	// doCollect = doCollect ?
+	// sensorManager.registerListener(sensorListenerClass, sensorPressure,
+	// SensorManager.SENSOR_DELAY_NORMAL) : false;
+	// sensorCollectStatus = scPressure;
+	// } else if (sensorId == SensorDescGyroscope.SENSOR_ID) {
+	// doCollect = scGyroscope.isCollect();
+	// doCollect = doCollect ?
+	// sensorManager.registerListener(sensorListenerClass, sensorGyroscope,
+	// SensorManager.SENSOR_DELAY_NORMAL) : false;
+	// sensorCollectStatus = scGyroscope;
+	// } else if (sensorId == SensorDescHumidity.SENSOR_ID) {
+	// scHumidity.setMeasureStart(startTime);
+	// doCollect = scHumidity.isCollect();
+	// doCollect = doCollect ?
+	// sensorManager.registerListener(sensorListenerClass, sensorHumidity,
+	// SensorManager.SENSOR_DELAY_NORMAL) : false;
+	// sensorCollectStatus = scHumidity;
+	// } else if (sensorId == SensorDescLight.SENSOR_ID) {
+	// scLight.setMeasureStart(startTime);
+	// doCollect = scLight.isCollect();
+	// doCollect = doCollect ?
+	// sensorManager.registerListener(sensorListenerClass, sensorLight,
+	// SensorManager.SENSOR_DELAY_NORMAL) : false;
+	// sensorCollectStatus = scLight;
+	// } else if (sensorId == SensorDescMagnetic.SENSOR_ID) {
+	// scMagnet.setMeasureStart(startTime);
+	// doCollect = scMagnet.isCollect();
+	// doCollect = doCollect ?
+	// sensorManager.registerListener(sensorListenerClass, sensorMagnet,
+	// SensorManager.SENSOR_DELAY_NORMAL) : false;
+	// sensorCollectStatus = scMagnet;
+	// } else if (sensorId == SensorDescProximity.SENSOR_ID) {
+	// scProximity.setMeasureStart(startTime);
+	// doCollect = scProximity.isCollect();
+	// doCollect = doCollect ?
+	// sensorManager.registerListener(sensorListenerClass, sensorProximity,
+	// SensorManager.SENSOR_DELAY_NORMAL) : false;
+	// sensorCollectStatus = scProximity;
+	// } else if (sensorId == SensorDescTemperature.SENSOR_ID) {
+	// scTemperature.setMeasureStart(startTime);
+	// doCollect = scTemperature.isCollect();
+	// doCollect = doCollect ?
+	// sensorManager.registerListener(sensorListenerClass, sensorTemperature,
+	// SensorManager.SENSOR_DELAY_NORMAL) : false;
+	// sensorCollectStatus = scTemperature;
+	// } else if (sensorId == SensorDescBattery.SENSOR_ID) {
+	// scBattery.setMeasureStart(startTime);
+	// doCollect = scBattery.isCollect();
+	// if (doCollect) {
+	// sensorBattery.clearListeners();
+	// sensorBattery.addListener(sensorListenerClass);
+	// sensorBattery.start();
+	// }
+	// sensorCollectStatus = scBattery;
+	// } else if (sensorId == SensorDescConnectivity.SENSOR_ID) {
+	// scConnectivity.setMeasureStart(startTime);
+	// doCollect = scConnectivity.isCollect();
+	// if (doCollect) {
+	// sensorConnectivity.clearListeners();
+	// sensorConnectivity.addListener(sensorListenerClass);
+	// sensorConnectivity.start();
+	// }
+	// sensorCollectStatus = scConnectivity;
+	// } else if (sensorId == SensorDescBLEBeacon.SENSOR_ID) {
+	// scBLEBeacon.setMeasureStart(startTime);
+	// doCollect = scBLEBeacon.isCollect();
+	// if (doCollect) {
+	// sensorBLEBeacon.clearListeners();
+	// sensorBLEBeacon.addListener(sensorListenerClass);
+	// // Update this variable if the BLE sensor is currently unavailable
+	// doCollect =
+	// sensorBLEBeacon.startScanning(Math.max(scBLEBeacon.getMeasureDuration(),
+	// 2000));
+	// }
+	// // TODO Fix for now, agressive BLE scanning
+	//// scBLEBeacon.setMeasureInterval(3000);
+	// sensorCollectStatus = scBLEBeacon;
+	// } else if (sensorId == SensorDescNoise.SENSOR_ID) {
+	// scNoise.setMeasureStart(startTime);
+	// doCollect = scNoise.isCollect();
+	// if (doCollect) {
+	// sensorNoise.clearListeners();
+	// sensorNoise.addListener(sensorListenerClass);
+	// // Noise sensor doesn't really make sense with less than 500ms
+	// sensorNoise.startRecording(Math.max(scNoise.getMeasureDuration(), 500));
+	// }
+	// sensorCollectStatus = scNoise;
+	// }
+	//
+	// if (doCollect && sensorCollectStatus != null) {
+	// sensorCollected.put(sensorId, sensorCollectStatus);
+	// }
+	//
+	// if (sensorCollectStatus != null) {
+	// long interval = sensorCollectStatus.getMeasureInterval();
+	// Log.d(LOG_TAG, "Logging sensor " + String.valueOf(sensorId) + " started
+	// with interval " + String.valueOf(interval) + " ms");
+	// handler.postDelayed(this, interval);
+	// }
+	//
+	// }
+	// };
+	// // 10 seconds initial delay
+	// handler.postDelayed(run, 10000);
+	// }
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see ch.ethz.coss.nervousnet.sensors.BatterySensor.BatteryListener#
+	 * batterySensorDataReady(long, float, boolean, boolean, boolean)
 	 */
 	@Override
 	public void batterySensorDataReady(BatteryReading reading) {
 		Log.d("NervousnetVMService", reading.toString());
-		
+
 	}
 
-	
 	private void startBatterySensor() {
 		sensorBattery = new BatterySensor(NervousnetVMService.this);
 		sensorBattery.addListener(NervousnetVMService.this);
 		sensorBattery.start();
 	}
 
-
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see android.hardware.SensorListener#onAccuracyChanged(int, int)
 	 */
 	@Override
 	public void onAccuracyChanged(int sensor, int accuracy) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-
-
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see android.hardware.SensorListener#onSensorChanged(int, float[])
 	 */
 	@Override
 	public void onSensorChanged(int sensor, float[] values) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

@@ -11,8 +11,7 @@ import android.util.Log;
 public class BatteryReading extends SensorReading {
 
 	private static String LOG_TAG = "BatteryReading";
-			
-			
+
 	public BatteryReading(long timestamp, float batteryPercent, boolean isCharging, boolean isUsbCharge,
 			boolean isAcCharge) {
 		Log.d(LOG_TAG, "Inside BatteryReading constructor 1");
@@ -78,9 +77,6 @@ public class BatteryReading extends SensorReading {
 			return new BatteryReading[size];
 		}
 	};
-	
-	
-	
 
 	/**
 	 * @return the isCharging
@@ -97,16 +93,17 @@ public class BatteryReading extends SensorReading {
 	}
 
 	/**
-	 * @param batteryPercent the batteryPercent to set
+	 * @param batteryPercent
+	 *            the batteryPercent to set
 	 */
 	public void setBatteryPercent(float batteryPercent) {
 		this.batteryPercent = batteryPercent;
 	}
-	
-	public String toString(){
-		return new String("BatteryReading - BatteryPercent = "+batteryPercent+", "+"isCharging = "+isCharging+", "+"isUsbCharging = "+isUsbCharge+", "+"isAcCharging = "+isAcCharge+".");
-	}
 
+	public String toString() {
+		return new String("BatteryReading - BatteryPercent = " + batteryPercent + ", " + "isCharging = " + isCharging
+				+ ", " + "isUsbCharging = " + isUsbCharge + ", " + "isAcCharging = " + isAcCharge + ".");
+	}
 
 	private float batteryPercent;
 	private boolean isCharging;

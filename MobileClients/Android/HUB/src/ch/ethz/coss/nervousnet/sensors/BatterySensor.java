@@ -13,14 +13,14 @@ import android.os.Handler;
 import android.util.Log;
 import ch.ethz.coss.nervousnet.vm.BatteryReading;
 
-public class BatterySensor implements SensorStatusImplementation{
-	
+public class BatterySensor implements SensorStatusImplementation {
+
 	public static final long SENSOR_ID = 0x0000000000000001L;
 
 	private Context context;
 
 	private BatteryReading reading;
-	
+
 	public BatterySensor(Context context) {
 		this.context = context;
 	}
@@ -50,11 +50,6 @@ public class BatterySensor implements SensorStatusImplementation{
 		listenerMutex.unlock();
 	}
 
-
-
-
-	
-	
 	public void readBattery() {
 		IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
 		Intent batteryStatus = context.registerReceiver(null, ifilter);
@@ -67,12 +62,13 @@ public class BatterySensor implements SensorStatusImplementation{
 		boolean usbCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_USB;
 		boolean acCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_AC;
 		float batteryPct = level / (float) scale;
-		
+
 		reading = new BatteryReading(System.currentTimeMillis(), batteryPct, isCharging, usbCharge, acCharge);
 		dataReady();
-		
+
 	}
-	 /**
+
+	/**
 	 * @param batteryReading
 	 */
 	private void dataReady() {
@@ -84,56 +80,52 @@ public class BatterySensor implements SensorStatusImplementation{
 	}
 
 	Handler m_handler = new Handler();
-	public void start() {
-	
-		
-		batterySensorRunnable.run(); 
-	
-		
-	}
-	
 
-	void stop()
-	{
-	    m_handler.removeCallbacks(batterySensorRunnable);
+	public void start() {
+
+		batterySensorRunnable.run();
+
 	}
-	
-	Runnable batterySensorRunnable = new Runnable()
-	{
-	     @Override 
-	     public void run() {
-	    	 Log.d("BatterySensor", "Running read Battery thread ");
-	    	 
-	    	 readBattery();
-	    	 if(m_handler != null)
-	         m_handler.postDelayed(batterySensorRunnable, m_interval);
-	     }
+
+	void stop() {
+		m_handler.removeCallbacks(batterySensorRunnable);
+	}
+
+	Runnable batterySensorRunnable = new Runnable() {
+		@Override
+		public void run() {
+			Log.d("BatterySensor", "Running read Battery thread ");
+
+			readBattery();
+			if (m_handler != null)
+				m_handler.postDelayed(batterySensorRunnable, m_interval);
+		}
 	};
-	
-	
-	/* (non-Javadoc)
-	 * @see ch.ethz.coss.nervousnet.sensors.SensorStatusImplementation#doCollect()
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.ethz.coss.nervousnet.sensors.SensorStatusImplementation#doCollect()
 	 */
 	@Override
 	public void doCollect() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	/**
 	 * @return
 	 */
+	@Override
 	public BatteryReading getReading() {
 		// TODO Auto-generated method stub
-		if(reading == null)
+		if (reading == null)
 			return new BatteryReading(System.currentTimeMillis(), (float) 0.0, true, true, true);
-		
+
 		return reading;
 	}
-	
-	private int m_interval = 1000; // 1 seconds by default, can be changed later
-	
-	
 
+	private int m_interval = 1000; // 1 seconds by default, can be changed later
 
 }
