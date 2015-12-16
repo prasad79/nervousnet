@@ -12,12 +12,13 @@ import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 import ch.ethz.coss.nervousnet.vm.BatteryReading;
+import ch.ethz.coss.nervousnet.vm.LocationReading;
 import ch.ethz.coss.nervousnet.vm.NervousnetRemote;
 
 public class MainActivity extends Activity {
 	protected NervousnetRemote mService;
 	ServiceConnection mServiceConnection;
-	EditText count, battery_percent, battery_isCharging, battery_isUSB, battery_isAC;
+	EditText count, battery_percent, battery_isCharging, battery_isUSB, battery_isAC, location_values;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +29,7 @@ public class MainActivity extends Activity {
 		battery_isCharging = (EditText) findViewById(R.id.battery_isCharging);
 		battery_isUSB = (EditText) findViewById(R.id.battery_isUSB);
 		battery_isAC = (EditText) findViewById(R.id.battery_isAC);
+		location_values = (EditText) findViewById(R.id.location_values);
 		
 		initConnection();
 	}
@@ -131,17 +133,23 @@ public class MainActivity extends Activity {
 			
 			count.setText(mService.getCounter()+"");
 			
-			BatteryReading reading = mService.getBatteryReading();
+			BatteryReading breading = mService.getBatteryReading();
+			LocationReading lreading = mService.getLocationReading();
 
-			if (reading != null){
-				battery_percent.setText(reading.getBatteryPercent() * 100 + " %");
-				battery_isCharging.setText(reading.isCharging()? "YES": "NO");
-				battery_isUSB.setText(reading.isUSBCharging()? "YES": "NO");
-				battery_isAC.setText(reading.isAcCharging()? "YES": "NO");
-						
+			if (breading != null){
+				battery_percent.setText(breading.getBatteryPercent() * 100 + " %");
+				battery_isCharging.setText(breading.isCharging()? "YES": "NO");
+				battery_isUSB.setText(breading.isUSBCharging()? "YES": "NO");
+				battery_isAC.setText(breading.isAcCharging()? "YES": "NO");
+				
 			}
 			else{
 				battery_percent.setText("Battery sensor not responding.");
+			}
+			
+			if(lreading != null) {
+				
+				location_values.setText(lreading.toString());
 			}
 			
 			
@@ -162,6 +170,7 @@ public class MainActivity extends Activity {
 		public void run() {
 
 			updateStatus(); // this function can change value of m_interval.
+		
 			m_handler.postDelayed(m_statusChecker, m_interval);
 		}
 	};

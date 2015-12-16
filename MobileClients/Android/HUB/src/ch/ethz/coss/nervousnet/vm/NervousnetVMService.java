@@ -3,27 +3,26 @@ package ch.ethz.coss.nervousnet.vm;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.hardware.SensorListener;
-import android.hardware.SensorManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.os.RemoteException;
 import android.util.Log;
 import android.widget.Toast;
 import ch.ethz.coss.nervousnet.Constants;
 import ch.ethz.coss.nervousnet.sensors.BatterySensor;
 import ch.ethz.coss.nervousnet.sensors.BatterySensor.BatteryListener;
 
-public class NervousnetVMService extends Service implements BatteryListener, SensorListener {
+public class NervousnetVMService extends Service implements BatteryListener, LocationListener {
 
 	private static String LOG_TAG = "NervousnetVMService";
 	private static int SERVICE_STATE = 0; // 0 - NOT RUNNING, 1 - RUNNING
-	private int START_ID = 0;
-
 	private static int counter = 0;
-
-	private SensorManager sensorManager = null;
 
 	private PowerManager.WakeLock wakeLock;
 
@@ -34,6 +33,10 @@ public class NervousnetVMService extends Service implements BatteryListener, Sen
 	private final int runTime = 1000;
 
 	private BatterySensor sensorBattery = null;
+	private LocationManager locationManager = null;
+	
+	
+	private LocationReading locationReading = null;
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -51,7 +54,7 @@ public class NervousnetVMService extends Service implements BatteryListener, Sen
 			Log.d("NervousnetVMService", "Sending Battery Reading " + sensorBattery.getReading());
 
 			if (sensorBattery == null)
-				return new BatteryReading(System.currentTimeMillis(), (float) 0.95, true, true, true);
+				return new BatteryReading(System.currentTimeMillis(), (float) 0.0, true, true, true);
 
 			return sensorBattery.getReading();
 		}
@@ -59,6 +62,19 @@ public class NervousnetVMService extends Service implements BatteryListener, Sen
 		@Override
 		public float getBatteryPercent() {
 			return sensorBattery.getReading().getBatteryPercent();
+		}
+
+		@Override
+		public LocationReading getLocationReading() throws RemoteException {
+			
+			if(locationReading == null){
+				
+				Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+				return new LocationReading(System.currentTimeMillis(), location.getLatitude(), location.getLongitude());
+				
+			}
+				
+			return locationReading;
 		}
 
 	};
@@ -71,6 +87,8 @@ public class NervousnetVMService extends Service implements BatteryListener, Sen
 
 		// Prepare the wakelock
 		PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+		
 		wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, LOG_TAG);
 		hthread = new HandlerThread("HandlerThread");
 		hthread.start();
@@ -93,6 +111,7 @@ public class NervousnetVMService extends Service implements BatteryListener, Sen
 		handler.post(runnable);
 
 		scheduleSensor(BatterySensor.SENSOR_ID);
+		scheduleSensor(Constants.SENSOR_LOCATION);
 
 		if (Constants.DEBUG)
 			Toast.makeText(NervousnetVMService.this, "Service started", Toast.LENGTH_LONG).show();
@@ -112,7 +131,7 @@ public class NervousnetVMService extends Service implements BatteryListener, Sen
 		if (wakeLock.isHeld()) {
 			wakeLock.release();
 		}
-		sensorManager.unregisterListener(this);
+//		sensorManager.unregisterListener(this);
 		hthread.quit();
 
 		if (Constants.DEBUG)
@@ -122,7 +141,6 @@ public class NervousnetVMService extends Service implements BatteryListener, Sen
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startid) {
 		Log.d("NervousnetVMService", "onStartCommand called");
-		START_ID = startid;
 		if (Constants.DEBUG)
 			Toast.makeText(NervousnetVMService.this, "onStartCommand called!", Toast.LENGTH_LONG).show();
 
@@ -154,10 +172,10 @@ public class NervousnetVMService extends Service implements BatteryListener, Sen
 
 				if (sensorId == BatterySensor.SENSOR_ID) {
 					startBatterySensor();
+				}else if (sensorId == Constants.SENSOR_LOCATION) {
+					locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 100, NervousnetVMService.this);
 				}
 
-				
-				
 				Log.d("NervousnetVMService", "Running Schedule Sensor thread");
 				Toast.makeText(NervousnetVMService.this, "" + counter, Toast.LENGTH_LONG).show();
 
@@ -314,7 +332,6 @@ public class NervousnetVMService extends Service implements BatteryListener, Sen
 	 * 
 	 * @see android.hardware.SensorListener#onAccuracyChanged(int, int)
 	 */
-	@Override
 	public void onAccuracyChanged(int sensor, int accuracy) {
 		// TODO Auto-generated method stub
 
@@ -325,10 +342,45 @@ public class NervousnetVMService extends Service implements BatteryListener, Sen
 	 * 
 	 * @see android.hardware.SensorListener#onSensorChanged(int, float[])
 	 */
-	@Override
 	public void onSensorChanged(int sensor, float[] values) {
 		// TODO Auto-generated method stub
 
+	}
+
+	/* (non-Javadoc)
+	 * @see android.location.LocationListener#onLocationChanged(android.location.Location)
+	 */
+	@Override
+	public void onLocationChanged(Location location) {
+		// TODO Auto-generated method stub
+		locationReading = new LocationReading(System.currentTimeMillis(), new double[]{location.getLatitude(), location.getLongitude()});
+	}
+
+	/* (non-Javadoc)
+	 * @see android.location.LocationListener#onProviderDisabled(java.lang.String)
+	 */
+	@Override
+	public void onProviderDisabled(String provider) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see android.location.LocationListener#onProviderEnabled(java.lang.String)
+	 */
+	@Override
+	public void onProviderEnabled(String provider) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see android.location.LocationListener#onStatusChanged(java.lang.String, int, android.os.Bundle)
+	 */
+	@Override
+	public void onStatusChanged(String provider, int status, Bundle extras) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

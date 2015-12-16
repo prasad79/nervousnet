@@ -30,5 +30,11 @@ public final class Constants {
 	public final static String UPLOAD_PREFS = "UploadPreferences";
 
 	public final static int REQUEST_ENABLE_BT = 0;
+	
+	
+	
+	/******************Sensors**********************/
+	
+	public final static int SENSOR_LOCATION = 99;
 
 }

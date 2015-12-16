@@ -1,6 +1,7 @@
 package ch.ethz.coss.nervousnet.vm;
 
 import ch.ethz.coss.nervousnet.vm.BatteryReading;
+import ch.ethz.coss.nervousnet.vm.LocationReading;
 
 	interface NervousnetRemote
 	{
@@ -9,4 +10,6 @@ import ch.ethz.coss.nervousnet.vm.BatteryReading;
 		BatteryReading getBatteryReading();
 	
 	    float getBatteryPercent();
+	    
+	    LocationReading getLocationReading();
 	}

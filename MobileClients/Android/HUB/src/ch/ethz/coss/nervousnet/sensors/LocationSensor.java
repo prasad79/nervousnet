@@ -13,7 +13,7 @@ import android.os.Handler;
 import android.util.Log;
 import ch.ethz.coss.nervousnet.vm.BatteryReading;
 
-public class BatterySensor implements SensorStatusImplementation {
+public class LocationSensor implements SensorStatusImplementation {
 
 	public static final long SENSOR_ID = 0x0000000000000001L;
 
@@ -21,7 +21,7 @@ public class BatterySensor implements SensorStatusImplementation {
 
 	private BatteryReading reading;
 
-	public BatterySensor(Context context) {
+	public LocationSensor(Context context) {
 		this.context = context;
 	}
 

@@ -24,4 +24,14 @@
 		android:layout_height="wrap_content" android:hint="USB charging status "/>
 	<EditText android:id="@+id/battery_isAC" android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:hint="AC charging status "/>
+	
+	
+	
+	   <TextView android:id="@+id/label_location" android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:text="GPS coordinates"/>
+		<EditText android:id="@+id/location_values" android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:hint="latitude and longitude should come here "/>
+	
+	
+	
 </LinearLayout>
