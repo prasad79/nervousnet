@@ -156,8 +156,8 @@ public class NervousnetVMService extends Service implements BatteryListener, Sen
 					startBatterySensor();
 				}
 
-				counter = 0;
-
+				
+				
 				Log.d("NervousnetVMService", "Running Schedule Sensor thread");
 				Toast.makeText(NervousnetVMService.this, "" + counter, Toast.LENGTH_LONG).show();
 

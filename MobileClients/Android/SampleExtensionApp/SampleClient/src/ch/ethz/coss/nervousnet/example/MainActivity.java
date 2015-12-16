@@ -17,13 +17,18 @@ import ch.ethz.coss.nervousnet.vm.NervousnetRemote;
 public class MainActivity extends Activity {
 	protected NervousnetRemote mService;
 	ServiceConnection mServiceConnection;
-	EditText counter;
+	EditText count, battery_percent, battery_isCharging, battery_isUSB, battery_isAC;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		counter = (EditText) findViewById(R.id.Counter);
+		count = (EditText) findViewById(R.id.count);
+		battery_percent = (EditText) findViewById(R.id.battery_percent);
+		battery_isCharging = (EditText) findViewById(R.id.battery_isCharging);
+		battery_isUSB = (EditText) findViewById(R.id.battery_isUSB);
+		battery_isAC = (EditText) findViewById(R.id.battery_isAC);
+		
 		initConnection();
 	}
 
@@ -49,7 +54,7 @@ public class MainActivity extends Activity {
 				System.out.println("onServiceConnected 1");
 
 				try {
-					counter.setText(mService.getBatteryReading().getBatteryPercent() + "");
+					count.setText(mService.getCounter() + "");
 				} catch (RemoteException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -123,12 +128,25 @@ public class MainActivity extends Activity {
 	public void updateStatus() {
 		try {
 			System.out.println("Get Battery Reading");
+			
+			count.setText(mService.getCounter()+"");
+			
 			BatteryReading reading = mService.getBatteryReading();
 
-			if (reading != null)
-				counter.setText(reading.getBatteryPercent() + ", - " + reading.isCharging());
-			else
-				counter.setText("Null object returned");
+			if (reading != null){
+				battery_percent.setText(reading.getBatteryPercent() * 100 + " %");
+				battery_isCharging.setText(reading.isCharging()? "YES": "NO");
+				battery_isUSB.setText(reading.isUSBCharging()? "YES": "NO");
+				battery_isAC.setText(reading.isAcCharging()? "YES": "NO");
+						
+			}
+			else{
+				battery_percent.setText("Battery sensor not responding.");
+			}
+			
+			
+			
+			
 
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block

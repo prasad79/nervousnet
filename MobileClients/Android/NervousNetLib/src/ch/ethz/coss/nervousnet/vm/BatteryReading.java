@@ -85,6 +85,23 @@ public class BatteryReading extends SensorReading {
 		return isCharging;
 	}
 
+	
+	/**
+	 * @return the isUSBCharging
+	 */
+	public boolean isUSBCharging() {
+		return isUsbCharge;
+	}
+
+	
+	
+	/**
+	 * @return the isAcCharging
+	 */
+	public boolean isAcCharging() {
+		return isAcCharge;
+	}
+
 	/**
 	 * @return the batteryPercent
 	 */
