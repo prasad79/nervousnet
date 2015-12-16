@@ -6,8 +6,12 @@ import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.os.AsyncTask;
+import android.os.BatteryManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
@@ -26,15 +30,7 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
-		 counter = (EditText) findViewById(R.id.Counter);
-		
-		
-//		Intent i = new Intent();
-//		i.setClassName("ch.ethz.coss.nervousnet.service.core", "ch.ethz.coss.nervousnet.service.NervousnetVMService");
-//		startService(i);
-		
-		
+		counter = (EditText) findViewById(R.id.Counter);
 		initConnection();
 	}
 	
@@ -44,6 +40,7 @@ public class MainActivity extends Activity {
 
 				@Override
 				public void onServiceDisconnected(ComponentName name) {
+					System.out.println("onServiceDisconnected");
 					// TODO Auto-generated method stub
 					mService = null;
 					Toast.makeText(getApplicationContext(), "NervousnetRemote Service not connected", Toast.LENGTH_SHORT).show();
@@ -53,18 +50,34 @@ public class MainActivity extends Activity {
 				@Override
 				public void onServiceConnected(ComponentName name, IBinder service)
 				{
+					System.out.println("onServiceConnected");	
+					
 					// TODO Auto-generated method stub
 					mService = NervousnetRemote.Stub.asInterface((IBinder) service);
+					System.out.println("onServiceConnected 1");
+					
 					try {
-						BatteryReading reading = mService.getBatteryReading();
-						if(reading != null)
-						counter.setText(reading.toString()+"");
-						else
-							counter.setText("Null object returned");
+						counter.setText(mService.getBatteryReading().getBatteryPercent()+"");
 					} catch (RemoteException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					
+//					try {
+//						BatteryReading reading = mService.getBatteryReading();
+//						System.out.println("onServiceConnected 2");
+//						if(reading != null)
+//						  counter.setText(reading.getBatteryPercent()+"");
+//						else
+//							counter.setText("Null object returned");
+//					} catch (RemoteException e) {
+//						// TODO Auto-generated catch block
+//						System.out.println("Exception thrown here");
+//						e.printStackTrace();
+//					}
+//					m_handler.post(m_statusChecker);
+					
+					startRepeatingTask();
 					Toast.makeText(getApplicationContext(), "Nervousnet Remote Service Connected", Toast.LENGTH_SHORT).show();
 					Log.d("IRemote", "Binding is done - Service connected");
 				}
@@ -111,5 +124,44 @@ public class MainActivity extends Activity {
 	
 	public void onBackPressed() {
 		finish();	
+	}
+	
+	public void updateStatus(){
+		try {
+			System.out.println("Get Battery Reading");
+			BatteryReading reading = mService.getBatteryReading();
+			
+			if(reading != null)
+				counter.setText(reading.getBatteryPercent()+", - "+reading.isCharging());
+			else
+				counter.setText("Null object returned");
+			
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private int m_interval = 1000; // 1 seconds by default, can be changed later
+	private Handler m_handler = new Handler();
+
+	Runnable m_statusChecker = new Runnable()
+	{
+	     @Override 
+	     public void run() {
+	    	 
+	          updateStatus(); //this function can change value of m_interval.
+	          m_handler.postDelayed(m_statusChecker, m_interval);
+	     }
+	};
+
+	void startRepeatingTask()
+	{
+	    m_statusChecker.run(); 
+	}
+
+	void stopRepeatingTask()
+	{
+	    m_handler.removeCallbacks(m_statusChecker);
 	}
 }

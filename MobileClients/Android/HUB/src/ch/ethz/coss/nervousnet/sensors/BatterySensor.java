@@ -8,8 +8,9 @@ import java.util.concurrent.locks.ReentrantLock;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.AsyncTask;
 import android.os.BatteryManager;
+import android.os.Handler;
+import android.util.Log;
 import ch.ethz.coss.nervousnet.vm.BatteryReading;
 
 public class BatterySensor implements SensorStatusImplementation{
@@ -49,42 +50,67 @@ public class BatterySensor implements SensorStatusImplementation{
 		listenerMutex.unlock();
 	}
 
-	public void dataReady(long timestamp, float batteryPercent, boolean isCharging, boolean isUsbCharge,
-			boolean isAcCharge) {
-		listenerMutex.lock();
-		reading = new BatteryReading(timestamp, batteryPercent, isCharging, isUsbCharge, isAcCharge);
+
+
+
+	
+	
+	public void readBattery() {
+		IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+		Intent batteryStatus = context.registerReceiver(null, ifilter);
+		int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+		int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+		int status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
+		boolean isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING
+				|| status == BatteryManager.BATTERY_STATUS_FULL;
+		int chargePlug = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
+		boolean usbCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_USB;
+		boolean acCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_AC;
+		float batteryPct = level / (float) scale;
 		
+		reading = new BatteryReading(System.currentTimeMillis(), batteryPct, isCharging, usbCharge, acCharge);
+		dataReady();
+		
+	}
+	 /**
+	 * @param batteryReading
+	 */
+	private void dataReady() {
+		listenerMutex.lock();
 		for (BatteryListener listener : listenerList) {
 			listener.batterySensorDataReady(reading);
 		}
 		listenerMutex.unlock();
 	}
 
-	public class BatteryTask extends AsyncTask<Void, Void, Void> {
-
-		@Override
-		protected Void doInBackground(Void... params) {
-			IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-			Intent batteryStatus = context.registerReceiver(null, ifilter);
-			int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-			int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-			int status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
-			boolean isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING
-					|| status == BatteryManager.BATTERY_STATUS_FULL;
-			int chargePlug = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
-			boolean usbCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_USB;
-			boolean acCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_AC;
-			float batteryPct = level / (float) scale;
-			dataReady(System.currentTimeMillis(), batteryPct, isCharging, usbCharge, acCharge);
-			return null;
-		}
-
-	}
-
+	Handler m_handler = new Handler();
 	public void start() {
-		new BatteryTask().execute();
+	
+		
+		batterySensorRunnable.run(); 
+	
+		
 	}
+	
 
+	void stop()
+	{
+	    m_handler.removeCallbacks(batterySensorRunnable);
+	}
+	
+	Runnable batterySensorRunnable = new Runnable()
+	{
+	     @Override 
+	     public void run() {
+	    	 Log.d("BatterySensor", "Running read Battery thread ");
+	    	 
+	    	 readBattery();
+	    	 if(m_handler != null)
+	         m_handler.postDelayed(batterySensorRunnable, m_interval);
+	     }
+	};
+	
+	
 	/* (non-Javadoc)
 	 * @see ch.ethz.coss.nervousnet.sensors.SensorStatusImplementation#doCollect()
 	 */
@@ -99,7 +125,15 @@ public class BatterySensor implements SensorStatusImplementation{
 	 */
 	public BatteryReading getReading() {
 		// TODO Auto-generated method stub
+		if(reading == null)
+			return new BatteryReading(System.currentTimeMillis(), (float) 0.0, true, true, true);
+		
 		return reading;
 	}
+	
+	private int m_interval = 1000; // 1 seconds by default, can be changed later
+	
+	
+
 
 }

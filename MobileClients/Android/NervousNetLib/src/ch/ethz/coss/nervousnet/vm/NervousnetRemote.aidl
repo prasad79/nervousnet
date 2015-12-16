@@ -8,4 +8,5 @@ import ch.ethz.coss.nervousnet.vm.BatteryReading;
 		
 		BatteryReading getBatteryReading();
 	
+	    float getBatteryPercent();
 	}

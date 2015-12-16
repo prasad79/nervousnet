@@ -17,6 +17,7 @@ import ch.ethz.coss.nervousnet.sensors.BatterySensor.BatteryListener;
 
 public class NervousnetVMService extends Service implements BatteryListener, SensorListener{
 
+	
 	private static String LOG_TAG = "NervousnetVMService";
 	private static int SERVICE_STATE = 0; // 0 - NOT RUNNING, 1 - RUNNING
 	private int START_ID = 0;
@@ -31,7 +32,7 @@ public class NervousnetVMService extends Service implements BatteryListener, Sen
 	private static Handler handler;
 	private static Runnable runnable;
 	private static Runnable run;
-	private final int runTime = 10000;
+	private final int runTime = 1000;
 	
 	
 	private BatterySensor sensorBattery = null;
@@ -49,12 +50,18 @@ public class NervousnetVMService extends Service implements BatteryListener, Sen
 		
 		@Override
 		public BatteryReading getBatteryReading() {
-			Log.d("TEST","Sending Battery Reading "+sensorBattery.getReading());
+			Log.d("NervousnetVMService","Sending Battery Reading "+sensorBattery.getReading());
+			
+			if(sensorBattery == null)
+				return new BatteryReading(System.currentTimeMillis(), (float) 0.95, true, true, true);
+			
 				return sensorBattery.getReading();
 		}
-			
-			
+
 		
+		public float getBatteryPercent(){
+			return sensorBattery.getReading().getBatteryPercent();
+		}
 
 	};
 
@@ -69,6 +76,7 @@ public class NervousnetVMService extends Service implements BatteryListener, Sen
 		wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, LOG_TAG);
 		hthread = new HandlerThread("HandlerThread");
 		hthread.start();
+		
 		// Acquire wakelock, some sensors on some phones need this
 		if (!wakeLock.isHeld()) {
 			wakeLock.acquire();
@@ -78,13 +86,16 @@ public class NervousnetVMService extends Service implements BatteryListener, Sen
 		runnable = new Runnable() {
 			@Override
 			public void run() {
-//				counter++;
-//				Toast.makeText(NervousnetVMService.this, "" + counter, Toast.LENGTH_LONG).show();
-//				if (handler != null)
+				counter++;
+				Toast.makeText(NervousnetVMService.this, "" + counter, Toast.LENGTH_SHORT).show();
+				if (handler != null)
 					handler.postDelayed(runnable, runTime);
 			}
 		};
 		handler.post(runnable);
+		
+		
+		scheduleSensor(BatterySensor.SENSOR_ID);
 
 		if (Constants.DEBUG)
 			Toast.makeText(NervousnetVMService.this, "Service started", Toast.LENGTH_LONG).show();
@@ -104,13 +115,12 @@ public class NervousnetVMService extends Service implements BatteryListener, Sen
 
 		
 		// Release the wakelock here, just to be safe, in order something went wrong
-				if (wakeLock.isHeld()) {
+		if (wakeLock.isHeld()) {
 					wakeLock.release();
 				}
 				sensorManager.unregisterListener(this);
 				hthread.quit();
-				
-				
+					
 		if (Constants.DEBUG)
 			Toast.makeText(NervousnetVMService.this, "Service destroyed", Toast.LENGTH_LONG).show();
 	}
@@ -125,7 +135,7 @@ public class NervousnetVMService extends Service implements BatteryListener, Sen
 			Toast.makeText(NervousnetVMService.this, "onStartCommand called!", Toast.LENGTH_LONG).show();
 		
 		
-		scheduleSensor(BatterySensor.SENSOR_ID);
+		
 		return START_STICKY;
 	}
 
@@ -148,31 +158,22 @@ public class NervousnetVMService extends Service implements BatteryListener, Sen
 	}
 	
 	private void scheduleSensor(final long sensorId) {
-		handler = new Handler(hthread.getLooper());
 		run = new Runnable() {
 			@Override
 			public void run() {
 				
-				if(counter >= 3){
 					if(sensorId == BatterySensor.SENSOR_ID){
-						sensorBattery = new BatterySensor(NervousnetVMService.this);
-						sensorBattery.addListener(NervousnetVMService.this);
-						sensorBattery.start();
-						
+						startBatterySensor();	
 					}
 					
 					counter = 0;
-				}
-			
 				
-				counter++;
+				Log.d("NervousnetVMService", "Running Schedule Sensor thread");
 				Toast.makeText(NervousnetVMService.this, "" + counter, Toast.LENGTH_LONG).show();
-				if (handler != null)
-					handler.postDelayed(run, runTime);
+				
 			}
 		};
-		// 10 seconds initial delay
-		handler.post(run);
+		handler.postDelayed(run, 10000);
 	}
 	
 	
@@ -291,6 +292,12 @@ public class NervousnetVMService extends Service implements BatteryListener, Sen
 		
 	}
 
+	
+	private void startBatterySensor() {
+		sensorBattery = new BatterySensor(NervousnetVMService.this);
+		sensorBattery.addListener(NervousnetVMService.this);
+		sensorBattery.start();
+	}
 
 
 
