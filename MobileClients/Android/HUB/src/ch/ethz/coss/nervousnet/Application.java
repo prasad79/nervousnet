@@ -5,7 +5,7 @@ import ch.ethz.coss.nervousnet.vm.NervousnetVMServiceHandler;
 
 public class Application extends android.app.Application {
 
-	public Application() {
+		public Application() {
 	}
 
 	@Override
@@ -27,15 +27,13 @@ public class Application extends android.app.Application {
 	 * 
 	 */
 	private void init() {
-		if (Constants.DEBUG)
-			Log.d(Constants.LOG_TAG, "Inside Application init()");
+		Log.d(Constants.LOG_TAG, "Inside Application init()");
 		NervousnetVMServiceHandler.getInstance().initAvailableSensors(getApplicationContext());
 
 	}
 
 	private void handleUncaughtException(Thread thread, Throwable e) {
-		if (Constants.DEBUG)
-			Log.e(Constants.LOG_TAG, "Inside handleUncaughtException: Exception thrown here.");
+		Log.e(Constants.LOG_TAG, "Inside handleUncaughtException: Exception thrown here.");
 
 		e.printStackTrace();
 		System.exit(0);

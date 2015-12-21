@@ -1,6 +1,7 @@
 
 package ch.ethz.coss.nervousnet.vm;
 
+import android.os.BatteryManager;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
@@ -9,37 +10,52 @@ import android.util.Log;
  * @author prasad
  */
 public class BatteryReading extends SensorReading {
+	
+	
+	
+	private float percent;
+	private boolean isCharging; 
+	private byte charging_type = 0; //0 = Unknown, 1 = USB, 2 = AC
+	private float temp = 0;
+	private long volt = 0;
+	private byte health = 0; //0 = Unknown, -1 is not supported
+	 
+	
+	
 
-	private static String LOG_TAG = "BatteryReading";
-
-	public BatteryReading(long timestamp, float batteryPercent, boolean isCharging, boolean isUsbCharge,
-			boolean isAcCharge) {
-		Log.d(LOG_TAG, "Inside BatteryReading constructor 1");
+	public BatteryReading(int timestamp, float batteryPercent, boolean isCharging, boolean isUsbCharge,
+			boolean isAcCharge, float temp, long volt, byte health) {
 		this.timestamp = timestamp;
-		this.batteryPercent = batteryPercent;
+		this.percent = batteryPercent;
 		this.isCharging = isCharging;
-		this.isUsbCharge = isUsbCharge;
-		this.isAcCharge = isAcCharge;
+		this.charging_type = (byte) (isUsbCharge ? 1 : (isAcCharge ? 2 : 0)) ;
+		this.temp = temp;
+		this.volt = volt;
+		this.health = health;
+		
+		
+		
 	}
 
 	/**
 	 * @param in
 	 */
 	public BatteryReading(Parcel in) {
-		Log.d(LOG_TAG, "Inside BatteryReading constructor 2");
 		readFromParcel(in);
 	}
 
 	public void readFromParcel(Parcel in) {
 
-		timestamp = in.readLong();
-		batteryPercent = in.readFloat();
-
+		timestamp = in.readInt();
+		percent = in.readFloat();
 		boolean array[] = in.createBooleanArray();
 		isCharging = array[0];
-		isUsbCharge = array[1];
-		isAcCharge = array[2];
-
+		
+		charging_type = in.readByte();
+		temp = in.readFloat();
+		volt = in.readLong();
+		health = in.readByte();
+		
 	}
 
 	/*
@@ -61,8 +77,12 @@ public class BatteryReading extends SensorReading {
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
 		out.writeLong(timestamp);
-		out.writeFloat(batteryPercent);
-		out.writeBooleanArray(new boolean[] { isCharging, isUsbCharge, isAcCharge });
+		out.writeFloat(percent);
+		out.writeBooleanArray(new boolean[] {isCharging});
+		out.writeByte(charging_type);
+		out.writeFloat(temp);
+		out.writeLong(volt);
+		out.writeByte(health);
 
 	}
 
@@ -84,47 +104,83 @@ public class BatteryReading extends SensorReading {
 	public boolean isCharging() {
 		return isCharging;
 	}
-
-	
-	/**
-	 * @return the isUSBCharging
-	 */
-	public boolean isUSBCharging() {
-		return isUsbCharge;
-	}
-
 	
 	
 	/**
-	 * @return the isAcCharging
+	 * @return the percent
 	 */
-	public boolean isAcCharging() {
-		return isAcCharge;
+	public float getPercent() {
+		return percent;
+	}
+
+
+
+	/**
+	 * @return the charging_type
+	 */
+	public byte getCharging_type() {
+		return charging_type;
 	}
 
 	/**
-	 * @return the batteryPercent
+	 * @return the temp
 	 */
-	public float getBatteryPercent() {
-		return batteryPercent;
+	public float getTemp() {
+		return temp / 10;
 	}
 
 	/**
-	 * @param batteryPercent
-	 *            the batteryPercent to set
+	 * @return the volt
 	 */
-	public void setBatteryPercent(float batteryPercent) {
-		this.batteryPercent = batteryPercent;
+	public long getVolt() {
+		return volt;
 	}
 
-	public String toString() {
-		return new String("BatteryReading - BatteryPercent = " + batteryPercent + ", " + "isCharging = " + isCharging
-				+ ", " + "isUsbCharging = " + isUsbCharge + ", " + "isAcCharging = " + isAcCharge + ".");
+	/**
+	 * @return the health
+	 */
+	public byte getHealth() {
+		return health;
 	}
 
-	private float batteryPercent;
-	private boolean isCharging;
-	private boolean isUsbCharge;
-	private boolean isAcCharge;
+	
+
+	/**
+	 * @return the health status in string
+	 */
+	public String getHealthString() {
+		
+		
+		switch(health) {
+		default:
+		case 0:
+		case  (byte) BatteryManager.BATTERY_HEALTH_UNKNOWN:
+			return new String("unknown");
+
+		case  (byte) BatteryManager.BATTERY_HEALTH_GOOD:
+				return new String("Good");
+
+				case  (byte) BatteryManager.BATTERY_HEALTH_OVERHEAT:
+					return new String("Overheated");
+			
+					case  (byte) BatteryManager.BATTERY_HEALTH_DEAD:
+						return new String("Dead");
+						
+					case  (byte) BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE:
+						return new String("Over Voltage");
+					
+					case  (byte) BatteryManager.BATTERY_HEALTH_UNSPECIFIED_FAILURE:
+						return new String("Unspecified Failure");
+					
+					case  (byte) BatteryManager.BATTERY_HEALTH_COLD:
+						return new String("Cold");
+						
+		}
+		
+	}
+
+
+
+
 
 }

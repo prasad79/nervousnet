@@ -10,9 +10,10 @@ public class AccSensorActivity extends BaseSensorActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_acc_sensor);
-
 		setSensorStatus(Sensor.TYPE_ACCELEROMETER);
 
 	}
+	
+	
 
 }

@@ -10,6 +10,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import ch.ethz.coss.nervousnet.vm.BatteryReading;
 import ch.ethz.coss.nervousnet.vm.LocationReading;
@@ -18,18 +19,23 @@ import ch.ethz.coss.nervousnet.vm.NervousnetRemote;
 public class MainActivity extends Activity {
 	protected NervousnetRemote mService;
 	ServiceConnection mServiceConnection;
-	EditText count, battery_percent, battery_isCharging, battery_isUSB, battery_isAC, location_values;
+	TextView count, battery_percent, battery_isCharging, battery_isUSB, battery_isAC, location_values, temp, volt, health;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		count = (EditText) findViewById(R.id.count);
-		battery_percent = (EditText) findViewById(R.id.battery_percent);
-		battery_isCharging = (EditText) findViewById(R.id.battery_isCharging);
-		battery_isUSB = (EditText) findViewById(R.id.battery_isUSB);
-		battery_isAC = (EditText) findViewById(R.id.battery_isAC);
-		location_values = (EditText) findViewById(R.id.location_values);
+		count = (TextView) findViewById(R.id.count);
+		battery_percent = (TextView) findViewById(R.id.battery_percent);
+		battery_isCharging = (TextView) findViewById(R.id.battery_isCharging);
+		battery_isUSB = (TextView) findViewById(R.id.battery_isUSB);
+		battery_isAC = (TextView) findViewById(R.id.battery_isAC);
+		temp = (TextView) findViewById(R.id.battery_temp);
+		volt = (TextView) findViewById(R.id.battery_volt);
+		health = (TextView) findViewById(R.id.battery_health);
+		
+		location_values = (TextView) findViewById(R.id.location_values);
+		
 		
 		initConnection();
 	}
@@ -137,10 +143,13 @@ public class MainActivity extends Activity {
 			LocationReading lreading = mService.getLocationReading();
 
 			if (breading != null){
-				battery_percent.setText(breading.getBatteryPercent() * 100 + " %");
-				battery_isCharging.setText(breading.isCharging()? "YES": "NO");
-				battery_isUSB.setText(breading.isUSBCharging()? "YES": "NO");
-				battery_isAC.setText(breading.isAcCharging()? "YES": "NO");
+				battery_percent.setText("Charge Remaining = "+breading.getPercent() * 100 + " %");
+				battery_isCharging.setText("Charging: "+(breading.isCharging()? "YES": "NO"));
+				battery_isUSB.setText("USB Charging: "+(breading.getCharging_type() == 1? "YES": "NO"));
+				battery_isAC.setText("AC Charging: "+(breading.getCharging_type() == 2? "YES": "NO"));
+				temp.setText("Temperature: "+breading.getTemp()+" C");
+				volt.setText("Voltage: "+breading.getVolt()+" mV");
+				health.setText("Health Status: "+breading.getHealthString());
 				
 			}
 			else{

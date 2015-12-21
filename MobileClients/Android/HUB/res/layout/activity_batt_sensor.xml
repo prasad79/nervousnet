@@ -38,16 +38,16 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:gravity="center"
-                android:text=""
-                android:textColor="@color/black" />
+                android:text="value comes here"
+                android:textColor="@color/white" />
             <TextView
                 android:id="@+id/statusTF"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:gravity="center"
-                android:text=""
-                android:textColor="@color/black" />
+                android:text="charging status comes here"
+                android:textColor="@color/white" />
 
         </LinearLayout>
     </ScrollView>

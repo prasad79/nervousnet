@@ -9,7 +9,8 @@ package ch.ethz.coss.nervousnet;
  */
 public final class Constants {
 
-	public final static String LOG_TAG = "nervousnet main app: ";
+	public final static String LOG_TAG = "NervousNetHUB";
+	
 	public static boolean DEBUG = true;
 
 	public final static int VIBRATION_DURATION = 50;

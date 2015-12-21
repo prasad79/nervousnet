@@ -37,7 +37,7 @@ public class LocationReading extends SensorReading {
 
 	public void readFromParcel(Parcel in) {
 
-		timestamp = in.readLong();
+		timestamp = in.readInt();
 		latnLong = in.createDoubleArray();
 	}
 

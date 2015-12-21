@@ -12,7 +12,7 @@ import android.os.Parcelable;
 public abstract class SensorReading implements Parcelable {
 
 	public int type = 0; // 0-light, 1- sound,
-	public long timestamp;
+	public int timestamp;
 	public String uuid;
 
 	/*

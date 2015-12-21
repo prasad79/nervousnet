@@ -10,25 +10,21 @@ import android.util.Log;
  */
 public class LocationReading extends SensorReading {
 
-	private static String LOG_TAG = "LocationReading";
-
-	public LocationReading(long timestamp, double [] latnLong) {
-		Log.d(LOG_TAG, "Inside LocationReading constructor 1");
+	
+	public LocationReading(int timestamp, double [] latnLong, double altitude) {
 		this.timestamp = timestamp;
 		this.latnLong = latnLong;
+		this.altitude = altitude;
 	}
 	
-	public LocationReading(long timestamp, double latitude, double longitude) {
-		Log.d(LOG_TAG, "Inside LocationReading constructor 1");
-		this.timestamp = timestamp;
-		this.latnLong = new double[] {latitude, longitude};
+	public LocationReading(int timestamp, double latitude, double longitude, double alt) {
+		this(timestamp, new double[] {latitude, longitude}, alt);
 	}
 
 	/**
 	 * @param in
 	 */
 	public LocationReading(Parcel in) {
-		Log.d(LOG_TAG, "Inside LocationReading constructor 2");
 		readFromParcel(in);
 	}
 
@@ -47,11 +43,9 @@ public class LocationReading extends SensorReading {
 	}
 
 	public void readFromParcel(Parcel in) {
-
-		timestamp = in.readLong();
+		timestamp = in.readInt();
 		latnLong = in.createDoubleArray();
-
-
+		altitude = in.readDouble();
 	}
 
 	/*
@@ -74,6 +68,7 @@ public class LocationReading extends SensorReading {
 	public void writeToParcel(Parcel out, int flags) {
 		out.writeLong(timestamp);
 		out.writeDoubleArray(latnLong);
+		out.writeDouble(altitude);
 
 	}
 
@@ -90,8 +85,10 @@ public class LocationReading extends SensorReading {
 	};
 
 	public String toString() {
-		return new String("LocationReading - Latitude = " + latnLong[0]+ ", Longitude = "+latnLong[1]);
+		return new String("Latitude = " + latnLong[0]+ ", Longitude = "+latnLong[1]+ ", Altitude = "+altitude);
 	}
 
 	private double[] latnLong;
+	private double altitude;
+	
 }

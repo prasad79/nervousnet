@@ -19,8 +19,7 @@ import ch.ethz.coss.nervousnet.sensors.BatterySensor;
 import ch.ethz.coss.nervousnet.sensors.BatterySensor.BatteryListener;
 
 public class NervousnetVMService extends Service implements BatteryListener, LocationListener {
-
-	private static String LOG_TAG = "NervousnetVMService";
+	
 	private static int SERVICE_STATE = 0; // 0 - NOT RUNNING, 1 - RUNNING
 	private static int counter = 0;
 
@@ -54,23 +53,24 @@ public class NervousnetVMService extends Service implements BatteryListener, Loc
 			Log.d("NervousnetVMService", "Sending Battery Reading " + sensorBattery.getReading());
 
 			if (sensorBattery == null)
-				return new BatteryReading(System.currentTimeMillis(), (float) 0.0, true, true, true);
+				return null;
 
 			return sensorBattery.getReading();
 		}
 
 		@Override
 		public float getBatteryPercent() {
-			return sensorBattery.getReading().getBatteryPercent();
+			return sensorBattery.getReading().getPercent();
 		}
 
 		@Override
 		public LocationReading getLocationReading() throws RemoteException {
 			
 			if(locationReading == null){
+				Log.d("NervousnetVMService", "Location reading is null " + sensorBattery.getReading());
 				
 				Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-				return new LocationReading(System.currentTimeMillis(), location.getLatitude(), location.getLongitude());
+				return new LocationReading((int) (System.currentTimeMillis() / 1000), location.getLatitude(), location.getLongitude(), location.getAltitude());
 				
 			}
 				
@@ -89,7 +89,7 @@ public class NervousnetVMService extends Service implements BatteryListener, Loc
 		PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
 		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 		
-		wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, LOG_TAG);
+		wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, Constants.LOG_TAG);
 		hthread = new HandlerThread("HandlerThread");
 		hthread.start();
 
@@ -173,7 +173,7 @@ public class NervousnetVMService extends Service implements BatteryListener, Loc
 				if (sensorId == BatterySensor.SENSOR_ID) {
 					startBatterySensor();
 				}else if (sensorId == Constants.SENSOR_LOCATION) {
-					locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 100, NervousnetVMService.this);
+					locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, NervousnetVMService.this);
 				}
 
 				Log.d("NervousnetVMService", "Running Schedule Sensor thread");
@@ -353,7 +353,7 @@ public class NervousnetVMService extends Service implements BatteryListener, Loc
 	@Override
 	public void onLocationChanged(Location location) {
 		// TODO Auto-generated method stub
-		locationReading = new LocationReading(System.currentTimeMillis(), new double[]{location.getLatitude(), location.getLongitude()});
+		locationReading = new LocationReading((int) (System.currentTimeMillis() / 1000), new double[]{location.getLatitude(), location.getLongitude()}, location.getAltitude());
 	}
 
 	/* (non-Javadoc)

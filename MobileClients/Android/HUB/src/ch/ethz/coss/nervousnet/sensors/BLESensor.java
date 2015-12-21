@@ -21,8 +21,7 @@ import android.os.Build;
 
 public class BLESensor {
 
-	private static final String LOG_TAG = BLESensor.class.getSimpleName();
-
+	
 	private Context context;
 	private BluetoothManager bluetoothManager;
 	private BluetoothAdapter bluetoothAdapter;
