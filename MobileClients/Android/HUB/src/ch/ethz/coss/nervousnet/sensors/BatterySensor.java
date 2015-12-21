@@ -10,23 +10,31 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
-import android.os.Handler;
 import android.util.Log;
 import ch.ethz.coss.nervousnet.vm.BatteryReading;
 
-public class BatterySensor implements SensorStatusImplementation{
+public class BatterySensor implements SensorStatusImplementation {
 
+	public static BatterySensor _instance;
 	public static final long SENSOR_ID = 0x0000000000000001L;
 
 	private Context context;
 
 	private BatteryReading reading;
 
-	public BatterySensor(Context context) {
+	private BatterySensor(Context context) {
 		this.context = context;
 	}
 	
-
+	
+	public static BatterySensor getInstance(Context context){
+		
+		if(_instance == null)
+			_instance = new BatterySensor(context);
+		
+		return _instance;
+	}
+	
 
 	private List<BatteryListener> listenerList = new ArrayList<BatteryListener>();
 	private Lock listenerMutex = new ReentrantLock();
@@ -68,32 +76,32 @@ public class BatterySensor implements SensorStatusImplementation{
 
 		reading = extractBatteryData(batteryStatus);
 		dataReady();
-		
-	
-	}
-	
-	BroadcastReceiver batteryReceiver = new BroadcastReceiver() {
-	    int scale = -1;
-	    int level = -1;
-	    int voltage = -1;
-	    int temp = -1;
-	    @Override
-	    public void onReceive(Context context, Intent batteryStatus) {
-	        
-	    	reading = extractBatteryData(batteryStatus);
 
-	    	   Log.d("BatterySensor", "Received braoadcast - "+ reading.toString());
-		        Log.d("BatterySensor", "level is "+level+"/"+scale+", temp is "+temp+", voltage is "+voltage);
-		    
-	    }
-		
+	}
+
+	BroadcastReceiver batteryReceiver = new BroadcastReceiver() {
+		int scale = -1;
+		int level = -1;
+		int voltage = -1;
+		int temp = -1;
+
+		@Override
+		public void onReceive(Context context, Intent batteryStatus) {
+
+			reading = extractBatteryData(batteryStatus);
+
+			Log.d("BatterySensor", "Received braoadcast - " + reading.toString());
+			Log.d("BatterySensor", "level is " + level + "/" + scale + ", temp is " + temp + ", voltage is " + voltage);
+
+		}
+
 	};
-	
+
 	private BatteryReading extractBatteryData(Intent batteryStatus) {
 		int temp = batteryStatus.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1);
-        int volt = batteryStatus.getIntExtra(BatteryManager.EXTRA_VOLTAGE, -1);
-        byte health = (byte) batteryStatus.getIntExtra(BatteryManager.EXTRA_HEALTH, 0);
-        int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+		int volt = batteryStatus.getIntExtra(BatteryManager.EXTRA_VOLTAGE, -1);
+		byte health = (byte) batteryStatus.getIntExtra(BatteryManager.EXTRA_HEALTH, 0);
+		int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
 		int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
 		int status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
 		boolean isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING
@@ -103,39 +111,37 @@ public class BatterySensor implements SensorStatusImplementation{
 		boolean acCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_AC;
 		float batteryPct = level / (float) scale;
 
-        reading = new BatteryReading((int) (System.currentTimeMillis() / 1000), batteryPct, isCharging, usbCharge, acCharge, temp, volt, health);
-        return reading;
+		reading = new BatteryReading((int) (System.currentTimeMillis() / 1000), batteryPct, isCharging, usbCharge,
+				acCharge, temp, volt, health);
+		return reading;
 	}
 
 	/**
 	 * @param batteryReading
 	 */
 	private void dataReady() {
-	       Log.d("BatterySensor", "Data Ready called - "+reading.toString());
-	  	 	
+		Log.d("BatterySensor", "Data Ready called - " + reading.toString());
+
 		listenerMutex.lock();
 		for (BatteryListener listener : listenerList) {
 			listener.batterySensorDataReady(reading);
 		}
 		listenerMutex.unlock();
 	}
-	
-	
+
 	public void start() {
 
 		readBattery(); // read initial values
-		
-		//Register to listen.
-		IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-		context.registerReceiver(batteryReceiver, filter);  
 
+		// Register to listen.
+		IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+		context.registerReceiver(batteryReceiver, filter);
 
 	}
 
 	void stop() {
-		 context.unregisterReceiver(batteryReceiver);
+		context.unregisterReceiver(batteryReceiver);
 	}
-
 
 	/*
 	 * (non-Javadoc)
@@ -154,7 +160,7 @@ public class BatterySensor implements SensorStatusImplementation{
 	 */
 	@Override
 	public BatteryReading getReading() {
-	
+
 		return reading;
 	}
 

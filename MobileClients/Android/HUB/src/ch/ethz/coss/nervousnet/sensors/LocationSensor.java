@@ -6,11 +6,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.BatteryManager;
-import android.os.Handler;
-import android.util.Log;
 import ch.ethz.coss.nervousnet.vm.BatteryReading;
 import ch.ethz.coss.nervousnet.vm.SensorReading;
 
@@ -51,8 +46,6 @@ public class LocationSensor implements SensorStatusImplementation {
 		listenerMutex.unlock();
 	}
 
-
-
 	/**
 	 * @param batteryReading
 	 */
@@ -64,26 +57,28 @@ public class LocationSensor implements SensorStatusImplementation {
 		listenerMutex.unlock();
 	}
 
-	/* (non-Javadoc)
-	 * @see ch.ethz.coss.nervousnet.sensors.SensorStatusImplementation#doCollect()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.ethz.coss.nervousnet.sensors.SensorStatusImplementation#doCollect()
 	 */
 	@Override
 	public void doCollect() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	/* (non-Javadoc)
-	 * @see ch.ethz.coss.nervousnet.sensors.SensorStatusImplementation#getReading()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.ethz.coss.nervousnet.sensors.SensorStatusImplementation#getReading()
 	 */
 	@Override
 	public SensorReading getReading() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	
-
-	
 
 }

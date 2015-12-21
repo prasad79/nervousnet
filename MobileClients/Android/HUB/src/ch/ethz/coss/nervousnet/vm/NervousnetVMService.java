@@ -19,7 +19,7 @@ import ch.ethz.coss.nervousnet.sensors.BatterySensor;
 import ch.ethz.coss.nervousnet.sensors.BatterySensor.BatteryListener;
 
 public class NervousnetVMService extends Service implements BatteryListener, LocationListener {
-	
+
 	private static int SERVICE_STATE = 0; // 0 - NOT RUNNING, 1 - RUNNING
 	private static int counter = 0;
 
@@ -33,8 +33,7 @@ public class NervousnetVMService extends Service implements BatteryListener, Loc
 
 	private BatterySensor sensorBattery = null;
 	private LocationManager locationManager = null;
-	
-	
+
 	private LocationReading locationReading = null;
 
 	@Override
@@ -65,15 +64,16 @@ public class NervousnetVMService extends Service implements BatteryListener, Loc
 
 		@Override
 		public LocationReading getLocationReading() throws RemoteException {
-			
-			if(locationReading == null){
+
+			if (locationReading == null) {
 				Log.d("NervousnetVMService", "Location reading is null " + sensorBattery.getReading());
-				
+
 				Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-				return new LocationReading((int) (System.currentTimeMillis() / 1000), location.getLatitude(), location.getLongitude(), location.getAltitude());
-				
+				return new LocationReading((int) (System.currentTimeMillis() / 1000), location.getLatitude(),
+						location.getLongitude(), location.getAltitude());
+
 			}
-				
+
 			return locationReading;
 		}
 
@@ -88,7 +88,7 @@ public class NervousnetVMService extends Service implements BatteryListener, Loc
 		// Prepare the wakelock
 		PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
 		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-		
+
 		wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, Constants.LOG_TAG);
 		hthread = new HandlerThread("HandlerThread");
 		hthread.start();
@@ -131,7 +131,7 @@ public class NervousnetVMService extends Service implements BatteryListener, Loc
 		if (wakeLock.isHeld()) {
 			wakeLock.release();
 		}
-//		sensorManager.unregisterListener(this);
+		// sensorManager.unregisterListener(this);
 		hthread.quit();
 
 		if (Constants.DEBUG)
@@ -163,6 +163,9 @@ public class NervousnetVMService extends Service implements BatteryListener, Loc
 	public static void stopService(Context context) {
 		Intent sensorIntent = new Intent(context, NervousnetVMService.class);
 		context.stopService(sensorIntent);
+		
+		
+		
 	}
 
 	private void scheduleSensor(final long sensorId) {
@@ -172,8 +175,9 @@ public class NervousnetVMService extends Service implements BatteryListener, Loc
 
 				if (sensorId == BatterySensor.SENSOR_ID) {
 					startBatterySensor();
-				}else if (sensorId == Constants.SENSOR_LOCATION) {
-					locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, NervousnetVMService.this);
+				} else if (sensorId == Constants.SENSOR_LOCATION) {
+					locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0,
+							NervousnetVMService.this);
 				}
 
 				Log.d("NervousnetVMService", "Running Schedule Sensor thread");
@@ -322,7 +326,7 @@ public class NervousnetVMService extends Service implements BatteryListener, Loc
 	}
 
 	private void startBatterySensor() {
-		sensorBattery = new BatterySensor(NervousnetVMService.this);
+		sensorBattery = BatterySensor.getInstance(NervousnetVMService.this);
 		sensorBattery.addListener(NervousnetVMService.this);
 		sensorBattery.start();
 	}
@@ -347,40 +351,54 @@ public class NervousnetVMService extends Service implements BatteryListener, Loc
 
 	}
 
-	/* (non-Javadoc)
-	 * @see android.location.LocationListener#onLocationChanged(android.location.Location)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * android.location.LocationListener#onLocationChanged(android.location.
+	 * Location)
 	 */
 	@Override
 	public void onLocationChanged(Location location) {
 		// TODO Auto-generated method stub
-		locationReading = new LocationReading((int) (System.currentTimeMillis() / 1000), new double[]{location.getLatitude(), location.getLongitude()}, location.getAltitude());
+		locationReading = new LocationReading((int) (System.currentTimeMillis() / 1000),
+				new double[] { location.getLatitude(), location.getLongitude() }, location.getAltitude());
 	}
 
-	/* (non-Javadoc)
-	 * @see android.location.LocationListener#onProviderDisabled(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * android.location.LocationListener#onProviderDisabled(java.lang.String)
 	 */
 	@Override
 	public void onProviderDisabled(String provider) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	/* (non-Javadoc)
-	 * @see android.location.LocationListener#onProviderEnabled(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * android.location.LocationListener#onProviderEnabled(java.lang.String)
 	 */
 	@Override
 	public void onProviderEnabled(String provider) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	/* (non-Javadoc)
-	 * @see android.location.LocationListener#onStatusChanged(java.lang.String, int, android.os.Bundle)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.location.LocationListener#onStatusChanged(java.lang.String,
+	 * int, android.os.Bundle)
 	 */
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

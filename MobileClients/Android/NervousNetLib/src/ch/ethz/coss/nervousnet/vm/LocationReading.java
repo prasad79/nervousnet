@@ -66,7 +66,7 @@ public class LocationReading extends SensorReading {
 	 */
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
-		out.writeLong(timestamp);
+		out.writeInt(timestamp);
 		out.writeDoubleArray(latnLong);
 		out.writeDouble(altitude);
 

@@ -20,6 +20,7 @@
         <item>Connectivity</item>
         <item>Gyroscope</item>
         <item>Humidity</item>
+        <item>Location</item>
         <item>Light</item>
         <item>Magnetic</item>
         <item>Noise</item>

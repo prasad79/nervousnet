@@ -76,7 +76,7 @@ public class BatteryReading extends SensorReading {
 	 */
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
-		out.writeLong(timestamp);
+		out.writeInt(timestamp);
 		out.writeFloat(percent);
 		out.writeBooleanArray(new boolean[] {isCharging});
 		out.writeByte(charging_type);

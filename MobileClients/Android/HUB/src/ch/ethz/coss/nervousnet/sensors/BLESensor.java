@@ -21,7 +21,6 @@ import android.os.Build;
 
 public class BLESensor {
 
-	
 	private Context context;
 	private BluetoothManager bluetoothManager;
 	private BluetoothAdapter bluetoothAdapter;

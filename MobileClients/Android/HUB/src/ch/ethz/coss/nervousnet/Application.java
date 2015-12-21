@@ -5,7 +5,7 @@ import ch.ethz.coss.nervousnet.vm.NervousnetVMServiceHandler;
 
 public class Application extends android.app.Application {
 
-		public Application() {
+	public Application() {
 	}
 
 	@Override

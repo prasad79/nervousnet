@@ -13,7 +13,5 @@ public class AccSensorActivity extends BaseSensorActivity {
 		setSensorStatus(Sensor.TYPE_ACCELEROMETER);
 
 	}
-	
-	
 
 }
