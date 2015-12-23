@@ -9,7 +9,9 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 	<uses-permission android:name="android.permission.BATTERY_STATS" />
+	<uses-permission android:name="android.permission.INTERNET" />
 
     <uses-sdk
         android:minSdkVersion="17"
@@ -117,6 +119,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ch.ethz.coss.nervousnet.BaseActivity" />
         </activity>
+        <activity
+            android:name="ch.ethz.coss.nervousnet.ui.LocSensorActivity"
+            android:label="@string/title_activity_loc_sensor"
+            android:parentActivityName=".BaseSensorActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="BaseSensorActivity" />
+        </activity>
+        
+        
         <activity
             android:name="ch.ethz.coss.nervousnet.ui.AccSensorActivity"
             android:label="@string/title_activity_acc_sensor"

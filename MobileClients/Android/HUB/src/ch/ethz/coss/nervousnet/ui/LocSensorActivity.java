@@ -7,22 +7,22 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import ch.ethz.coss.nervousnet.R;
-import ch.ethz.coss.nervousnet.sensors.BatterySensor;
-import ch.ethz.coss.nervousnet.sensors.BatterySensor.BatterySensorListener;
+import ch.ethz.coss.nervousnet.sensors.LocationSensor;
+import ch.ethz.coss.nervousnet.sensors.LocationSensor.LocationSensorListener;
 import ch.ethz.coss.nervousnet.vm.BatteryReading;
+import ch.ethz.coss.nervousnet.vm.LocationReading;
 import ch.ethz.coss.nervousnet.vm.NervousnetVMService;
 
-public class BatterySensorActivity extends BaseSensorActivity implements BatterySensorListener{
-	ViewGroup vg;
-	TextView battery_percent, battery_isCharging;
+public class LocSensorActivity extends BaseSensorActivity implements LocationSensorListener{
+	
+	TextView gps, alt;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_batt_sensor);
-		 vg = (RelativeLayout) findViewById(R.id.layout_battery_parent);
-		battery_percent = (TextView) findViewById(R.id.battValueTF);
-		battery_isCharging = (TextView) findViewById(R.id.statusTF);
+		setContentView(R.layout.activity_location_sensor);
+		gps = (TextView) findViewById(R.id.gps);
+		alt = (TextView) findViewById(R.id.altitude);
 
 	
 	}
@@ -31,12 +31,12 @@ public class BatterySensorActivity extends BaseSensorActivity implements Battery
 	 * @see ch.ethz.coss.nervousnet.sensors.BatterySensor.BatteryListener#batterySensorDataReady(ch.ethz.coss.nervousnet.vm.BatteryReading)
 	 */
 	@Override
-	public void batterySensorDataReady(BatteryReading reading) {
-		Log.d("BatterySensorActivity", "Inside BatterySensorActivity  Data Ready called - charging status = " + reading.isCharging());
+	public void locSensorDataReady(LocationReading reading) {
+		Log.d("LocSensorActivity", "Inside LocSensorActivity  Data Ready called ");
 		// TODO Auto-generated method stub
 		
-		battery_percent.setText("Battery level = "+reading.getPercent() +"%");
-		battery_isCharging.setText("Charging status = "+reading.isCharging());
+		gps.setText("GPS = "+reading.getLatnLong());
+//		alt.setText("Charging status = "+reading.getAltitude());
 	
 		updater.run();
 	}
@@ -47,7 +47,7 @@ public class BatterySensorActivity extends BaseSensorActivity implements Battery
 	        super.onResume();
 	        
 	        addListener();
-	        Log.d("BatterySensorActivity", "onResume() - addListener");
+	        Log.d("LocSensorActivity", "onResume() - addListener");
 	        // The activity has become visible (it is now "resumed").
 	    }
 
@@ -56,7 +56,7 @@ public class BatterySensorActivity extends BaseSensorActivity implements Battery
 	        super.onPause();
 	        removeListener();
 
-	        Log.d("BatterySensorActivity", "onPause() - removeListener");
+	        Log.d("LocSensorActivity", "onPause() - removeListener");
 	        // Another activity is taking focus (this activity is about to be "paused").
 	    }
 
@@ -65,14 +65,14 @@ public class BatterySensorActivity extends BaseSensorActivity implements Battery
 	    protected void onStop() {
 	        super.onStop();
 	        removeListener();
-	        Log.d("BatterySensorActivity", "onStop() - removeListener");
+	        Log.d("LocSensorActivity", "onStop() - removeListener");
 	        // The activity is no longer visible (it is now "stopped")
 	    }
 	    @Override
 	    protected void onDestroy() {
 	    	super.onDestroy();
 	        removeListener();
-	    	Log.d("BatterySensorActivity", "onDestroy() - removeListener");
+	    	Log.d("LocSensorActivity", "onDestroy() - removeListener");
 	    	
 	        // The activity is about to be destroyed.
 	    }
@@ -81,10 +81,11 @@ public class BatterySensorActivity extends BaseSensorActivity implements Battery
 	 */
 	private void addListener() {
 		// TODO Auto-generated method stub
-		Log.d("BatterySensorActivity", "Inside BatterySensorActivity addListener- ");
+		Log.d("LocSensorActivity", "Inside LocSensorActivity addListener- ");
 		
-		System.out.println("before adding listener");
-		BatterySensor.getInstance(BatterySensorActivity.this).addListener(BatterySensorActivity.this);
+		System.out.println("before adding listener ");
+		
+		LocationSensor.getInstance(LocSensorActivity.this).addListener(LocSensorActivity.this);
 	}
 	
     /**
@@ -93,7 +94,7 @@ public class BatterySensorActivity extends BaseSensorActivity implements Battery
 	private void removeListener() {
 		// TODO Auto-generated method stub
 		System.out.println("before adding listener");
-		BatterySensor.getInstance(BatterySensorActivity.this).removeListener(BatterySensorActivity.this);
+		LocationSensor.getInstance(LocSensorActivity.this).removeListener(LocSensorActivity.this);
 		
 	}
 	private int m_interval = 1000;
@@ -104,5 +105,7 @@ public class BatterySensorActivity extends BaseSensorActivity implements Battery
 			m_handler.postDelayed(updater, m_interval);
 		}
 	};
+
+
 
 }

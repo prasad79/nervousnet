@@ -20,4 +20,15 @@ public class BaseSensorActivity extends BaseActivity {
 			tv.setText("Sensor not supported by your mobile phone.");
 		}
 	}
+	
+	
+	@Override
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+	}
 }

@@ -6,35 +6,61 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import android.content.Context;
-import ch.ethz.coss.nervousnet.vm.BatteryReading;
+import android.location.LocationManager;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
+import android.location.Location;
+import android.location.LocationListener;
+import ch.ethz.coss.nervousnet.vm.LocationReading;
 import ch.ethz.coss.nervousnet.vm.SensorReading;
 
-public class LocationSensor implements SensorStatusImplementation {
+public class LocationSensor implements SensorStatusImplementation, LocationListener {
 
+	public static LocationSensor _instance = null;
 	public static final long SENSOR_ID = 0x0000000000000002L;
+	private static final float MIN_DISTANCE_CHANGE_FOR_UPDATES = 1;
+	private static final long MIN_TIME_BW_UPDATES = 1;
 
 	private Context context;
+	private boolean isGPSEnabled = false;
+ 
+    // flag for network status
+    private boolean isNetworkEnabled = false;
+ 
+    private boolean canGetLocation = false;
 
-	private BatteryReading reading;
+	private LocationReading reading;
+	private Location location;
 
-	public LocationSensor(Context context) {
+	private LocationSensor(Context context) {
 		this.context = context;
 	}
+	
+	public static LocationSensor getInstance(Context context){
+		
+		if(_instance == null)
+			_instance = new LocationSensor(context);
+		
+		return _instance;
+	}
+	
 
-	private List<BatteryListener> listenerList = new ArrayList<BatteryListener>();
+	private List<LocationSensorListener> listenerList = new ArrayList<LocationSensorListener>();
 	private Lock listenerMutex = new ReentrantLock();
 
-	public interface BatteryListener {
-		public void batterySensorDataReady(BatteryReading reading);
+	public interface LocationSensorListener {
+		public void locSensorDataReady(LocationReading reading);
 	}
 
-	public void addListener(BatteryListener listener) {
+	public void addListener(LocationSensorListener listener) {
 		listenerMutex.lock();
 		listenerList.add(listener);
+		System.out.println("LocationSensor Listener size "+listenerList.size());
 		listenerMutex.unlock();
 	}
 
-	public void removeListener(BatteryListener listener) {
+	public void removeListener(LocationSensorListener listener) {
 		listenerMutex.lock();
 		listenerList.remove(listener);
 		listenerMutex.unlock();
@@ -46,13 +72,81 @@ public class LocationSensor implements SensorStatusImplementation {
 		listenerMutex.unlock();
 	}
 
+	
+	LocationManager locationManager;
+	public void start() {
+		
+		locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+		
+
+        // getting GPS status
+        isGPSEnabled = locationManager
+                .isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+        // getting network status
+        isNetworkEnabled = locationManager
+                .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+        if (!isGPSEnabled && !isNetworkEnabled) {
+            // no network provider is enabled
+        	Toast.makeText(context, "Location settings disabled", Toast.LENGTH_LONG).show();
+        } else {
+            this.canGetLocation = true;
+            // First get location from Network Provider
+            if (isNetworkEnabled) {
+                locationManager.requestLocationUpdates(
+                        LocationManager.NETWORK_PROVIDER,
+                        MIN_TIME_BW_UPDATES,
+                        MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+                Log.d("Network", "Network");
+                if (locationManager != null) {
+                    location = locationManager
+                            .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                    if (location != null) {
+                    	
+                    	reading = new LocationReading((int) (System.currentTimeMillis() / 1000), location.getLatitude(),
+            					location.getLongitude(), location.getAltitude());
+                    }
+                }
+            }
+            // if GPS Enabled get lat/long using GPS Services
+            if (isGPSEnabled) {
+                if (location == null) {
+                    locationManager.requestLocationUpdates(
+                            LocationManager.GPS_PROVIDER,
+                            MIN_TIME_BW_UPDATES,
+                            MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+                    Log.d("GPS Enabled", "GPS Enabled");
+                    if (locationManager != null) {
+                        location = locationManager
+                                .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        if (location != null) {
+                        	reading = new LocationReading((int) (System.currentTimeMillis() / 1000), location.getLatitude(),
+                					location.getLongitude(), location.getAltitude());
+                        }
+                    }
+                }
+            }
+            dataReady();
+        }
+
+
+	}
+
+	void stop() {
+		locationManager.removeUpdates(LocationSensor.this);
+	}
+
+	
+	
 	/**
 	 * @param batteryReading
 	 */
 	private void dataReady() {
 		listenerMutex.lock();
-		for (BatteryListener listener : listenerList) {
-			listener.batterySensorDataReady(reading);
+		for (LocationSensorListener listener : listenerList) {
+			System.out.println("Sending Location Reading");
+			listener.locSensorDataReady(reading);
 		}
 		listenerMutex.unlock();
 	}
@@ -77,8 +171,59 @@ public class LocationSensor implements SensorStatusImplementation {
 	 */
 	@Override
 	public SensorReading getReading() {
-		// TODO Auto-generated method stub
-		return null;
+		if (reading == null) {
+			Log.d("NervousnetVMService", "Location reading is null " + reading);
+
+			Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER); 
+			
+			//TODO null value can be returned here.
+			
+			return new LocationReading((int) (System.currentTimeMillis() / 1000), location.getLatitude(),
+					location.getLongitude(), location.getAltitude());
+
+		}
+		return reading;
 	}
 
+	/* (non-Javadoc)
+	 * @see android.location.LocationListener#onLocationChanged(android.location.Location)
+	 */
+	@Override
+	public void onLocationChanged(Location location) {
+		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub
+		reading = new LocationReading((int) (System.currentTimeMillis() / 1000),
+				new double[] { location.getLatitude(), location.getLongitude() }, location.getAltitude());
+	
+		dataReady();
+	}
+
+	/* (non-Javadoc)
+	 * @see android.location.LocationListener#onProviderDisabled(java.lang.String)
+	 */
+	@Override
+	public void onProviderDisabled(String provider) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see android.location.LocationListener#onProviderEnabled(java.lang.String)
+	 */
+	@Override
+	public void onProviderEnabled(String provider) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see android.location.LocationListener#onStatusChanged(java.lang.String, int, android.os.Bundle)
+	 */
+	@Override
+	public void onStatusChanged(String provider, int status, Bundle extras) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
 }

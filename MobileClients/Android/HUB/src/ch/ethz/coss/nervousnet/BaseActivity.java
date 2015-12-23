@@ -19,7 +19,7 @@ import ch.ethz.coss.nervousnet.vm.NervousnetVMServiceHandler;
  * @author prasad
  *
  */
-public class BaseActivity extends Activity {
+public abstract class BaseActivity extends Activity {
 
 	protected static Switch mainSwitch;
 
@@ -61,5 +61,16 @@ public class BaseActivity extends Activity {
 	protected void startNextActivity(Intent intent) {
 		intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 		startActivity(intent);
+	}
+	
+	
+	@Override
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
 	}
 }

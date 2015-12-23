@@ -154,5 +154,6 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_base_sensor">BaseSensorActivity</string>
     <string name="title_activity_acc_sensor">AccSensorActivity</string>
+     <string name="title_activity_loc_sensor">LocSensorActivity</string>
 
 </resources>

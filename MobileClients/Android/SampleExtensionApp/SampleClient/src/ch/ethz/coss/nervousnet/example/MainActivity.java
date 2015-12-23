@@ -143,6 +143,7 @@ public class MainActivity extends Activity {
 			LocationReading lreading = mService.getLocationReading();
 
 			if (breading != null){
+				System.out.println("Set Battery Reading");
 				battery_percent.setText("Charge Remaining = "+breading.getPercent() * 100 + " %");
 				battery_isCharging.setText("Charging: "+(breading.isCharging()? "YES": "NO"));
 				battery_isUSB.setText("USB Charging: "+(breading.getCharging_type() == 1? "YES": "NO"));
@@ -153,6 +154,7 @@ public class MainActivity extends Activity {
 				
 			}
 			else{
+				System.out.println("Set Location Reading");
 				battery_percent.setText("Battery sensor not responding.");
 			}
 			

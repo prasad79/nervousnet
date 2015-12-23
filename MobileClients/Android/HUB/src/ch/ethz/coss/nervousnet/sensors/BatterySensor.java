@@ -12,6 +12,7 @@ import android.content.IntentFilter;
 import android.os.BatteryManager;
 import android.util.Log;
 import ch.ethz.coss.nervousnet.vm.BatteryReading;
+import ch.ethz.coss.nervousnet.vm.SensorReading;
 
 public class BatterySensor implements SensorStatusImplementation {
 
@@ -36,20 +37,23 @@ public class BatterySensor implements SensorStatusImplementation {
 	}
 	
 
-	private List<BatteryListener> listenerList = new ArrayList<BatteryListener>();
+	private List<BatterySensorListener> listenerList = new ArrayList<BatterySensorListener>();
 	private Lock listenerMutex = new ReentrantLock();
 
-	public interface BatteryListener {
+	public interface BatterySensorListener {
 		public void batterySensorDataReady(BatteryReading reading);
 	}
 
-	public void addListener(BatteryListener listener) {
+	public void addListener(BatterySensorListener listener) {
+		System.out.println("Adding listener "+listener.toString());
 		listenerMutex.lock();
 		listenerList.add(listener);
 		listenerMutex.unlock();
+		
+		readBattery();
 	}
 
-	public void removeListener(BatteryListener listener) {
+	public void removeListener(BatterySensorListener listener) {
 		listenerMutex.lock();
 		listenerList.remove(listener);
 		listenerMutex.unlock();
@@ -123,7 +127,7 @@ public class BatterySensor implements SensorStatusImplementation {
 		Log.d("BatterySensor", "Data Ready called - " + reading.toString());
 
 		listenerMutex.lock();
-		for (BatteryListener listener : listenerList) {
+		for (BatterySensorListener listener : listenerList) {
 			listener.batterySensorDataReady(reading);
 		}
 		listenerMutex.unlock();
@@ -131,7 +135,7 @@ public class BatterySensor implements SensorStatusImplementation {
 
 	public void start() {
 
-		readBattery(); // read initial values
+//		readBattery(); // read initial values
 
 		// Register to listen.
 		IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
@@ -155,13 +159,17 @@ public class BatterySensor implements SensorStatusImplementation {
 
 	}
 
-	/**
-	 * @return
+
+	/* (non-Javadoc)
+	 * @see ch.ethz.coss.nervousnet.sensors.SensorStatusImplementation#getReading()
 	 */
 	@Override
-	public BatteryReading getReading() {
+	public SensorReading getReading() {
+	
+			return reading;
+		
 
-		return reading;
 	}
+
 
 }

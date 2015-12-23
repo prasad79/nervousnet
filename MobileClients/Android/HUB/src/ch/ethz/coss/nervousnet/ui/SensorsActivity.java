@@ -51,21 +51,24 @@ public class SensorsActivity extends BaseActivity {
 			startNextActivity(new Intent(SensorsActivity.this, HumiditySensorActivity.class));
 			break;
 		case 6:
-			startNextActivity(new Intent(SensorsActivity.this, LightSensorActivity.class));
+			startNextActivity(new Intent(SensorsActivity.this, LocSensorActivity.class));
 			break;
 		case 7:
-			startNextActivity(new Intent(SensorsActivity.this, MagneticActivity.class));
+			startNextActivity(new Intent(SensorsActivity.this, LightSensorActivity.class));
 			break;
 		case 8:
-			startNextActivity(new Intent(SensorsActivity.this, NoiseActivity.class));
+			startNextActivity(new Intent(SensorsActivity.this, MagneticActivity.class));
 			break;
 		case 9:
-			startNextActivity(new Intent(SensorsActivity.this, PressureActivity.class));
+			startNextActivity(new Intent(SensorsActivity.this, NoiseActivity.class));
 			break;
 		case 10:
-			startNextActivity(new Intent(SensorsActivity.this, ProximityActivity.class));
+			startNextActivity(new Intent(SensorsActivity.this, PressureActivity.class));
 			break;
 		case 11:
+			startNextActivity(new Intent(SensorsActivity.this, ProximityActivity.class));
+			break;
+		case 12:
 			startNextActivity(new Intent(SensorsActivity.this, TemperatureActivity.class));
 			break;
 		}
