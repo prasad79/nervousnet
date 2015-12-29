@@ -13,8 +13,8 @@ import ch.ethz.coss.nervousnet.vm.BatteryReading;
 import ch.ethz.coss.nervousnet.vm.LocationReading;
 import ch.ethz.coss.nervousnet.vm.NervousnetVMService;
 
-public class LocSensorActivity extends BaseSensorActivity implements LocationSensorListener{
-	
+public class LocSensorActivity extends BaseSensorActivity implements LocationSensorListener {
+
 	TextView gps, alt;
 
 	@Override
@@ -24,79 +24,83 @@ public class LocSensorActivity extends BaseSensorActivity implements LocationSen
 		gps = (TextView) findViewById(R.id.gps);
 		alt = (TextView) findViewById(R.id.altitude);
 
-	
 	}
 
-	/* (non-Javadoc)
-	 * @see ch.ethz.coss.nervousnet.sensors.BatterySensor.BatteryListener#batterySensorDataReady(ch.ethz.coss.nervousnet.vm.BatteryReading)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see ch.ethz.coss.nervousnet.sensors.BatterySensor.BatteryListener#
+	 * batterySensorDataReady(ch.ethz.coss.nervousnet.vm.BatteryReading)
 	 */
 	@Override
 	public void locSensorDataReady(LocationReading reading) {
 		Log.d("LocSensorActivity", "Inside LocSensorActivity  Data Ready called ");
 		// TODO Auto-generated method stub
-		
-		gps.setText("GPS = "+reading.getLatnLong());
-//		alt.setText("Charging status = "+reading.getAltitude());
-	
+
+		gps.setText("GPS = " + reading.getLatnLong());
+		// alt.setText("Charging status = "+reading.getAltitude());
+
 		updater.run();
 	}
-	
-	
+
 	@Override
 	protected void onResume() {
-	        super.onResume();
-	        
-	        addListener();
-	        Log.d("LocSensorActivity", "onResume() - addListener");
-	        // The activity has become visible (it is now "resumed").
-	    }
+		super.onResume();
 
-		@Override
-	    protected void onPause() {
-	        super.onPause();
-	        removeListener();
+		addListener();
+		Log.d("LocSensorActivity", "onResume() - addListener");
+		// The activity has become visible (it is now "resumed").
+	}
 
-	        Log.d("LocSensorActivity", "onPause() - removeListener");
-	        // Another activity is taking focus (this activity is about to be "paused").
-	    }
+	@Override
+	protected void onPause() {
+		super.onPause();
+		removeListener();
 
+		Log.d("LocSensorActivity", "onPause() - removeListener");
+		// Another activity is taking focus (this activity is about to be
+		// "paused").
+	}
 
-		@Override
-	    protected void onStop() {
-	        super.onStop();
-	        removeListener();
-	        Log.d("LocSensorActivity", "onStop() - removeListener");
-	        // The activity is no longer visible (it is now "stopped")
-	    }
-	    @Override
-	    protected void onDestroy() {
-	    	super.onDestroy();
-	        removeListener();
-	    	Log.d("LocSensorActivity", "onDestroy() - removeListener");
-	    	
-	        // The activity is about to be destroyed.
-	    }
-	    /**
-	 * 
-	 */
+	@Override
+	protected void onStop() {
+		super.onStop();
+		removeListener();
+		Log.d("LocSensorActivity", "onStop() - removeListener");
+		// The activity is no longer visible (it is now "stopped")
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		removeListener();
+		Log.d("LocSensorActivity", "onDestroy() - removeListener");
+
+		// The activity is about to be destroyed.
+	}
+
+	/**
+	* 
+	*/
 	private void addListener() {
 		// TODO Auto-generated method stub
 		Log.d("LocSensorActivity", "Inside LocSensorActivity addListener- ");
-		
+
 		System.out.println("before adding listener ");
-		
+
 		LocationSensor.getInstance(LocSensorActivity.this).addListener(LocSensorActivity.this);
 	}
-	
-    /**
+
+	/**
 	 * 
 	 */
 	private void removeListener() {
 		// TODO Auto-generated method stub
 		System.out.println("before adding listener");
 		LocationSensor.getInstance(LocSensorActivity.this).removeListener(LocSensorActivity.this);
-		
+
 	}
+
 	private int m_interval = 1000;
 	private Handler m_handler = new Handler();
 	Runnable updater = new Runnable() {
@@ -105,7 +109,5 @@ public class LocSensorActivity extends BaseSensorActivity implements LocationSen
 			m_handler.postDelayed(updater, m_interval);
 		}
 	};
-
-
 
 }

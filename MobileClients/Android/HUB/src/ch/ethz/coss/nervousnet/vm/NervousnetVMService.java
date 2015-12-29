@@ -59,7 +59,7 @@ public class NervousnetVMService extends Service implements BatterySensorListene
 
 		@Override
 		public float getBatteryPercent() {
-			return ((BatteryReading)sensorBattery.getReading()).getPercent();
+			return ((BatteryReading) sensorBattery.getReading()).getPercent();
 		}
 
 		@Override
@@ -78,7 +78,7 @@ public class NervousnetVMService extends Service implements BatterySensorListene
 
 		// Prepare the wakelock
 		PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
-		
+
 		wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, Constants.LOG_TAG);
 		hthread = new HandlerThread("HandlerThread");
 		hthread.start();
@@ -305,39 +305,40 @@ public class NervousnetVMService extends Service implements BatterySensorListene
 	 * @see ch.ethz.coss.nervousnet.sensors.BatterySensor.BatteryListener#
 	 * batterySensorDataReady(long, float, boolean, boolean, boolean)
 	 */
-//	@Override
-//	public void batterySensorDataReady(BatteryReading reading) {
-//		Log.d("NervousnetVMService", reading.toString());
-//
-//	}
+	// @Override
+	// public void batterySensorDataReady(BatteryReading reading) {
+	// Log.d("NervousnetVMService", reading.toString());
+	//
+	// }
 
 	private void startBatterySensor() {
 		sensorBattery = BatterySensor.getInstance(NervousnetVMService.this);
 		sensorBattery.addListener(NervousnetVMService.this);
 		sensorBattery.start();
 	}
-	
+
 	private void startLocationSensor() {
 		sensorLocation = LocationSensor.getInstance(NervousnetVMService.this);
 		sensorLocation.addListener(NervousnetVMService.this);
 		sensorLocation.start();
-		
-	}
-	
-	
-	@Override
-	public void locSensorDataReady(LocationReading reading){
-		Log.d("NervousnetVMService", "locSensorDataReady received - "+reading.toString());
+
 	}
 
-	/* (non-Javadoc)
-	 * @see ch.ethz.coss.nervousnet.sensors.BatterySensor.BatterySensorListener#batterySensorDataReady(ch.ethz.coss.nervousnet.vm.BatteryReading)
+	@Override
+	public void locSensorDataReady(LocationReading reading) {
+		Log.d("NervousnetVMService", "locSensorDataReady received - " + reading.toString());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see ch.ethz.coss.nervousnet.sensors.BatterySensor.BatterySensorListener#
+	 * batterySensorDataReady(ch.ethz.coss.nervousnet.vm.BatteryReading)
 	 */
 	@Override
 	public void batterySensorDataReady(BatteryReading reading) {
 		Log.d("NervousnetVMService", reading.toString());
-		
-	}
 
+	}
 
 }

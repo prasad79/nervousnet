@@ -24,11 +24,11 @@ public class LocationSensor implements SensorStatusImplementation, LocationListe
 
 	private Context context;
 	private boolean isGPSEnabled = false;
- 
-    // flag for network status
-    private boolean isNetworkEnabled = false;
- 
-    private boolean canGetLocation = false;
+
+	// flag for network status
+	private boolean isNetworkEnabled = false;
+
+	private boolean canGetLocation = false;
 
 	private LocationReading reading;
 	private Location location;
@@ -36,15 +36,14 @@ public class LocationSensor implements SensorStatusImplementation, LocationListe
 	private LocationSensor(Context context) {
 		this.context = context;
 	}
-	
-	public static LocationSensor getInstance(Context context){
-		
-		if(_instance == null)
+
+	public static LocationSensor getInstance(Context context) {
+
+		if (_instance == null)
 			_instance = new LocationSensor(context);
-		
+
 		return _instance;
 	}
-	
 
 	private List<LocationSensorListener> listenerList = new ArrayList<LocationSensorListener>();
 	private Lock listenerMutex = new ReentrantLock();
@@ -56,7 +55,7 @@ public class LocationSensor implements SensorStatusImplementation, LocationListe
 	public void addListener(LocationSensorListener listener) {
 		listenerMutex.lock();
 		listenerList.add(listener);
-		System.out.println("LocationSensor Listener size "+listenerList.size());
+		System.out.println("LocationSensor Listener size " + listenerList.size());
 		listenerMutex.unlock();
 	}
 
@@ -72,64 +71,54 @@ public class LocationSensor implements SensorStatusImplementation, LocationListe
 		listenerMutex.unlock();
 	}
 
-	
 	LocationManager locationManager;
+
 	public void start() {
-		
+
 		locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-		
 
-        // getting GPS status
-        isGPSEnabled = locationManager
-                .isProviderEnabled(LocationManager.GPS_PROVIDER);
+		// getting GPS status
+		isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
-        // getting network status
-        isNetworkEnabled = locationManager
-                .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+		// getting network status
+		isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
-        if (!isGPSEnabled && !isNetworkEnabled) {
-            // no network provider is enabled
-        	Toast.makeText(context, "Location settings disabled", Toast.LENGTH_LONG).show();
-        } else {
-            this.canGetLocation = true;
-            // First get location from Network Provider
-            if (isNetworkEnabled) {
-                locationManager.requestLocationUpdates(
-                        LocationManager.NETWORK_PROVIDER,
-                        MIN_TIME_BW_UPDATES,
-                        MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                Log.d("Network", "Network");
-                if (locationManager != null) {
-                    location = locationManager
-                            .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                    if (location != null) {
-                    	
-                    	reading = new LocationReading((int) (System.currentTimeMillis() / 1000), location.getLatitude(),
-            					location.getLongitude(), location.getAltitude());
-                    }
-                }
-            }
-            // if GPS Enabled get lat/long using GPS Services
-            if (isGPSEnabled) {
-                if (location == null) {
-                    locationManager.requestLocationUpdates(
-                            LocationManager.GPS_PROVIDER,
-                            MIN_TIME_BW_UPDATES,
-                            MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                    Log.d("GPS Enabled", "GPS Enabled");
-                    if (locationManager != null) {
-                        location = locationManager
-                                .getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                        if (location != null) {
-                        	reading = new LocationReading((int) (System.currentTimeMillis() / 1000), location.getLatitude(),
-                					location.getLongitude(), location.getAltitude());
-                        }
-                    }
-                }
-            }
-            dataReady();
-        }
+		if (!isGPSEnabled && !isNetworkEnabled) {
+			// no network provider is enabled
+			Toast.makeText(context, "Location settings disabled", Toast.LENGTH_LONG).show();
+		} else {
+			this.canGetLocation = true;
+			// First get location from Network Provider
+			if (isNetworkEnabled) {
+				locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_BW_UPDATES,
+						MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+				Log.d("Network", "Network");
+				if (locationManager != null) {
+					location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+					if (location != null) {
 
+						reading = new LocationReading((int) (System.currentTimeMillis() / 1000), location.getLatitude(),
+								location.getLongitude(), location.getAltitude());
+					}
+				}
+			}
+			// if GPS Enabled get lat/long using GPS Services
+			if (isGPSEnabled) {
+				if (location == null) {
+					locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES,
+							MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+					Log.d("GPS Enabled", "GPS Enabled");
+					if (locationManager != null) {
+						location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+						if (location != null) {
+							reading = new LocationReading((int) (System.currentTimeMillis() / 1000),
+									location.getLatitude(), location.getLongitude(), location.getAltitude());
+						}
+					}
+				}
+			}
+			dataReady();
+		}
 
 	}
 
@@ -137,8 +126,6 @@ public class LocationSensor implements SensorStatusImplementation, LocationListe
 		locationManager.removeUpdates(LocationSensor.this);
 	}
 
-	
-	
 	/**
 	 * @param batteryReading
 	 */
@@ -174,10 +161,10 @@ public class LocationSensor implements SensorStatusImplementation, LocationListe
 		if (reading == null) {
 			Log.d("NervousnetVMService", "Location reading is null " + reading);
 
-			Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER); 
-			
-			//TODO null value can be returned here.
-			
+			Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+			// TODO null value can be returned here.
+
 			return new LocationReading((int) (System.currentTimeMillis() / 1000), location.getLatitude(),
 					location.getLongitude(), location.getAltitude());
 
@@ -185,8 +172,12 @@ public class LocationSensor implements SensorStatusImplementation, LocationListe
 		return reading;
 	}
 
-	/* (non-Javadoc)
-	 * @see android.location.LocationListener#onLocationChanged(android.location.Location)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * android.location.LocationListener#onLocationChanged(android.location.
+	 * Location)
 	 */
 	@Override
 	public void onLocationChanged(Location location) {
@@ -194,36 +185,44 @@ public class LocationSensor implements SensorStatusImplementation, LocationListe
 		// TODO Auto-generated method stub
 		reading = new LocationReading((int) (System.currentTimeMillis() / 1000),
 				new double[] { location.getLatitude(), location.getLongitude() }, location.getAltitude());
-	
+
 		dataReady();
 	}
 
-	/* (non-Javadoc)
-	 * @see android.location.LocationListener#onProviderDisabled(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * android.location.LocationListener#onProviderDisabled(java.lang.String)
 	 */
 	@Override
 	public void onProviderDisabled(String provider) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	/* (non-Javadoc)
-	 * @see android.location.LocationListener#onProviderEnabled(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * android.location.LocationListener#onProviderEnabled(java.lang.String)
 	 */
 	@Override
 	public void onProviderEnabled(String provider) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	/* (non-Javadoc)
-	 * @see android.location.LocationListener#onStatusChanged(java.lang.String, int, android.os.Bundle)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.location.LocationListener#onStatusChanged(java.lang.String,
+	 * int, android.os.Bundle)
 	 */
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	
 }

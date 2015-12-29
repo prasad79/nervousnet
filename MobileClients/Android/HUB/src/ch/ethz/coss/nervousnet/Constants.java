@@ -16,13 +16,13 @@ public final class Constants {
 	public final static int VIBRATION_DURATION = 50;
 
 	public static Integer[] dummy_icon_array_home = { R.drawable.ic_missing, R.drawable.ic_missing,
-			R.drawable.ic_missing,  R.drawable.ic_missing, R.drawable.ic_missing, R.drawable.ic_missing,
+			R.drawable.ic_missing, R.drawable.ic_missing, R.drawable.ic_missing, R.drawable.ic_missing,
 			R.drawable.ic_missing };
 
 	public static Integer[] dummy_icon_array_sensors = { R.drawable.ic_missing, R.drawable.ic_missing,
-			R.drawable.ic_missing, R.drawable.ic_missing, R.drawable.ic_missing, R.drawable.ic_missing, R.drawable.ic_missing,
 			R.drawable.ic_missing, R.drawable.ic_missing, R.drawable.ic_missing, R.drawable.ic_missing,
-			R.drawable.ic_missing, R.drawable.ic_missing };
+			R.drawable.ic_missing, R.drawable.ic_missing, R.drawable.ic_missing, R.drawable.ic_missing,
+			R.drawable.ic_missing, R.drawable.ic_missing, R.drawable.ic_missing };
 
 	/****************** Preferences ****************/
 	public final static String SENSOR_PREFS = "SensorPreferences";

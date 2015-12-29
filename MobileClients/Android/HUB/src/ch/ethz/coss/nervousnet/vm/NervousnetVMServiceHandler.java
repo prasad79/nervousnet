@@ -117,7 +117,5 @@ public class NervousnetVMServiceHandler {
 		else
 			return false;
 	}
-	
-	
 
 }

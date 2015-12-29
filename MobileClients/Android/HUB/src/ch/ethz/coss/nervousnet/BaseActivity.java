@@ -62,8 +62,7 @@ public abstract class BaseActivity extends Activity {
 		intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 		startActivity(intent);
 	}
-	
-	
+
 	@Override
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);

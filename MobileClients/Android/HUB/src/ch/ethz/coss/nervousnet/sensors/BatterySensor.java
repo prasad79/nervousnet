@@ -26,16 +26,14 @@ public class BatterySensor implements SensorStatusImplementation {
 	private BatterySensor(Context context) {
 		this.context = context;
 	}
-	
-	
-	public static BatterySensor getInstance(Context context){
-		
-		if(_instance == null)
+
+	public static BatterySensor getInstance(Context context) {
+
+		if (_instance == null)
 			_instance = new BatterySensor(context);
-		
+
 		return _instance;
 	}
-	
 
 	private List<BatterySensorListener> listenerList = new ArrayList<BatterySensorListener>();
 	private Lock listenerMutex = new ReentrantLock();
@@ -45,11 +43,11 @@ public class BatterySensor implements SensorStatusImplementation {
 	}
 
 	public void addListener(BatterySensorListener listener) {
-		System.out.println("Adding listener "+listener.toString());
+		System.out.println("Adding listener " + listener.toString());
 		listenerMutex.lock();
 		listenerList.add(listener);
 		listenerMutex.unlock();
-		
+
 		readBattery();
 	}
 
@@ -91,12 +89,9 @@ public class BatterySensor implements SensorStatusImplementation {
 
 		@Override
 		public void onReceive(Context context, Intent batteryStatus) {
-
 			reading = extractBatteryData(batteryStatus);
-
-			Log.d("BatterySensor", "Received braoadcast - " + reading.toString());
+			Log.d("BatterySensor", "Received braoadcast - " + (reading.getPercent()));
 			Log.d("BatterySensor", "level is " + level + "/" + scale + ", temp is " + temp + ", voltage is " + voltage);
-
 		}
 
 	};
@@ -135,7 +130,7 @@ public class BatterySensor implements SensorStatusImplementation {
 
 	public void start() {
 
-//		readBattery(); // read initial values
+		// readBattery(); // read initial values
 
 		// Register to listen.
 		IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
@@ -159,17 +154,17 @@ public class BatterySensor implements SensorStatusImplementation {
 
 	}
 
-
-	/* (non-Javadoc)
-	 * @see ch.ethz.coss.nervousnet.sensors.SensorStatusImplementation#getReading()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.ethz.coss.nervousnet.sensors.SensorStatusImplementation#getReading()
 	 */
 	@Override
 	public SensorReading getReading() {
-	
-			return reading;
-		
+
+		return reading;
 
 	}
-
 
 }
