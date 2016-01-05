@@ -34,6 +34,8 @@ public final class Constants {
 
 	/****************** Sensors **********************/
 
+	public final static int SENSOR_ACCELEROMETER = 0;
+	public final static int SENSOR_LIGHT = 1;
 	public final static int SENSOR_LOCATION = 99;
 
 }

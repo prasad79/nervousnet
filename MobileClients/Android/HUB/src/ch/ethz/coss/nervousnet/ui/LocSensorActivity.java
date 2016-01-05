@@ -1,5 +1,7 @@
 package ch.ethz.coss.nervousnet.ui;
 
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -26,12 +28,7 @@ public class LocSensorActivity extends BaseSensorActivity implements LocationSen
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see ch.ethz.coss.nervousnet.sensors.BatterySensor.BatteryListener#
-	 * batterySensorDataReady(ch.ethz.coss.nervousnet.vm.BatteryReading)
-	 */
+	
 	@Override
 	public void locSensorDataReady(LocationReading reading) {
 		Log.d("LocSensorActivity", "Inside LocSensorActivity  Data Ready called ");
@@ -109,5 +106,23 @@ public class LocSensorActivity extends BaseSensorActivity implements LocationSen
 			m_handler.postDelayed(updater, m_interval);
 		}
 	};
+
+	/* (non-Javadoc)
+	 * @see android.hardware.SensorEventListener#onAccuracyChanged(android.hardware.Sensor, int)
+	 */
+	@Override
+	public void onAccuracyChanged(Sensor sensor, int accuracy) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see android.hardware.SensorEventListener#onSensorChanged(android.hardware.SensorEvent)
+	 */
+	@Override
+	public void onSensorChanged(SensorEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

@@ -10,6 +10,8 @@ import android.util.Log;
  */
 public class LocationReading extends SensorReading {
 
+	public static long SENSOR_ID = 0x0000000000000003L;
+	
 	
 	public LocationReading(int timestamp, double [] latnLong, double altitude) {
 		this.timestamp = timestamp;

@@ -14,12 +14,19 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
+import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
+import android.os.Handler;
 import android.os.Vibrator;
+import android.util.Log;
 import ch.ethz.coss.nervousnet.BaseActivity;
 import ch.ethz.coss.nervousnet.Constants;
-import ch.ethz.coss.nervousnet.sensors.SensorDescBLEBeacon;
+import ch.ethz.coss.nervousnet.sensors.AccelerometerSensor;
+import ch.ethz.coss.nervousnet.sensors.BatterySensor;
+import ch.ethz.coss.nervousnet.sensors.BatterySensor.BatterySensorListener;
+import ch.ethz.coss.nervousnet.sensors.LocationSensor;
+import ch.ethz.coss.nervousnet.sensors.LocationSensor.LocationSensorListener;
 
 /**
  * @author prasad
@@ -28,14 +35,41 @@ import ch.ethz.coss.nervousnet.sensors.SensorDescBLEBeacon;
 public class NervousnetVMServiceHandler {
 
 	private static NervousnetVMServiceHandler _instance = null;
+	
+
+
+	private static Runnable run;
+	private static Handler handler;
+	private static Runnable runnable;
+	private final int runTime = 1000;
+
+	
 	private static SensorManager sensorManager;
 	private static List<Sensor> sensor;
 	private static Hashtable<Integer, Sensor> hSensors;
 
 	protected static Vibrator vibrator;
+	
+
+	protected BatterySensor sensorBattery = null;
+	protected LocationSensor sensorLocation = null;
+	protected AccelerometerSensor sensorAccel;
+//	protected LightSensor sensorLight;
+	protected static int counter = 0;
 
 	private NervousnetVMServiceHandler() {
 
+		handler = new Handler();
+		runnable = new Runnable() {
+			@Override
+			public void run() {
+				counter++;
+//				Toast.makeText(NervousnetVMService.this, "" + counter, Toast.LENGTH_SHORT).show();
+				if (handler != null)
+					handler.postDelayed(runnable, runTime);
+			}
+		};
+		handler.post(runnable);
 	}
 
 	public static NervousnetVMServiceHandler getInstance() {
@@ -47,6 +81,38 @@ public class NervousnetVMServiceHandler {
 
 		return _instance;
 	}
+	 
+
+	
+	protected void scheduleSensor(final long sensorId, final Context context, final SensorEventListener listener) {
+		Log.d("NervousnetVMServiceHandler", "scheduleSensor called");
+		
+		run = new Runnable() {
+			@Override
+			public void run() {
+				Log.d("NervousnetVMServiceHandler", "Running Schedule Sensor thread");
+				if (sensorId == BatterySensor.SENSOR_ID) {
+					startBatterySensor(context, (BatterySensorListener)listener);
+					Log.d("NervousnetVMServiceHandler", "starting battery sensor");
+				} else if (sensorId == Constants.SENSOR_LOCATION) {
+					startLocationSensor(context, (LocationSensorListener)listener);
+					Log.d("NervousnetVMServiceHandler", "starting location sensor");
+				}else if (sensorId == Constants.SENSOR_ACCELEROMETER) {
+					registerListener(listener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
+					Log.d("NervousnetVMServiceHandler", "Registered for Accelerometer sensor");
+				}else if (sensorId == Constants.SENSOR_LIGHT) {
+					registerListener(listener, sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT));
+					Log.d("NervousnetVMServiceHandler", "Registered for Light sensor");
+				}
+
+				
+//				Toast.makeText(NervousnetVMServiceHandler.this, "Finished Running Schedule Sensor thread", Toast.LENGTH_LONG).show();
+
+			}
+		};
+		handler.postDelayed(run, 10000);
+	}
+
 
 	public void startStopSensorService(boolean on, Context context) {
 		if (on) {
@@ -55,11 +121,11 @@ public class NervousnetVMServiceHandler {
 			// If the user wants to collect BT/BLE data, ask to enable bluetooth
 			// if disabled
 			SensorConfiguration sc = SensorConfiguration.getInstance(context);
-			SensorCollectStatus scs = sc.getInitialSensorCollectStatus(SensorDescBLEBeacon.SENSOR_ID);
-			if (scs.isCollect()) {
-				// This will only work on API level 18 or higher
-				initializeBluetooth(context);
-			}
+//			SensorCollectStatus scs = sc.getInitialSensorCollectStatus(SensorDescBLEBeacon.SENSOR_ID);
+//			if (scs.isCollect()) {
+//				// This will only work on API level 18 or higher
+//				initializeBluetooth(context);
+//			}
 			vibrator.vibrate(Constants.VIBRATION_DURATION * 10);
 
 		} else {
@@ -93,7 +159,6 @@ public class NervousnetVMServiceHandler {
 	}
 
 	public void initAvailableSensors(Context context) {
-
 		if (vibrator == null)
 			vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
 
@@ -116,6 +181,34 @@ public class NervousnetVMServiceHandler {
 			return true;
 		else
 			return false;
+	}
+
+	
+	public void registerListener(SensorEventListener listener, Sensor sensor){
+		 sensorManager.registerListener(listener, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+	}
+	
+
+	private void startBatterySensor(Context context, BatterySensorListener listener) {
+		sensorBattery = BatterySensor.getInstance(context);
+		sensorBattery.addListener(listener);
+		sensorBattery.start();
+	}
+
+	private void startLocationSensor(Context context, LocationSensorListener listener) {
+		sensorLocation = LocationSensor.getInstance( context);
+		sensorLocation.addListener(listener);
+		sensorLocation.start();
+
+	}
+
+	/**
+	 * 
+	 */
+	public void cleanup() {
+		runnable = null;
+		handler = null;
+		
 	}
 
 }

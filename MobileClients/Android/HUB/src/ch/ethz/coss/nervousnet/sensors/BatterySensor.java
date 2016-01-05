@@ -9,6 +9,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.hardware.SensorEventListener;
 import android.os.BatteryManager;
 import android.util.Log;
 import ch.ethz.coss.nervousnet.vm.BatteryReading;
@@ -38,7 +39,7 @@ public class BatterySensor implements SensorStatusImplementation {
 	private List<BatterySensorListener> listenerList = new ArrayList<BatterySensorListener>();
 	private Lock listenerMutex = new ReentrantLock();
 
-	public interface BatterySensorListener {
+	public interface BatterySensorListener extends SensorEventListener{
 		public void batterySensorDataReady(BatteryReading reading);
 	}
 

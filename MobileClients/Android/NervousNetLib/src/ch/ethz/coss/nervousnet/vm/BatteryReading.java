@@ -12,7 +12,7 @@ import android.util.Log;
 public class BatteryReading extends SensorReading {
 	
 	
-	
+	public static final long SENSOR_ID = 0x0000000000000001L;
 	private float percent;
 	private boolean isCharging; 
 	private byte charging_type = 0; //0 = Unknown, 1 = USB, 2 = AC

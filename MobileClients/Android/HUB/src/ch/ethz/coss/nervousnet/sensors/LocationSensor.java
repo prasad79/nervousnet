@@ -6,6 +6,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import android.content.Context;
+import android.hardware.SensorEventListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -48,7 +49,7 @@ public class LocationSensor implements SensorStatusImplementation, LocationListe
 	private List<LocationSensorListener> listenerList = new ArrayList<LocationSensorListener>();
 	private Lock listenerMutex = new ReentrantLock();
 
-	public interface LocationSensorListener {
+	public interface LocationSensorListener extends SensorEventListener{
 		public void locSensorDataReady(LocationReading reading);
 	}
 

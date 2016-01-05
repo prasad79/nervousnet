@@ -12,6 +12,7 @@ import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import ch.ethz.coss.nervousnet.vm.AccelerometerReading;
 import ch.ethz.coss.nervousnet.vm.BatteryReading;
 import ch.ethz.coss.nervousnet.vm.LocationReading;
 import ch.ethz.coss.nervousnet.vm.NervousnetRemote;
@@ -19,7 +20,8 @@ import ch.ethz.coss.nervousnet.vm.NervousnetRemote;
 public class MainActivity extends Activity {
 	protected NervousnetRemote mService;
 	ServiceConnection mServiceConnection;
-	TextView count, battery_percent, battery_isCharging, battery_isUSB, battery_isAC, location_values, temp, volt, health;
+	TextView count, battery_percent, battery_isCharging, battery_isUSB, battery_isAC, location_values, temp, volt, health,
+	accelX, accelY, accelZ;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,10 @@ public class MainActivity extends Activity {
 		health = (TextView) findViewById(R.id.battery_health);
 		
 		location_values = (TextView) findViewById(R.id.location_values);
+		
+		accelX = (TextView) findViewById(R.id.accel_x);
+		accelY = (TextView) findViewById(R.id.accel_y);
+		accelZ = (TextView) findViewById(R.id.accel_z);
 		
 		
 		initConnection();
@@ -141,7 +147,8 @@ public class MainActivity extends Activity {
 			
 			BatteryReading breading = mService.getBatteryReading();
 			LocationReading lreading = mService.getLocationReading();
-
+			AccelerometerReading aReading = mService.getAccelerometerReading();
+			
 			if (breading != null){
 				System.out.println("Set Battery Reading");
 				battery_percent.setText("Charge Remaining = "+breading.getPercent() * 100 + " %");
@@ -164,6 +171,13 @@ public class MainActivity extends Activity {
 			}
 			
 			
+			if(aReading != null) {
+				accelX.setText("X: "+aReading.getX());
+				accelY.setText("Y: "+aReading.getY());
+				accelZ.setText("Z: "+aReading.getZ());
+				
+			}
+			
 			
 			
 
@@ -173,7 +187,7 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	private int m_interval = 1000; // 1 seconds by default, can be changed later
+	private int m_interval = 500; // 1 seconds by default, can be changed later
 	private Handler m_handler = new Handler();
 
 	Runnable m_statusChecker = new Runnable() {

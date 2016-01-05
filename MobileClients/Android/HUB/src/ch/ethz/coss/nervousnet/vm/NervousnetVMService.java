@@ -3,6 +3,10 @@ package ch.ethz.coss.nervousnet.vm;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -15,26 +19,23 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.widget.Toast;
 import ch.ethz.coss.nervousnet.Constants;
+import ch.ethz.coss.nervousnet.sensors.AccelerometerSensor;
 import ch.ethz.coss.nervousnet.sensors.BatterySensor;
 import ch.ethz.coss.nervousnet.sensors.BatterySensor.BatterySensorListener;
 import ch.ethz.coss.nervousnet.sensors.LocationSensor;
 import ch.ethz.coss.nervousnet.sensors.LocationSensor.LocationSensorListener;
 
-public class NervousnetVMService extends Service implements BatterySensorListener, LocationSensorListener {
+public class NervousnetVMService extends Service implements BatterySensorListener, LocationSensorListener, SensorEventListener {
 
+	
+//	private NervousnetVMServiceHandler serviceHandler;
 	private static int SERVICE_STATE = 0; // 0 - NOT RUNNING, 1 - RUNNING
-	private static int counter = 0;
-
+	
 	private PowerManager.WakeLock wakeLock;
 
 	private HandlerThread hthread;
-	private static Handler handler;
-	private static Runnable runnable;
-	private static Runnable run;
-	private final int runTime = 1000;
+	
 
-	private BatterySensor sensorBattery = null;
-	private LocationSensor sensorLocation = null;
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -44,28 +45,34 @@ public class NervousnetVMService extends Service implements BatterySensorListene
 	private final NervousnetRemote.Stub mBinder = new NervousnetRemote.Stub() {
 		@Override
 		public int getCounter() {
-			return counter;
+			return NervousnetVMServiceHandler.getInstance().counter;
 		}
 
 		@Override
 		public BatteryReading getBatteryReading() {
-			Log.d("NervousnetVMService", "Sending Battery Reading " + sensorBattery.getReading());
+			Log.d("NervousnetVMService", "Sending Battery Reading " + NervousnetVMServiceHandler.getInstance().sensorBattery.getReading());
 
-			if (sensorBattery == null)
+			if (NervousnetVMServiceHandler.getInstance().sensorBattery == null)
 				return null;
 
-			return (BatteryReading) sensorBattery.getReading();
+			return (BatteryReading) NervousnetVMServiceHandler.getInstance().sensorBattery.getReading();
 		}
 
 		@Override
 		public float getBatteryPercent() {
-			return ((BatteryReading) sensorBattery.getReading()).getPercent();
+			return ((BatteryReading) NervousnetVMServiceHandler.getInstance().sensorBattery.getReading()).getPercent();
 		}
 
 		@Override
 		public LocationReading getLocationReading() throws RemoteException {
 
-			return (LocationReading) sensorLocation.getReading();
+			return (LocationReading) NervousnetVMServiceHandler.getInstance().sensorLocation.getReading();
+		}
+
+		@Override
+		public AccelerometerReading getAccelerometerReading() throws RemoteException {
+			// TODO Auto-generated method stub
+			return (AccelerometerReading) NervousnetVMServiceHandler.getInstance().sensorAccel.getReading();
 		}
 
 	};
@@ -75,7 +82,8 @@ public class NervousnetVMService extends Service implements BatterySensorListene
 		Log.d("NervousnetVMService", "oncreate - Service started");
 		super.onCreate();
 		SERVICE_STATE = 1;
-
+		
+	
 		// Prepare the wakelock
 		PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
 
@@ -87,21 +95,13 @@ public class NervousnetVMService extends Service implements BatterySensorListene
 		if (!wakeLock.isHeld()) {
 			wakeLock.acquire();
 		}
+		
+		 
 
-		handler = new Handler();
-		runnable = new Runnable() {
-			@Override
-			public void run() {
-				counter++;
-				Toast.makeText(NervousnetVMService.this, "" + counter, Toast.LENGTH_SHORT).show();
-				if (handler != null)
-					handler.postDelayed(runnable, runTime);
-			}
-		};
-		handler.post(runnable);
-
-		scheduleSensor(BatterySensor.SENSOR_ID);
-		scheduleSensor(Constants.SENSOR_LOCATION);
+		NervousnetVMServiceHandler.getInstance().scheduleSensor(BatterySensor.SENSOR_ID, NervousnetVMService.this, this);
+		NervousnetVMServiceHandler.getInstance().scheduleSensor(Constants.SENSOR_LOCATION, NervousnetVMService.this, this);
+		NervousnetVMServiceHandler.getInstance().scheduleSensor(Constants.SENSOR_ACCELEROMETER, NervousnetVMService.this, this);
+		NervousnetVMServiceHandler.getInstance().scheduleSensor(Constants.SENSOR_LIGHT, NervousnetVMService.this, this);
 
 		if (Constants.DEBUG)
 			Toast.makeText(NervousnetVMService.this, "Service started", Toast.LENGTH_LONG).show();
@@ -112,10 +112,10 @@ public class NervousnetVMService extends Service implements BatterySensorListene
 	public void onDestroy() {
 		Log.d("NervousnetVMService", "onDestroy - Service destroyed");
 
-		runnable = null;
-		handler = null;
+	
 		SERVICE_STATE = 0;
 
+		NervousnetVMServiceHandler.getInstance().cleanup();
 		// Release the wakelock here, just to be safe, in order something went
 		// wrong
 		if (wakeLock.isHeld()) {
@@ -155,24 +155,6 @@ public class NervousnetVMService extends Service implements BatterySensorListene
 		context.stopService(sensorIntent);
 	}
 
-	private void scheduleSensor(final long sensorId) {
-		run = new Runnable() {
-			@Override
-			public void run() {
-
-				if (sensorId == BatterySensor.SENSOR_ID) {
-					startBatterySensor();
-				} else if (sensorId == Constants.SENSOR_LOCATION) {
-					startLocationSensor();
-				}
-
-				Log.d("NervousnetVMService", "Running Schedule Sensor thread");
-				Toast.makeText(NervousnetVMService.this, "" + counter, Toast.LENGTH_LONG).show();
-
-			}
-		};
-		handler.postDelayed(run, 10000);
-	}
 
 	// private void scheduleSensor(final long sensorId) {
 	// handler = new Handler(hthread.getLooper());
@@ -311,19 +293,6 @@ public class NervousnetVMService extends Service implements BatterySensorListene
 	//
 	// }
 
-	private void startBatterySensor() {
-		sensorBattery = BatterySensor.getInstance(NervousnetVMService.this);
-		sensorBattery.addListener(NervousnetVMService.this);
-		sensorBattery.start();
-	}
-
-	private void startLocationSensor() {
-		sensorLocation = LocationSensor.getInstance(NervousnetVMService.this);
-		sensorLocation.addListener(NervousnetVMService.this);
-		sensorLocation.start();
-
-	}
-
 	@Override
 	public void locSensorDataReady(LocationReading reading) {
 		Log.d("NervousnetVMService", "locSensorDataReady received - " + reading.toString());
@@ -339,6 +308,64 @@ public class NervousnetVMService extends Service implements BatterySensorListene
 	public void batterySensorDataReady(BatteryReading reading) {
 		Log.d("NervousnetVMService", reading.toString());
 
+	}
+
+	/* (non-Javadoc)
+	 * @see android.hardware.SensorEventListener#onAccuracyChanged(android.hardware.Sensor, int)
+	 */
+	@Override
+	public void onAccuracyChanged(Sensor sensor, int accuracy) {
+		Log.d("NervousnetVMService", "onAccuracyChanged called");
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see android.hardware.SensorEventListener#onSensorChanged(android.hardware.SensorEvent)
+	 */
+	@Override
+	public void onSensorChanged(SensorEvent event) {
+		Log.d("NervousnetVMService", "onSensorChanged called");
+		
+		int timestamp = (int) (System.currentTimeMillis() / 1000);
+		Sensor sensor = event.sensor;
+		SensorReading reading = null;
+
+		switch (sensor.getType()) {
+		case Sensor.TYPE_LIGHT:
+			reading = new LightReading((int) (event.timestamp/1000), event.values);
+			Log.d("NervousnetVMService", "Light data collected   ");
+			break;
+		case Sensor.TYPE_PROXIMITY:
+//			reading = new SensorDescProximity(timestamp, event.values[0]);
+			Log.d("NervousnetVMService", "Proximity data collected");
+			break;
+		case Sensor.TYPE_ACCELEROMETER:
+			reading = new AccelerometerReading((int) (event.timestamp/1000), event.values);
+			AccelerometerSensor.getInstance().dataReady((AccelerometerReading)reading);
+			Log.d("NervousnetVMService", "Accelerometer data collected");
+			break;
+		case Sensor.TYPE_MAGNETIC_FIELD:
+//			reading = new SensorDescMagnetic(timestamp, event.values[0], event.values[1], event.values[2]);
+			Log.d("NervousnetVMService", "Magnetic data collected");
+			break;
+		case Sensor.TYPE_GYROSCOPE:
+//			reading = new SensorDescGyroscope(timestamp, event.values[0], event.values[1], event.values[2]);
+			Log.d("NervousnetVMService", "Gyroscope data collected");
+			break;
+		case Sensor.TYPE_AMBIENT_TEMPERATURE:
+//			reading = new SensorDescTemperature(timestamp, event.values[0]);
+			Log.d("NervousnetVMService", "Temperature data collected");
+			break;
+		case Sensor.TYPE_RELATIVE_HUMIDITY:
+//			reading = new SensorDescHumidity(timestamp, event.values[0]);
+			Log.d("NervousnetVMService", "Humidity data collected");
+			break;
+		case Sensor.TYPE_PRESSURE:
+//			reading = new SensorDescPressure(timestamp, event.values[0]);
+			Log.d("NervousnetVMService", "Pressure data collected");
+			break;
+		}
+		
 	}
 
 }
