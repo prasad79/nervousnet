@@ -177,11 +177,14 @@ public class MainActivity extends Activity {
 				accelZ.setText("Z: "+aReading.getZ());
 				
 			}
-			
+//			
 			
 			
 
 		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

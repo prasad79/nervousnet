@@ -72,7 +72,7 @@ public class NervousnetVMService extends Service implements BatterySensorListene
 		@Override
 		public AccelerometerReading getAccelerometerReading() throws RemoteException {
 			// TODO Auto-generated method stub
-			return (AccelerometerReading) NervousnetVMServiceHandler.getInstance().sensorAccel.getReading();
+			return (AccelerometerReading) AccelerometerSensor.getInstance().getReading();
 		}
 
 	};

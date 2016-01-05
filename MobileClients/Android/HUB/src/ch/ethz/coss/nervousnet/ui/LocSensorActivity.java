@@ -33,9 +33,9 @@ public class LocSensorActivity extends BaseSensorActivity implements LocationSen
 	public void locSensorDataReady(LocationReading reading) {
 		Log.d("LocSensorActivity", "Inside LocSensorActivity  Data Ready called ");
 		// TODO Auto-generated method stub
-
-		gps.setText("GPS = " + reading.getLatnLong());
-		// alt.setText("Charging status = "+reading.getAltitude());
+		double []coords = reading.getLatnLong();
+		gps.setText("GPS = " + coords[0] + ","+coords[1]);
+		 alt.setText("Altitude = "+reading.getAltitude());
 
 		updater.run();
 	}

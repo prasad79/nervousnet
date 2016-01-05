@@ -53,7 +53,6 @@ public class AccelerometerSensor implements SensorStatusImplementation {
 		listenerMutex.lock();
 		listenerList.add(listener);
 		listenerMutex.unlock();
-		
 //		Log.d("AccelerometerSensor", "Listener added "+listenerList.size());
 	}
 

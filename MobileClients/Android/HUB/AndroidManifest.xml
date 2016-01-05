@@ -34,8 +34,7 @@
         </activity>
 
         <service
-            android:name="ch.ethz.coss.nervousnet.vm.NervousnetVMService"
-            android:process=":nervousnetvm" >
+            android:name="ch.ethz.coss.nervousnet.vm.NervousnetVMService" >
             <intent-filter>
                 <action android:name="ch.ethz.nervousnet.VM" />
             </intent-filter>

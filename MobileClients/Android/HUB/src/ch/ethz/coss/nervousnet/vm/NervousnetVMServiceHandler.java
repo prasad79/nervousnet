@@ -53,7 +53,7 @@ public class NervousnetVMServiceHandler {
 
 	protected BatterySensor sensorBattery = null;
 	protected LocationSensor sensorLocation = null;
-	protected AccelerometerSensor sensorAccel;
+//	protected AccelerometerSensor sensorAccel = null;
 //	protected LightSensor sensorLight;
 	protected static int counter = 0;
 
@@ -98,6 +98,7 @@ public class NervousnetVMServiceHandler {
 					startLocationSensor(context, (LocationSensorListener)listener);
 					Log.d("NervousnetVMServiceHandler", "starting location sensor");
 				}else if (sensorId == Constants.SENSOR_ACCELEROMETER) {
+					
 					registerListener(listener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
 					Log.d("NervousnetVMServiceHandler", "Registered for Accelerometer sensor");
 				}else if (sensorId == Constants.SENSOR_LIGHT) {

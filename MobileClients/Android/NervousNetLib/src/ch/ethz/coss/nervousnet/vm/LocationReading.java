@@ -37,6 +37,14 @@ public class LocationReading extends SensorReading {
 		return latnLong;
 	}
 
+	
+	/**
+	 * @return the latnLong
+	 */
+	public double getAltitude() {
+		return altitude;
+	}
+
 	/**
 	 * @param latnLong the latnLong to set
 	 */
