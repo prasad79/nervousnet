@@ -8,21 +8,20 @@ import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import ch.ethz.coss.nervousnet.R;
 import ch.ethz.coss.nervousnet.sensors.BatterySensor;
 import ch.ethz.coss.nervousnet.sensors.BatterySensor.BatterySensorListener;
 import ch.ethz.coss.nervousnet.vm.BatteryReading;
-import ch.ethz.coss.nervousnet.vm.NervousnetVMService;
 
 public class BatterySensorActivity extends BaseSensorActivity implements BatterySensorListener {
-	ViewGroup vg;
+	
 	TextView battery_percent, battery_isCharging;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_batt_sensor);
-		vg = (RelativeLayout) findViewById(R.id.layout_battery_parent);
 		battery_percent = (TextView) findViewById(R.id.battValueTF);
 		battery_isCharging = (TextView) findViewById(R.id.statusTF);
 
@@ -38,7 +37,9 @@ public class BatterySensorActivity extends BaseSensorActivity implements Battery
 	public void batterySensorDataReady(BatteryReading reading) {
 		Log.d("BatterySensorActivity",
 				"Inside BatterySensorActivity  Data Ready called - charging status = " + reading.isCharging());
-				// TODO Auto-generated method stub
+		Toast.makeText(BatterySensorActivity.this,reading.isCharging()? "YES": "NO", Toast.LENGTH_SHORT).show()	;
+		
+		// TODO Auto-generated method stub
 
 		// battery_percent.setText("Battery level = "+reading.getPercent()
 		// +"%");
@@ -126,10 +127,8 @@ public class BatterySensorActivity extends BaseSensorActivity implements Battery
 						+ (reading.getPercent()
 						+ "%"));
 				battery_isCharging.setText("Charging status = "
-						+ (reading.isCharging()));
-				battery_percent.invalidate();
-				battery_isCharging.invalidate();
-				vg.invalidate();
+						+ (reading.isCharging()? "YES": "NO"));
+				
 			}
 		});
 	}

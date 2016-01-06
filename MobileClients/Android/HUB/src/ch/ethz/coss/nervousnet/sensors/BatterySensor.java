@@ -91,6 +91,7 @@ public class BatterySensor implements SensorStatusImplementation {
 		@Override
 		public void onReceive(Context context, Intent batteryStatus) {
 			reading = extractBatteryData(batteryStatus);
+			dataReady();
 			Log.d("BatterySensor", "Received braoadcast - " + (reading.getPercent()));
 			Log.d("BatterySensor", "level is " + level + "/" + scale + ", temp is " + temp + ", voltage is " + voltage);
 		}
