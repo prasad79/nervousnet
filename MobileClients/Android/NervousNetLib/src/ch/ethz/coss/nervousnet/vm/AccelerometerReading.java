@@ -12,7 +12,7 @@ public class AccelerometerReading extends SensorReading {
 	
 	public static final long SENSOR_ID = 0x0000000000000000L;
 	
-	private float []values;
+	private float []values = new float[3];
 	 
 	
 	

@@ -22,6 +22,7 @@ import ch.ethz.coss.nervousnet.Constants;
 import ch.ethz.coss.nervousnet.sensors.AccelerometerSensor;
 import ch.ethz.coss.nervousnet.sensors.BatterySensor;
 import ch.ethz.coss.nervousnet.sensors.BatterySensor.BatterySensorListener;
+import ch.ethz.coss.nervousnet.sensors.LightSensor;
 import ch.ethz.coss.nervousnet.sensors.LocationSensor;
 import ch.ethz.coss.nervousnet.sensors.LocationSensor.LocationSensorListener;
 
@@ -100,8 +101,8 @@ public class NervousnetVMService extends Service implements BatterySensorListene
 
 		NervousnetVMServiceHandler.getInstance().scheduleSensor(BatterySensor.SENSOR_ID, NervousnetVMService.this, this);
 		NervousnetVMServiceHandler.getInstance().scheduleSensor(Constants.SENSOR_LOCATION, NervousnetVMService.this, this);
-		NervousnetVMServiceHandler.getInstance().scheduleSensor(Constants.SENSOR_ACCELEROMETER, NervousnetVMService.this, this);
 		NervousnetVMServiceHandler.getInstance().scheduleSensor(Constants.SENSOR_LIGHT, NervousnetVMService.this, this);
+		NervousnetVMServiceHandler.getInstance().scheduleSensor(Constants.SENSOR_ACCELEROMETER, NervousnetVMService.this, this);
 
 		if (Constants.DEBUG)
 			Toast.makeText(NervousnetVMService.this, "Service started", Toast.LENGTH_LONG).show();
@@ -333,7 +334,8 @@ public class NervousnetVMService extends Service implements BatterySensorListene
 		switch (sensor.getType()) {
 		case Sensor.TYPE_LIGHT:
 			reading = new LightReading((int) (event.timestamp/1000), event.values);
-			Log.d("NervousnetVMService", "Light data collected   ");
+			LightSensor.getInstance().dataReady((LightReading)reading);
+			Log.d("NervousnetVMService", "Light data collected");
 			break;
 		case Sensor.TYPE_PROXIMITY:
 //			reading = new SensorDescProximity(timestamp, event.values[0]);

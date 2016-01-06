@@ -13,16 +13,14 @@ public class LightReading extends SensorReading {
 	
 	
 	public static final long SENSOR_ID = 0x0000000000000002L;
-	private float[] values;
+	private float[] values = new float[3];
 	 
 	
 	
 
-	public LightReading(int timestamp, float []lux) {
+	public LightReading(int timestamp, float []values) {
 		this.timestamp = timestamp;
 		this.values = values;
-		
-		
 	}
 
 	/**
@@ -38,6 +36,12 @@ public class LightReading extends SensorReading {
 		in.readFloatArray(values);
 	}
 
+	
+	
+	public float getLuxValue() {
+		return values[0];
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

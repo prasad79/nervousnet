@@ -111,7 +111,7 @@ public class NervousnetVMServiceHandler {
 
 			}
 		};
-		handler.postDelayed(run, 10000);
+		handler.postDelayed(run, 500);
 	}
 
 

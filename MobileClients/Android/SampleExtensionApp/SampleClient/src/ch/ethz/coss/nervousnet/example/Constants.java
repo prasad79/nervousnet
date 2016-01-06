@@ -9,5 +9,5 @@ package ch.ethz.coss.nervousnet.example;
  */
 public final class Constants {
 
-	public static String LOG_TAG = "Nervousnet main app: ";
+	public static String LOG_TAG = "Nervousnet HUB: ";
 }

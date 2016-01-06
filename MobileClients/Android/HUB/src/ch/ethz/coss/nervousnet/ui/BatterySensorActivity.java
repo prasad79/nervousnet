@@ -37,15 +37,7 @@ public class BatterySensorActivity extends BaseSensorActivity implements Battery
 	public void batterySensorDataReady(BatteryReading reading) {
 		Log.d("BatterySensorActivity",
 				"Inside BatterySensorActivity  Data Ready called - charging status = " + reading.isCharging());
-		Toast.makeText(BatterySensorActivity.this,reading.isCharging()? "YES": "NO", Toast.LENGTH_SHORT).show()	;
 		
-		// TODO Auto-generated method stub
-
-		// battery_percent.setText("Battery level = "+reading.getPercent()
-		// +"%");
-		// battery_isCharging.setText("Charging status =
-		// "+reading.isCharging());
-
 		update(reading);
 	}
 
