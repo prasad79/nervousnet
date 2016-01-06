@@ -47,7 +47,7 @@
                 android:layout_centerVertical="true"
                 android:gravity="center"
                 android:text=""
-                android:textColor="@color/black" />
+                android:textColor="@color/white" />
 
         </LinearLayout>
     </ScrollView>

@@ -21,6 +21,7 @@ import android.widget.Toast;
 import ch.ethz.coss.nervousnet.Constants;
 import ch.ethz.coss.nervousnet.sensors.AccelerometerSensor;
 import ch.ethz.coss.nervousnet.sensors.BatterySensor;
+import ch.ethz.coss.nervousnet.sensors.GyroSensor;
 import ch.ethz.coss.nervousnet.sensors.BatterySensor.BatterySensorListener;
 import ch.ethz.coss.nervousnet.sensors.LightSensor;
 import ch.ethz.coss.nervousnet.sensors.LocationSensor;
@@ -103,6 +104,7 @@ public class NervousnetVMService extends Service implements BatterySensorListene
 		NervousnetVMServiceHandler.getInstance().scheduleSensor(Constants.SENSOR_LOCATION, NervousnetVMService.this, this);
 		NervousnetVMServiceHandler.getInstance().scheduleSensor(Constants.SENSOR_LIGHT, NervousnetVMService.this, this);
 		NervousnetVMServiceHandler.getInstance().scheduleSensor(Constants.SENSOR_ACCELEROMETER, NervousnetVMService.this, this);
+		NervousnetVMServiceHandler.getInstance().scheduleSensor(Constants.SENSOR_GYRO, NervousnetVMService.this, this);
 
 		if (Constants.DEBUG)
 			Toast.makeText(NervousnetVMService.this, "Service started", Toast.LENGTH_LONG).show();
@@ -351,6 +353,8 @@ public class NervousnetVMService extends Service implements BatterySensorListene
 			Log.d("NervousnetVMService", "Magnetic data collected");
 			break;
 		case Sensor.TYPE_GYROSCOPE:
+			reading = new GyroReading((int) (event.timestamp/1000), event.values);
+			GyroSensor.getInstance().dataReady((GyroReading)reading);
 //			reading = new SensorDescGyroscope(timestamp, event.values[0], event.values[1], event.values[2]);
 			Log.d("NervousnetVMService", "Gyroscope data collected");
 			break;

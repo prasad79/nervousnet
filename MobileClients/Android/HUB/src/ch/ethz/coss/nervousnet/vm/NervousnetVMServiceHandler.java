@@ -104,6 +104,9 @@ public class NervousnetVMServiceHandler {
 				}else if (sensorId == Constants.SENSOR_LIGHT) {
 					registerListener(listener, sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT));
 					Log.d("NervousnetVMServiceHandler", "Registered for Light sensor");
+				}else if (sensorId == Constants.SENSOR_GYRO) {
+					registerListener(listener, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE));
+					Log.d("NervousnetVMServiceHandler", "Registered for GYro sensor");
 				}
 
 				

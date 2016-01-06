@@ -9,14 +9,14 @@ import android.util.Log;
 /**
  * @author prasad
  */
-public class LightReading extends SensorReading {
+public class GyroReading extends SensorReading {
 	
 	
-	public static final long SENSOR_ID = 0x0000000000000002L;
+	public static final long SENSOR_ID = 0x0000000000000005L;
 	private float[] values = new float[3];
 
 
-	public LightReading(int timestamp, float []values) {
+	public GyroReading(int timestamp, float []values) {
 		this.timestamp = timestamp;
 		this.values = values;
 	}
@@ -24,7 +24,7 @@ public class LightReading extends SensorReading {
 	/**
 	 * @param in
 	 */
-	public LightReading(Parcel in) {
+	public GyroReading(Parcel in) {
 		readFromParcel(in);
 	}
 
@@ -36,10 +36,19 @@ public class LightReading extends SensorReading {
 
 	
 	
-	public float getLuxValue() {
+	public float getGyroX() {
 		return values[0];
 	}
 	
+	
+	public float getGyroY() {
+		return values[1];
+	}
+	
+	
+	public float getGyroZ() {
+		return values[2];
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -63,15 +72,15 @@ public class LightReading extends SensorReading {
 
 	}
 
-	public static final Parcelable.Creator<LightReading> CREATOR = new Parcelable.Creator<LightReading>() {
+	public static final Parcelable.Creator<GyroReading> CREATOR = new Parcelable.Creator<GyroReading>() {
 		@Override
-		public LightReading createFromParcel(Parcel in) {
-			return new LightReading(in);
+		public GyroReading createFromParcel(Parcel in) {
+			return new GyroReading(in);
 		}
 
 		@Override
-		public LightReading[] newArray(int size) {
-			return new LightReading[size];
+		public GyroReading[] newArray(int size) {
+			return new GyroReading[size];
 		}
 	};
 
