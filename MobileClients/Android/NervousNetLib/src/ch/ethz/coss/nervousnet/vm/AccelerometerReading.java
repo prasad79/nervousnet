@@ -9,9 +9,6 @@ import android.os.Parcelable;
 public class AccelerometerReading extends SensorReading {
 	
 	
-	
-	public static final long SENSOR_ID = 0x0000000000000000L;
-	
 	private float []values = new float[3];
 	 
 	

@@ -80,11 +80,13 @@ public class AccelerometerSensor implements SensorStatusImplementation {
 	 */
 	public void dataReady(AccelerometerReading reading) {
 //		Log.d("AccelerometerSensor", "dataReady called "+listenerList.size());
-//
+
 		this.reading = reading;
 		listenerMutex.lock();
+		
 		for (AccelerometerSensorListener listener : listenerList) {
 //			Log.d("AccelerometerSensor", "listener.accelSensorDataReady calling ");
+			
 			listener.accelSensorDataReady(reading);
 		}
 		listenerMutex.unlock();

@@ -56,7 +56,6 @@ public class LocationSensor implements SensorStatusImplementation, LocationListe
 	public void addListener(LocationSensorListener listener) {
 		listenerMutex.lock();
 		listenerList.add(listener);
-		System.out.println("LocationSensor Listener size " + listenerList.size());
 		listenerMutex.unlock();
 		
 		if(reading != null)

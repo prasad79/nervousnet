@@ -3,6 +3,7 @@ package ch.ethz.coss.nervousnet.ui;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -68,7 +69,12 @@ public class MainActivity extends BaseActivity {
 
 	@Override
 	protected void onResume() {
+		
+		Log.d("MainActivity", "onResumeCalled");
+		
 		super.onResume();
+		updateActionBar();
+		
 	}
 
 	public void toastToScreen(String msg, boolean lengthLong) {
@@ -80,6 +86,18 @@ public class MainActivity extends BaseActivity {
 	public void onBackPressed() {
 		finish();
 		System.exit(0);
+	}
+	
+	@Override
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		Log.d("MainActivity", "onRestoreInstanceState");
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		Log.d("MainActivity", "onSaveInstanceState");
 	}
 
 }

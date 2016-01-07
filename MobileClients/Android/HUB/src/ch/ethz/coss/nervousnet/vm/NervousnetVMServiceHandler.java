@@ -212,7 +212,7 @@ public class NervousnetVMServiceHandler {
 	public void cleanup() {
 		runnable = null;
 		handler = null;
-		
+		_instance = null;
 	}
 
 }

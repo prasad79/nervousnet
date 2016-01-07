@@ -11,8 +11,6 @@ import android.util.Log;
  */
 public class GyroReading extends SensorReading {
 	
-	
-	public static final long SENSOR_ID = 0x0000000000000005L;
 	private float[] values = new float[3];
 
 

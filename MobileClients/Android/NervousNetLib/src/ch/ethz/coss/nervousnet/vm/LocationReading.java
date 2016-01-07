@@ -9,8 +9,6 @@ import android.util.Log;
  * @author prasad
  */
 public class LocationReading extends SensorReading {
-
-	public static long SENSOR_ID = 0x0000000000000003L;
 	
 	
 	public LocationReading(int timestamp, double [] latnLong, double altitude) {

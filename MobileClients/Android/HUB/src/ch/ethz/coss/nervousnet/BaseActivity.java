@@ -32,7 +32,7 @@ public abstract class BaseActivity extends Activity {
 
 	}
 
-	private void updateActionBar() {
+	protected void updateActionBar() {
 		LayoutInflater inflator = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View v = inflator.inflate(R.layout.ab_nn, null);
 
