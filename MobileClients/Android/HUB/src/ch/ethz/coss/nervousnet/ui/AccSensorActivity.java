@@ -13,21 +13,23 @@ import ch.ethz.coss.nervousnet.vm.AccelerometerReading;
 
 public class AccSensorActivity extends BaseSensorActivity implements AccelerometerSensorListener {
 
-	
 	TextView accel_values;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_acc_sensor);
 		setSensorStatus(Sensor.TYPE_ACCELEROMETER);
 		accel_values = (TextView) findViewById(R.id.statusTF);
-		
-		
+
 	}
 
-	/* (non-Javadoc)
-	 * @see ch.ethz.coss.nervousnet.sensors.AccelerometerSensor.AccelerometerSensorListener#accelSensorDataReady(ch.ethz.coss.nervousnet.vm.AccelerometerReading)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see ch.ethz.coss.nervousnet.sensors.AccelerometerSensor.
+	 * AccelerometerSensorListener#accelSensorDataReady(ch.ethz.coss.nervousnet.
+	 * vm.AccelerometerReading)
 	 */
 	@Override
 	public void accelSensorDataReady(AccelerometerReading reading) {
@@ -110,9 +112,8 @@ public class AccSensorActivity extends BaseSensorActivity implements Acceleromet
 			@Override
 			public void run() {
 
-				accel_values.setText("X = "+reading.getX()+" \n"+
-						"Y = "+reading.getY()+" \n"+
-						"Z = "+reading.getZ()+" \n");
+				accel_values.setText("X = " + reading.getX() + " \n" + "Y = " + reading.getY() + " \n" + "Z = "
+						+ reading.getZ() + " \n");
 			}
 		});
 	}

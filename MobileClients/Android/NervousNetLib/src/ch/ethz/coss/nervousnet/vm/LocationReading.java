@@ -9,16 +9,15 @@ import android.util.Log;
  * @author prasad
  */
 public class LocationReading extends SensorReading {
-	
-	
-	public LocationReading(int timestamp, double [] latnLong, double altitude) {
+
+	public LocationReading(int timestamp, double[] latnLong, double altitude) {
 		this.timestamp = timestamp;
 		this.latnLong = latnLong;
 		this.altitude = altitude;
 	}
-	
+
 	public LocationReading(int timestamp, double latitude, double longitude, double alt) {
-		this(timestamp, new double[] {latitude, longitude}, alt);
+		this(timestamp, new double[] { latitude, longitude }, alt);
 	}
 
 	/**
@@ -35,7 +34,6 @@ public class LocationReading extends SensorReading {
 		return latnLong;
 	}
 
-	
 	/**
 	 * @return the latnLong
 	 */
@@ -44,7 +42,8 @@ public class LocationReading extends SensorReading {
 	}
 
 	/**
-	 * @param latnLong the latnLong to set
+	 * @param latnLong
+	 *            the latnLong to set
 	 */
 	public void setLatnLong(double[] latnLong) {
 		this.latnLong = latnLong;
@@ -93,12 +92,12 @@ public class LocationReading extends SensorReading {
 	};
 
 	public String toString() {
-		if(latnLong == null)
-		 return new String("Location not set");
-		return new String("Latitude = " + latnLong[0]+ ", Longitude = "+latnLong[1]+ ", Altitude = "+altitude);
+		if (latnLong == null)
+			return new String("Location not set");
+		return new String("Latitude = " + latnLong[0] + ", Longitude = " + latnLong[1] + ", Altitude = " + altitude);
 	}
 
 	private double[] latnLong;
 	private double altitude;
-	
+
 }

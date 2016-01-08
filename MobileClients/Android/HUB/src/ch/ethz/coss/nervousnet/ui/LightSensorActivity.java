@@ -11,11 +11,10 @@ import ch.ethz.coss.nervousnet.sensors.LightSensor.LightSensorListener;
 import ch.ethz.coss.nervousnet.vm.AccelerometerReading;
 import ch.ethz.coss.nervousnet.vm.LightReading;
 
-public class LightSensorActivity extends BaseSensorActivity implements LightSensorListener{
+public class LightSensorActivity extends BaseSensorActivity implements LightSensorListener {
 
-	
 	TextView lux_val;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -24,10 +23,6 @@ public class LightSensorActivity extends BaseSensorActivity implements LightSens
 		lux_val = (TextView) findViewById(R.id.statusTF);
 	}
 
-	
-	
-	
-	
 	@Override
 	public void lightSensorDataReady(LightReading reading) {
 		Log.d("LightSensorActivity", "lightSensorDataReady called");
@@ -109,7 +104,7 @@ public class LightSensorActivity extends BaseSensorActivity implements LightSens
 			@Override
 			public void run() {
 
-				lux_val.setText(reading.getLuxValue()+" lux");
+				lux_val.setText(reading.getLuxValue() + " lux");
 			}
 		});
 	}

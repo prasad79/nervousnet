@@ -49,7 +49,7 @@ public class LocationSensor implements SensorStatusImplementation, LocationListe
 	private List<LocationSensorListener> listenerList = new ArrayList<LocationSensorListener>();
 	private Lock listenerMutex = new ReentrantLock();
 
-	public interface LocationSensorListener extends SensorEventListener{
+	public interface LocationSensorListener extends SensorEventListener {
 		public void locSensorDataReady(LocationReading reading);
 	}
 
@@ -57,8 +57,8 @@ public class LocationSensor implements SensorStatusImplementation, LocationListe
 		listenerMutex.lock();
 		listenerList.add(listener);
 		listenerMutex.unlock();
-		
-		if(reading != null)
+
+		if (reading != null)
 			dataReady();
 	}
 
@@ -133,17 +133,16 @@ public class LocationSensor implements SensorStatusImplementation, LocationListe
 	 * @param batteryReading
 	 */
 	private void dataReady() {
-		if(reading != null)
-		{
+		if (reading != null) {
 			listenerMutex.lock();
 			for (LocationSensorListener listener : listenerList) {
 				System.out.println("Sending Location Reading");
-			
+
 				listener.locSensorDataReady(reading);
 			}
 			listenerMutex.unlock();
 		}
-	
+
 	}
 
 	/*

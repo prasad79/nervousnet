@@ -28,14 +28,13 @@ public class LocSensorActivity extends BaseSensorActivity implements LocationSen
 
 	}
 
-	
 	@Override
 	public void locSensorDataReady(LocationReading reading) {
 		Log.d("LocSensorActivity", "Inside LocSensorActivity  Data Ready called ");
 		// TODO Auto-generated method stub
-		double []coords = reading.getLatnLong();
-		gps.setText("GPS = " + coords[0] + ","+coords[1]);
-		 alt.setText("Altitude = "+reading.getAltitude());
+		double[] coords = reading.getLatnLong();
+		gps.setText("GPS = " + coords[0] + "," + coords[1]);
+		alt.setText("Altitude = " + reading.getAltitude());
 
 		updater.run();
 	}
@@ -107,22 +106,30 @@ public class LocSensorActivity extends BaseSensorActivity implements LocationSen
 		}
 	};
 
-	/* (non-Javadoc)
-	 * @see android.hardware.SensorEventListener#onAccuracyChanged(android.hardware.Sensor, int)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * android.hardware.SensorEventListener#onAccuracyChanged(android.hardware.
+	 * Sensor, int)
 	 */
 	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	/* (non-Javadoc)
-	 * @see android.hardware.SensorEventListener#onSensorChanged(android.hardware.SensorEvent)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * android.hardware.SensorEventListener#onSensorChanged(android.hardware.
+	 * SensorEvent)
 	 */
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

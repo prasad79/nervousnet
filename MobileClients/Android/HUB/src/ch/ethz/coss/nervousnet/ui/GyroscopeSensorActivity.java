@@ -11,22 +11,25 @@ import ch.ethz.coss.nervousnet.sensors.GyroSensor.GyroSensorListener;
 import ch.ethz.coss.nervousnet.vm.AccelerometerReading;
 import ch.ethz.coss.nervousnet.vm.GyroReading;
 
-public class GyroscopeSensorActivity extends BaseSensorActivity implements GyroSensorListener{
+public class GyroscopeSensorActivity extends BaseSensorActivity implements GyroSensorListener {
 
-TextView gyro_values;
-	
+	TextView gyro_values;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_gyro_sensor);
 		setSensorStatus(Sensor.TYPE_GYROSCOPE);
 		gyro_values = (TextView) findViewById(R.id.statusTF);
-		
-		
+
 	}
 
-	/* (non-Javadoc)
-	 * @see ch.ethz.coss.nervousnet.sensors.AccelerometerSensor.AccelerometerSensorListener#accelSensorDataReady(ch.ethz.coss.nervousnet.vm.AccelerometerReading)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see ch.ethz.coss.nervousnet.sensors.AccelerometerSensor.
+	 * AccelerometerSensorListener#accelSensorDataReady(ch.ethz.coss.nervousnet.
+	 * vm.AccelerometerReading)
 	 */
 	@Override
 	public void gyroSensorDataReady(GyroReading reading) {
@@ -109,9 +112,8 @@ TextView gyro_values;
 			@Override
 			public void run() {
 
-				gyro_values.setText("X = "+reading.getGyroX()+" \n"+
-						"Y = "+reading.getGyroY()+" \n"+
-						"Z = "+reading.getGyroZ()+" \n");
+				gyro_values.setText("X = " + reading.getGyroX() + " \n" + "Y = " + reading.getGyroY() + " \n" + "Z = "
+						+ reading.getGyroZ() + " \n");
 			}
 		});
 	}

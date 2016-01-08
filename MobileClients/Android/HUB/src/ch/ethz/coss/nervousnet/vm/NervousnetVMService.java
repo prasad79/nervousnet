@@ -28,17 +28,15 @@ import ch.ethz.coss.nervousnet.sensors.LightSensor;
 import ch.ethz.coss.nervousnet.sensors.LocationSensor;
 import ch.ethz.coss.nervousnet.sensors.LocationSensor.LocationSensorListener;
 
-public class NervousnetVMService extends Service implements BatterySensorListener, LocationSensorListener, SensorEventListener, ConnectivitySensorListener {
+public class NervousnetVMService extends Service
+		implements BatterySensorListener, LocationSensorListener, SensorEventListener, ConnectivitySensorListener {
 
-	
-//	private NervousnetVMServiceHandler serviceHandler;
+	// private NervousnetVMServiceHandler serviceHandler;
 	private static int SERVICE_STATE = 0; // 0 - NOT RUNNING, 1 - RUNNING
-	
+
 	private PowerManager.WakeLock wakeLock;
 
 	private HandlerThread hthread;
-	
-
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -53,7 +51,8 @@ public class NervousnetVMService extends Service implements BatterySensorListene
 
 		@Override
 		public BatteryReading getBatteryReading() {
-			Log.d("NervousnetVMService", "Sending Battery Reading " + NervousnetVMServiceHandler.getInstance().sensorBattery.getReading());
+			Log.d("NervousnetVMService",
+					"Sending Battery Reading " + NervousnetVMServiceHandler.getInstance().sensorBattery.getReading());
 
 			if (NervousnetVMServiceHandler.getInstance().sensorBattery == null)
 				return null;
@@ -85,8 +84,7 @@ public class NervousnetVMService extends Service implements BatterySensorListene
 		Log.d("NervousnetVMService", "oncreate - Service started");
 		super.onCreate();
 		SERVICE_STATE = 1;
-		
-	
+
 		// Prepare the wakelock
 		PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
 
@@ -98,15 +96,17 @@ public class NervousnetVMService extends Service implements BatterySensorListene
 		if (!wakeLock.isHeld()) {
 			wakeLock.acquire();
 		}
-		
-		 
 
-		NervousnetVMServiceHandler.getInstance().scheduleSensor(BatterySensor.SENSOR_ID, NervousnetVMService.this, this);
-		NervousnetVMServiceHandler.getInstance().scheduleSensor(Constants.SENSOR_LOCATION, NervousnetVMService.this, this);
+		NervousnetVMServiceHandler.getInstance().scheduleSensor(BatterySensor.SENSOR_ID, NervousnetVMService.this,
+				this);
+		NervousnetVMServiceHandler.getInstance().scheduleSensor(Constants.SENSOR_LOCATION, NervousnetVMService.this,
+				this);
 		NervousnetVMServiceHandler.getInstance().scheduleSensor(Constants.SENSOR_LIGHT, NervousnetVMService.this, this);
-		NervousnetVMServiceHandler.getInstance().scheduleSensor(Constants.SENSOR_ACCELEROMETER, NervousnetVMService.this, this);
+		NervousnetVMServiceHandler.getInstance().scheduleSensor(Constants.SENSOR_ACCELEROMETER,
+				NervousnetVMService.this, this);
 		NervousnetVMServiceHandler.getInstance().scheduleSensor(Constants.SENSOR_GYRO, NervousnetVMService.this, this);
-		NervousnetVMServiceHandler.getInstance().scheduleSensor(Constants.SENSOR_CONNECTIVITY, NervousnetVMService.this, this);
+		NervousnetVMServiceHandler.getInstance().scheduleSensor(Constants.SENSOR_CONNECTIVITY, NervousnetVMService.this,
+				this);
 
 		if (Constants.DEBUG)
 			Toast.makeText(NervousnetVMService.this, "Service started", Toast.LENGTH_LONG).show();
@@ -117,7 +117,6 @@ public class NervousnetVMService extends Service implements BatterySensorListene
 	public void onDestroy() {
 		Log.d("NervousnetVMService", "onDestroy - Service destroyed");
 
-	
 		SERVICE_STATE = 0;
 
 		NervousnetVMServiceHandler.getInstance().cleanup();
@@ -159,7 +158,6 @@ public class NervousnetVMService extends Service implements BatterySensorListene
 		Intent sensorIntent = new Intent(context, NervousnetVMService.class);
 		context.stopService(sensorIntent);
 	}
-
 
 	// private void scheduleSensor(final long sensorId) {
 	// handler = new Handler(hthread.getLooper());
@@ -314,77 +312,89 @@ public class NervousnetVMService extends Service implements BatterySensorListene
 		Log.d("NervousnetVMService", reading.toString());
 
 	}
-	
-	/* (non-Javadoc)
-	 * @see ch.ethz.coss.nervousnet.sensors.ConnectivitySensor.ConnectivitySensorListener#connectivitySensorDataReady(ch.ethz.coss.nervousnet.vm.ConnectivityReading)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see ch.ethz.coss.nervousnet.sensors.ConnectivitySensor.
+	 * ConnectivitySensorListener#connectivitySensorDataReady(ch.ethz.coss.
+	 * nervousnet.vm.ConnectivityReading)
 	 */
 	@Override
 	public void connectivitySensorDataReady(ConnectivityReading reading) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-
-	/* (non-Javadoc)
-	 * @see android.hardware.SensorEventListener#onAccuracyChanged(android.hardware.Sensor, int)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * android.hardware.SensorEventListener#onAccuracyChanged(android.hardware.
+	 * Sensor, int)
 	 */
 	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
 		Log.d("NervousnetVMService", "onAccuracyChanged called");
-		
+
 	}
 
-	/* (non-Javadoc)
-	 * @see android.hardware.SensorEventListener#onSensorChanged(android.hardware.SensorEvent)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * android.hardware.SensorEventListener#onSensorChanged(android.hardware.
+	 * SensorEvent)
 	 */
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 		Log.d("NervousnetVMService", "onSensorChanged called");
-		
+
 		int timestamp = (int) (System.currentTimeMillis() / 1000);
 		Sensor sensor = event.sensor;
 		SensorReading reading = null;
 
 		switch (sensor.getType()) {
 		case Sensor.TYPE_LIGHT:
-			reading = new LightReading((int) (event.timestamp/1000), event.values);
-			LightSensor.getInstance().dataReady((LightReading)reading);
+			reading = new LightReading((int) (event.timestamp / 1000), event.values);
+			LightSensor.getInstance().dataReady((LightReading) reading);
 			Log.d("NervousnetVMService", "Light data collected");
 			break;
 		case Sensor.TYPE_PROXIMITY:
-//			reading = new SensorDescProximity(timestamp, event.values[0]);
+			// reading = new SensorDescProximity(timestamp, event.values[0]);
 			Log.d("NervousnetVMService", "Proximity data collected");
 			break;
 		case Sensor.TYPE_ACCELEROMETER:
-			reading = new AccelerometerReading((int) (event.timestamp/1000), event.values);
-			AccelerometerSensor.getInstance().dataReady((AccelerometerReading)reading);
+			reading = new AccelerometerReading((int) (event.timestamp / 1000), event.values);
+			AccelerometerSensor.getInstance().dataReady((AccelerometerReading) reading);
 			Log.d("NervousnetVMService", "Accelerometer data collected");
 			break;
 		case Sensor.TYPE_MAGNETIC_FIELD:
-//			reading = new SensorDescMagnetic(timestamp, event.values[0], event.values[1], event.values[2]);
+			// reading = new SensorDescMagnetic(timestamp, event.values[0],
+			// event.values[1], event.values[2]);
 			Log.d("NervousnetVMService", "Magnetic data collected");
 			break;
 		case Sensor.TYPE_GYROSCOPE:
-			reading = new GyroReading((int) (event.timestamp/1000), event.values);
-			GyroSensor.getInstance().dataReady((GyroReading)reading);
-//			reading = new SensorDescGyroscope(timestamp, event.values[0], event.values[1], event.values[2]);
+			reading = new GyroReading((int) (event.timestamp / 1000), event.values);
+			GyroSensor.getInstance().dataReady((GyroReading) reading);
+			// reading = new SensorDescGyroscope(timestamp, event.values[0],
+			// event.values[1], event.values[2]);
 			Log.d("NervousnetVMService", "Gyroscope data collected");
 			break;
 		case Sensor.TYPE_AMBIENT_TEMPERATURE:
-//			reading = new SensorDescTemperature(timestamp, event.values[0]);
+			// reading = new SensorDescTemperature(timestamp, event.values[0]);
 			Log.d("NervousnetVMService", "Temperature data collected");
 			break;
 		case Sensor.TYPE_RELATIVE_HUMIDITY:
-//			reading = new SensorDescHumidity(timestamp, event.values[0]);
+			// reading = new SensorDescHumidity(timestamp, event.values[0]);
 			Log.d("NervousnetVMService", "Humidity data collected");
 			break;
 		case Sensor.TYPE_PRESSURE:
-//			reading = new SensorDescPressure(timestamp, event.values[0]);
+			// reading = new SensorDescPressure(timestamp, event.values[0]);
 			Log.d("NervousnetVMService", "Pressure data collected");
 			break;
 		}
-		
-	}
 
+	}
 
 }

@@ -41,13 +41,13 @@ public class ConnectivitySensor {
 		listenerList.add(listener);
 		listenerMutex.unlock();
 	}
-	
+
 	public void removeListener(ConnectivitySensorListener listener) {
 		listenerMutex.lock();
 		listenerList.remove(listener);
 		listenerMutex.unlock();
 	}
-	
+
 	public void clearListeners() {
 		listenerMutex.lock();
 		listenerList.clear();
@@ -65,7 +65,7 @@ public class ConnectivitySensor {
 		}
 		listenerMutex.unlock();
 	}
-	
+
 	public void runConnectivitySensor() {
 
 		ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -110,19 +110,23 @@ public class ConnectivitySensor {
 				if (ci.isRegistered()) {
 					if (ci instanceof CellInfoCdma) {
 						CellInfoCdma cic = (CellInfoCdma) ci;
-						cdmaHashId = generateMobileDigestId(cic.getCellIdentity().getSystemId(), cic.getCellIdentity().getNetworkId(), cic.getCellIdentity().getBasestationId());
+						cdmaHashId = generateMobileDigestId(cic.getCellIdentity().getSystemId(),
+								cic.getCellIdentity().getNetworkId(), cic.getCellIdentity().getBasestationId());
 					}
 					if (ci instanceof CellInfoGsm) {
 						CellInfoGsm cic = (CellInfoGsm) ci;
-						gsmHashId = generateMobileDigestId(cic.getCellIdentity().getMcc(), cic.getCellIdentity().getMnc(), cic.getCellIdentity().getCid());
+						gsmHashId = generateMobileDigestId(cic.getCellIdentity().getMcc(),
+								cic.getCellIdentity().getMnc(), cic.getCellIdentity().getCid());
 					}
 					if (ci instanceof CellInfoLte) {
 						CellInfoLte cic = (CellInfoLte) ci;
-						lteHashId = generateMobileDigestId(cic.getCellIdentity().getMcc(), cic.getCellIdentity().getMnc(), cic.getCellIdentity().getCi());
+						lteHashId = generateMobileDigestId(cic.getCellIdentity().getMcc(),
+								cic.getCellIdentity().getMnc(), cic.getCellIdentity().getCi());
 					}
 					if (ci instanceof CellInfoWcdma) {
 						CellInfoWcdma cic = (CellInfoWcdma) ci;
-						wcdmaHashId = generateMobileDigestId(cic.getCellIdentity().getMcc(), cic.getCellIdentity().getMnc(), cic.getCellIdentity().getCid());
+						wcdmaHashId = generateMobileDigestId(cic.getCellIdentity().getMcc(),
+								cic.getCellIdentity().getMnc(), cic.getCellIdentity().getCid());
 					}
 				}
 			}
@@ -145,10 +149,9 @@ public class ConnectivitySensor {
 		mobileHashBuilder.append(new String(gsmHashId));
 		mobileHashBuilder.append(new String(wcdmaHashId));
 
-		dataReady(new ConnectivityReading((int) System.currentTimeMillis()/1000, isConnected, networkType, isRoaming, wifiHashId, wifiStrength, mobileHashBuilder.toString()));
-		
-	
-	
+		dataReady(new ConnectivityReading((int) System.currentTimeMillis() / 1000, isConnected, networkType, isRoaming,
+				wifiHashId, wifiStrength, mobileHashBuilder.toString()));
+
 	}
 
 	public class ConnectivityTask extends AsyncTask<Void, Void, Void> {
@@ -196,19 +199,23 @@ public class ConnectivitySensor {
 					if (ci.isRegistered()) {
 						if (ci instanceof CellInfoCdma) {
 							CellInfoCdma cic = (CellInfoCdma) ci;
-							cdmaHashId = generateMobileDigestId(cic.getCellIdentity().getSystemId(), cic.getCellIdentity().getNetworkId(), cic.getCellIdentity().getBasestationId());
+							cdmaHashId = generateMobileDigestId(cic.getCellIdentity().getSystemId(),
+									cic.getCellIdentity().getNetworkId(), cic.getCellIdentity().getBasestationId());
 						}
 						if (ci instanceof CellInfoGsm) {
 							CellInfoGsm cic = (CellInfoGsm) ci;
-							gsmHashId = generateMobileDigestId(cic.getCellIdentity().getMcc(), cic.getCellIdentity().getMnc(), cic.getCellIdentity().getCid());
+							gsmHashId = generateMobileDigestId(cic.getCellIdentity().getMcc(),
+									cic.getCellIdentity().getMnc(), cic.getCellIdentity().getCid());
 						}
 						if (ci instanceof CellInfoLte) {
 							CellInfoLte cic = (CellInfoLte) ci;
-							lteHashId = generateMobileDigestId(cic.getCellIdentity().getMcc(), cic.getCellIdentity().getMnc(), cic.getCellIdentity().getCi());
+							lteHashId = generateMobileDigestId(cic.getCellIdentity().getMcc(),
+									cic.getCellIdentity().getMnc(), cic.getCellIdentity().getCi());
 						}
 						if (ci instanceof CellInfoWcdma) {
 							CellInfoWcdma cic = (CellInfoWcdma) ci;
-							wcdmaHashId = generateMobileDigestId(cic.getCellIdentity().getMcc(), cic.getCellIdentity().getMnc(), cic.getCellIdentity().getCid());
+							wcdmaHashId = generateMobileDigestId(cic.getCellIdentity().getMcc(),
+									cic.getCellIdentity().getMnc(), cic.getCellIdentity().getCid());
 						}
 					}
 				}
@@ -231,9 +238,10 @@ public class ConnectivitySensor {
 			mobileHashBuilder.append(new String(gsmHashId));
 			mobileHashBuilder.append(new String(wcdmaHashId));
 
-			dataReady(new ConnectivityReading((int) System.currentTimeMillis()/1000, isConnected, networkType, isRoaming, wifiHashId, wifiStrength, mobileHashBuilder.toString()));
+			dataReady(new ConnectivityReading((int) System.currentTimeMillis() / 1000, isConnected, networkType,
+					isRoaming, wifiHashId, wifiStrength, mobileHashBuilder.toString()));
 			return null;
-		
+
 		}
 	}
 
@@ -253,24 +261,25 @@ public class ConnectivitySensor {
 	}
 
 	public void start() {
-		 handler = new Handler(hthread.getLooper());
+		handler = new Handler(hthread.getLooper());
 		final Runnable run = new Runnable() {
 			@Override
 			public void run() {
 				Log.d("ConnectivitySensor", "Inside ConnectivitySensor  run ");
 				runConnectivitySensor();
-//				new ConnectivityTask().execute();
+				// new ConnectivityTask().execute();
 				handler.postDelayed(this, 5000);
 			}
-			
+
 		};
-		
+
 		boolean flag = handler.postDelayed(run, 0);
-		Log.d("ConnectivitySensor", " flag = "+flag);
+		Log.d("ConnectivitySensor", " flag = " + flag);
 	}
 
 	HandlerThread hthread;
 	Handler handler;
+
 	private ConnectivitySensor(Context context) {
 		this.context = context;
 

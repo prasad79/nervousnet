@@ -10,8 +10,9 @@ import android.util.Log;
  * @author prasad
  */
 public class ConnectivityReading extends SensorReading {
-	
+
 	private boolean isConnected;
+
 	/**
 	 * @return the isConnected
 	 */
@@ -20,7 +21,8 @@ public class ConnectivityReading extends SensorReading {
 	}
 
 	/**
-	 * @param isConnected the isConnected to set
+	 * @param isConnected
+	 *            the isConnected to set
 	 */
 	public void setConnected(boolean isConnected) {
 		this.isConnected = isConnected;
@@ -34,7 +36,8 @@ public class ConnectivityReading extends SensorReading {
 	}
 
 	/**
-	 * @param networkType the networkType to set
+	 * @param networkType
+	 *            the networkType to set
 	 */
 	public void setNetworkType(int networkType) {
 		this.networkType = networkType;
@@ -48,7 +51,8 @@ public class ConnectivityReading extends SensorReading {
 	}
 
 	/**
-	 * @param isRoaming the isRoaming to set
+	 * @param isRoaming
+	 *            the isRoaming to set
 	 */
 	public void setRoaming(boolean isRoaming) {
 		this.isRoaming = isRoaming;
@@ -62,7 +66,8 @@ public class ConnectivityReading extends SensorReading {
 	}
 
 	/**
-	 * @param wifiHashId the wifiHashId to set
+	 * @param wifiHashId
+	 *            the wifiHashId to set
 	 */
 	public void setWifiHashId(String wifiHashId) {
 		this.wifiHashId = wifiHashId;
@@ -76,7 +81,8 @@ public class ConnectivityReading extends SensorReading {
 	}
 
 	/**
-	 * @param wifiStrength the wifiStrength to set
+	 * @param wifiStrength
+	 *            the wifiStrength to set
 	 */
 	public void setWifiStrength(int wifiStrength) {
 		this.wifiStrength = wifiStrength;
@@ -90,7 +96,8 @@ public class ConnectivityReading extends SensorReading {
 	}
 
 	/**
-	 * @param mobileHashId the mobileHashId to set
+	 * @param mobileHashId
+	 *            the mobileHashId to set
 	 */
 	public void setMobileHashId(String mobileHashId) {
 		this.mobileHashId = mobileHashId;
@@ -102,8 +109,8 @@ public class ConnectivityReading extends SensorReading {
 	private int wifiStrength;
 	private String mobileHashId;
 
-
-	public ConnectivityReading(int timestamp, boolean isConnected, int networkType, boolean isRoaming, String wifiHashId, int wifiStrength, String mobileHashId) {
+	public ConnectivityReading(int timestamp, boolean isConnected, int networkType, boolean isRoaming,
+			String wifiHashId, int wifiStrength, String mobileHashId) {
 		this.timestamp = timestamp;
 		this.isConnected = isConnected;
 		this.networkType = networkType;
@@ -122,15 +129,13 @@ public class ConnectivityReading extends SensorReading {
 
 	public void readFromParcel(Parcel in) {
 		timestamp = in.readInt();
-		isConnected = in.readByte() == 1 ? true: false;
+		isConnected = in.readByte() == 1 ? true : false;
 		networkType = in.readInt();
-		isRoaming = in.readByte() == 1 ? true: false;
+		isRoaming = in.readByte() == 1 ? true : false;
 		wifiHashId = in.readString();
 		wifiStrength = in.readInt();
 		mobileHashId = in.readString();
 	}
-
-	
 
 	/*
 	 * (non-Javadoc)
@@ -151,9 +156,9 @@ public class ConnectivityReading extends SensorReading {
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
 		out.writeInt(timestamp);
-		out.writeByte(isConnected ? (byte) 1: (byte) 0);
+		out.writeByte(isConnected ? (byte) 1 : (byte) 0);
 		out.writeInt(networkType);
-		out.writeByte(isRoaming ? (byte) 1: (byte) 0);
+		out.writeByte(isRoaming ? (byte) 1 : (byte) 0);
 		out.writeString(wifiHashId);
 		out.writeInt(wifiStrength);
 		out.writeString(mobileHashId);
@@ -170,11 +175,5 @@ public class ConnectivityReading extends SensorReading {
 			return new ConnectivityReading[size];
 		}
 	};
-
-
-
-
-
-
 
 }

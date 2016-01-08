@@ -10,11 +10,10 @@ import android.util.Log;
  * @author prasad
  */
 public class GyroReading extends SensorReading {
-	
+
 	private float[] values = new float[3];
 
-
-	public GyroReading(int timestamp, float []values) {
+	public GyroReading(int timestamp, float[] values) {
 		this.timestamp = timestamp;
 		this.values = values;
 	}
@@ -32,21 +31,18 @@ public class GyroReading extends SensorReading {
 		in.readFloatArray(values);
 	}
 
-	
-	
 	public float getGyroX() {
 		return values[0];
 	}
-	
-	
+
 	public float getGyroY() {
 		return values[1];
 	}
-	
-	
+
 	public float getGyroZ() {
 		return values[2];
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -81,11 +77,5 @@ public class GyroReading extends SensorReading {
 			return new GyroReading[size];
 		}
 	};
-
-
-
-
-
-
 
 }

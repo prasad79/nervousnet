@@ -39,7 +39,7 @@ public class BatterySensor implements SensorStatusImplementation {
 	private List<BatterySensorListener> listenerList = new ArrayList<BatterySensorListener>();
 	private Lock listenerMutex = new ReentrantLock();
 
-	public interface BatterySensorListener extends SensorEventListener{
+	public interface BatterySensorListener extends SensorEventListener {
 		public void batterySensorDataReady(BatteryReading reading);
 	}
 

@@ -21,11 +21,10 @@ public class LightSensor implements SensorStatusImplementation {
 
 	public static LightSensor _instance = null;
 	public static final long SENSOR_ID = 0x0000000000000004L;
-	
 
 	private List<LightSensorListener> listenerList = new ArrayList<LightSensorListener>();
 	private Lock listenerMutex = new ReentrantLock();
-	
+
 	private LightReading reading;
 
 	private LightSensor() {
@@ -34,22 +33,19 @@ public class LightSensor implements SensorStatusImplementation {
 	public static LightSensor getInstance() {
 		Log.d("LightSensor", "getInstance called ");
 
-
-		if (_instance == null){
+		if (_instance == null) {
 			Log.d("LightSensor", "instance is null ");
 			_instance = new LightSensor();
 		}
-		
 
 		return _instance;
 	}
 
-	public interface LightSensorListener{
+	public interface LightSensorListener {
 		public void lightSensorDataReady(LightReading reading);
 	}
 
 	public void addListener(LightSensorListener listener) {
-		
 
 		listenerMutex.lock();
 		listenerList.add(listener);
@@ -68,21 +64,24 @@ public class LightSensor implements SensorStatusImplementation {
 		listenerMutex.unlock();
 	}
 
+	public void start() {
+	}
 
-	public void start() {}
-
-	public void stop() {}
+	public void stop() {
+	}
 
 	/**
 	 * @param batteryReading
 	 */
 	public void dataReady(LightReading reading) {
-//		Log.d("AccelerometerSensor", "dataReady called "+listenerList.size());
-//
+		// Log.d("AccelerometerSensor", "dataReady called
+		// "+listenerList.size());
+		//
 		this.reading = reading;
 		listenerMutex.lock();
 		for (LightSensorListener listener : listenerList) {
-//			Log.d("AccelerometerSensor", "listener.accelSensorDataReady calling ");
+			// Log.d("AccelerometerSensor", "listener.accelSensorDataReady
+			// calling ");
 			listener.lightSensorDataReady(reading);
 		}
 		listenerMutex.unlock();
@@ -108,12 +107,8 @@ public class LightSensor implements SensorStatusImplementation {
 	 */
 	@Override
 	public SensorReading getReading() {
-	
+
 		return reading;
 	}
-
-	
-	
-
 
 }

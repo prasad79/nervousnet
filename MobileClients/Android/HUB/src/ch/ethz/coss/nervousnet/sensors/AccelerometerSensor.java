@@ -20,11 +20,10 @@ public class AccelerometerSensor implements SensorStatusImplementation {
 
 	public static AccelerometerSensor _instance = null;
 	public static final long SENSOR_ID = 0x0000000000000003L;
-	
 
 	private List<AccelerometerSensorListener> listenerList = new ArrayList<AccelerometerSensorListener>();
 	private Lock listenerMutex = new ReentrantLock();
-	
+
 	private AccelerometerReading reading;
 
 	private AccelerometerSensor() {
@@ -33,31 +32,28 @@ public class AccelerometerSensor implements SensorStatusImplementation {
 	public static AccelerometerSensor getInstance() {
 		Log.d("AccelerometerSensor", "getInstance called ");
 
-
-		if (_instance == null){
+		if (_instance == null) {
 			Log.d("AccelerometerSensor", "instance is null ");
 			_instance = new AccelerometerSensor();
 		}
-		
 
 		return _instance;
 	}
 
-	public interface AccelerometerSensorListener{
+	public interface AccelerometerSensorListener {
 		public void accelSensorDataReady(AccelerometerReading reading);
 	}
 
 	public void addListener(AccelerometerSensorListener listener) {
-		
 
 		listenerMutex.lock();
 		listenerList.add(listener);
 		listenerMutex.unlock();
-//		Log.d("AccelerometerSensor", "Listener added "+listenerList.size());
+		// Log.d("AccelerometerSensor", "Listener added "+listenerList.size());
 	}
 
 	public void removeListener(AccelerometerSensorListener listener) {
-//		Log.d("AccelerometerSensor", "Listener remove "+listenerList.size());
+		// Log.d("AccelerometerSensor", "Listener remove "+listenerList.size());
 
 		listenerMutex.lock();
 		listenerList.remove(listener);
@@ -70,23 +66,26 @@ public class AccelerometerSensor implements SensorStatusImplementation {
 		listenerMutex.unlock();
 	}
 
+	public void start() {
+	}
 
-	public void start() {}
-
-	public void stop() {}
+	public void stop() {
+	}
 
 	/**
 	 * @param batteryReading
 	 */
 	public void dataReady(AccelerometerReading reading) {
-//		Log.d("AccelerometerSensor", "dataReady called "+listenerList.size());
+		// Log.d("AccelerometerSensor", "dataReady called
+		// "+listenerList.size());
 
 		this.reading = reading;
 		listenerMutex.lock();
-		
+
 		for (AccelerometerSensorListener listener : listenerList) {
-//			Log.d("AccelerometerSensor", "listener.accelSensorDataReady calling ");
-			
+			// Log.d("AccelerometerSensor", "listener.accelSensorDataReady
+			// calling ");
+
 			listener.accelSensorDataReady(reading);
 		}
 		listenerMutex.unlock();
@@ -112,12 +111,8 @@ public class AccelerometerSensor implements SensorStatusImplementation {
 	 */
 	@Override
 	public SensorReading getReading() {
-	
+
 		return reading;
 	}
-
-	
-	
-
 
 }

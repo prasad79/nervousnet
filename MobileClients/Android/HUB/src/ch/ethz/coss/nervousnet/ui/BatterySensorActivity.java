@@ -15,7 +15,7 @@ import ch.ethz.coss.nervousnet.sensors.BatterySensor.BatterySensorListener;
 import ch.ethz.coss.nervousnet.vm.BatteryReading;
 
 public class BatterySensorActivity extends BaseSensorActivity implements BatterySensorListener {
-	
+
 	TextView battery_percent, battery_isCharging;
 
 	@Override
@@ -37,7 +37,7 @@ public class BatterySensorActivity extends BaseSensorActivity implements Battery
 	public void batterySensorDataReady(BatteryReading reading) {
 		Log.d("BatterySensorActivity",
 				"Inside BatterySensorActivity  Data Ready called - charging status = " + reading.isCharging());
-		
+
 		update(reading);
 	}
 
@@ -115,32 +115,37 @@ public class BatterySensorActivity extends BaseSensorActivity implements Battery
 		runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-				battery_percent.setText("Battery level = "
-						+ (reading.getPercent()
-						+ "%"));
-				battery_isCharging.setText("Charging status = "
-						+ (reading.isCharging()? "YES": "NO"));
-				
+				battery_percent.setText("Battery level = " + (reading.getPercent() + "%"));
+				battery_isCharging.setText("Charging status = " + (reading.isCharging() ? "YES" : "NO"));
+
 			}
 		});
 	}
 
-	/* (non-Javadoc)
-	 * @see android.hardware.SensorEventListener#onAccuracyChanged(android.hardware.Sensor, int)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * android.hardware.SensorEventListener#onAccuracyChanged(android.hardware.
+	 * Sensor, int)
 	 */
 	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	/* (non-Javadoc)
-	 * @see android.hardware.SensorEventListener#onSensorChanged(android.hardware.SensorEvent)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * android.hardware.SensorEventListener#onSensorChanged(android.hardware.
+	 * SensorEvent)
 	 */
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

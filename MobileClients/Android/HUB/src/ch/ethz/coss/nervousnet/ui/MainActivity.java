@@ -69,12 +69,12 @@ public class MainActivity extends BaseActivity {
 
 	@Override
 	protected void onResume() {
-		
+
 		Log.d("MainActivity", "onResumeCalled");
-		
+
 		super.onResume();
 		updateActionBar();
-		
+
 	}
 
 	public void toastToScreen(String msg, boolean lengthLong) {
@@ -87,7 +87,7 @@ public class MainActivity extends BaseActivity {
 		finish();
 		System.exit(0);
 	}
-	
+
 	@Override
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);

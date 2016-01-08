@@ -10,11 +10,10 @@ import android.util.Log;
  * @author prasad
  */
 public class LightReading extends SensorReading {
-	
+
 	private float[] values = new float[3];
 
-
-	public LightReading(int timestamp, float []values) {
+	public LightReading(int timestamp, float[] values) {
 		this.timestamp = timestamp;
 		this.values = values;
 	}
@@ -32,12 +31,10 @@ public class LightReading extends SensorReading {
 		in.readFloatArray(values);
 	}
 
-	
-	
 	public float getLuxValue() {
 		return values[0];
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -72,11 +69,5 @@ public class LightReading extends SensorReading {
 			return new LightReading[size];
 		}
 	};
-
-
-
-
-
-
 
 }

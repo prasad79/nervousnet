@@ -7,14 +7,10 @@ import android.os.Parcelable;
  * @author prasad
  */
 public class AccelerometerReading extends SensorReading {
-	
-	
-	private float []values = new float[3];
-	 
-	
-	
 
-	public AccelerometerReading(int timestamp, float [] values) {
+	private float[] values = new float[3];
+
+	public AccelerometerReading(int timestamp, float[] values) {
 		this.timestamp = timestamp;
 		this.values = values;
 	}
@@ -25,24 +21,23 @@ public class AccelerometerReading extends SensorReading {
 	public AccelerometerReading(Parcel in) {
 		readFromParcel(in);
 	}
-	
-	
-	public float getX(){
+
+	public float getX() {
 		return values[0];
 	}
-	
-	public float getY(){
+
+	public float getY() {
 		return values[1];
 	}
-	
-	public float getZ(){
+
+	public float getZ() {
 		return values[2];
 	}
 
 	public void readFromParcel(Parcel in) {
 
 		timestamp = in.readInt();
-		
+
 		in.readFloatArray(values);
 	}
 
@@ -79,10 +74,5 @@ public class AccelerometerReading extends SensorReading {
 			return new AccelerometerReading[size];
 		}
 	};
-
-	
-
-
-
 
 }

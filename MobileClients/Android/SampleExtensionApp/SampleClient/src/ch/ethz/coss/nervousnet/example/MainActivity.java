@@ -20,8 +20,8 @@ import ch.ethz.coss.nervousnet.vm.NervousnetRemote;
 public class MainActivity extends Activity {
 	protected NervousnetRemote mService;
 	ServiceConnection mServiceConnection;
-	TextView count, battery_percent, battery_isCharging, battery_isUSB, battery_isAC, location_values, temp, volt, health,
-	accelX, accelY, accelZ;
+	TextView count, battery_percent, battery_isCharging, battery_isUSB, battery_isAC, location_values, temp, volt,
+			health, accelX, accelY, accelZ;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,14 +35,13 @@ public class MainActivity extends Activity {
 		temp = (TextView) findViewById(R.id.battery_temp);
 		volt = (TextView) findViewById(R.id.battery_volt);
 		health = (TextView) findViewById(R.id.battery_health);
-		
+
 		location_values = (TextView) findViewById(R.id.location_values);
-		
+
 		accelX = (TextView) findViewById(R.id.accel_x);
 		accelY = (TextView) findViewById(R.id.accel_y);
 		accelZ = (TextView) findViewById(R.id.accel_z);
-		
-		
+
 		initConnection();
 	}
 
@@ -142,44 +141,40 @@ public class MainActivity extends Activity {
 	public void updateStatus() {
 		try {
 			System.out.println("Get Battery Reading");
-			
-			count.setText(mService.getCounter()+"");
-			
+
+			count.setText(mService.getCounter() + "");
+
 			BatteryReading breading = mService.getBatteryReading();
 			LocationReading lreading = mService.getLocationReading();
 			AccelerometerReading aReading = mService.getAccelerometerReading();
-			
-			if (breading != null){
+
+			if (breading != null) {
 				System.out.println("Set Battery Reading");
-				battery_percent.setText("Charge Remaining = "+breading.getPercent() * 100 + " %");
-				battery_isCharging.setText("Charging: "+(breading.isCharging()? "YES": "NO"));
-				battery_isUSB.setText("USB Charging: "+(breading.getCharging_type() == 1? "YES": "NO"));
-				battery_isAC.setText("AC Charging: "+(breading.getCharging_type() == 2? "YES": "NO"));
-				temp.setText("Temperature: "+breading.getTemp()+" C");
-				volt.setText("Voltage: "+breading.getVolt()+" mV");
-				health.setText("Health Status: "+breading.getHealthString());
-				
-			}
-			else{
+				battery_percent.setText("Charge Remaining = " + breading.getPercent() * 100 + " %");
+				battery_isCharging.setText("Charging: " + (breading.isCharging() ? "YES" : "NO"));
+				battery_isUSB.setText("USB Charging: " + (breading.getCharging_type() == 1 ? "YES" : "NO"));
+				battery_isAC.setText("AC Charging: " + (breading.getCharging_type() == 2 ? "YES" : "NO"));
+				temp.setText("Temperature: " + breading.getTemp() + " C");
+				volt.setText("Voltage: " + breading.getVolt() + " mV");
+				health.setText("Health Status: " + breading.getHealthString());
+
+			} else {
 				System.out.println("Set Location Reading");
 				battery_percent.setText("Battery sensor not responding.");
 			}
-			
-			if(lreading != null) {
-				
+
+			if (lreading != null) {
+
 				location_values.setText(lreading.toString());
 			}
-			
-			
-			if(aReading != null) {
-				accelX.setText("X: "+aReading.getX());
-				accelY.setText("Y: "+aReading.getY());
-				accelZ.setText("Z: "+aReading.getZ());
-				
+
+			if (aReading != null) {
+				accelX.setText("X: " + aReading.getX());
+				accelY.setText("Y: " + aReading.getY());
+				accelZ.setText("Z: " + aReading.getZ());
+
 			}
-//			
-			
-			
+			//
 
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
@@ -198,7 +193,7 @@ public class MainActivity extends Activity {
 		public void run() {
 
 			updateStatus(); // this function can change value of m_interval.
-		
+
 			m_handler.postDelayed(m_statusChecker, m_interval);
 		}
 	};
