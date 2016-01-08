@@ -23,11 +23,12 @@ import ch.ethz.coss.nervousnet.sensors.AccelerometerSensor;
 import ch.ethz.coss.nervousnet.sensors.BatterySensor;
 import ch.ethz.coss.nervousnet.sensors.GyroSensor;
 import ch.ethz.coss.nervousnet.sensors.BatterySensor.BatterySensorListener;
+import ch.ethz.coss.nervousnet.sensors.ConnectivitySensor.ConnectivitySensorListener;
 import ch.ethz.coss.nervousnet.sensors.LightSensor;
 import ch.ethz.coss.nervousnet.sensors.LocationSensor;
 import ch.ethz.coss.nervousnet.sensors.LocationSensor.LocationSensorListener;
 
-public class NervousnetVMService extends Service implements BatterySensorListener, LocationSensorListener, SensorEventListener {
+public class NervousnetVMService extends Service implements BatterySensorListener, LocationSensorListener, SensorEventListener, ConnectivitySensorListener {
 
 	
 //	private NervousnetVMServiceHandler serviceHandler;
@@ -105,6 +106,7 @@ public class NervousnetVMService extends Service implements BatterySensorListene
 		NervousnetVMServiceHandler.getInstance().scheduleSensor(Constants.SENSOR_LIGHT, NervousnetVMService.this, this);
 		NervousnetVMServiceHandler.getInstance().scheduleSensor(Constants.SENSOR_ACCELEROMETER, NervousnetVMService.this, this);
 		NervousnetVMServiceHandler.getInstance().scheduleSensor(Constants.SENSOR_GYRO, NervousnetVMService.this, this);
+		NervousnetVMServiceHandler.getInstance().scheduleSensor(Constants.SENSOR_CONNECTIVITY, NervousnetVMService.this, this);
 
 		if (Constants.DEBUG)
 			Toast.makeText(NervousnetVMService.this, "Service started", Toast.LENGTH_LONG).show();
@@ -312,6 +314,16 @@ public class NervousnetVMService extends Service implements BatterySensorListene
 		Log.d("NervousnetVMService", reading.toString());
 
 	}
+	
+	/* (non-Javadoc)
+	 * @see ch.ethz.coss.nervousnet.sensors.ConnectivitySensor.ConnectivitySensorListener#connectivitySensorDataReady(ch.ethz.coss.nervousnet.vm.ConnectivityReading)
+	 */
+	@Override
+	public void connectivitySensorDataReady(ConnectivityReading reading) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 	/* (non-Javadoc)
 	 * @see android.hardware.SensorEventListener#onAccuracyChanged(android.hardware.Sensor, int)
@@ -373,5 +385,6 @@ public class NervousnetVMService extends Service implements BatterySensorListene
 		}
 		
 	}
+
 
 }

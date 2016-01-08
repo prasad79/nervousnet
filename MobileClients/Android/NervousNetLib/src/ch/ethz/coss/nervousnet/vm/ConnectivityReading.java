@@ -12,6 +12,90 @@ import android.util.Log;
 public class ConnectivityReading extends SensorReading {
 	
 	private boolean isConnected;
+	/**
+	 * @return the isConnected
+	 */
+	public boolean isConnected() {
+		return isConnected;
+	}
+
+	/**
+	 * @param isConnected the isConnected to set
+	 */
+	public void setConnected(boolean isConnected) {
+		this.isConnected = isConnected;
+	}
+
+	/**
+	 * @return the networkType
+	 */
+	public int getNetworkType() {
+		return networkType;
+	}
+
+	/**
+	 * @param networkType the networkType to set
+	 */
+	public void setNetworkType(int networkType) {
+		this.networkType = networkType;
+	}
+
+	/**
+	 * @return the isRoaming
+	 */
+	public boolean isRoaming() {
+		return isRoaming;
+	}
+
+	/**
+	 * @param isRoaming the isRoaming to set
+	 */
+	public void setRoaming(boolean isRoaming) {
+		this.isRoaming = isRoaming;
+	}
+
+	/**
+	 * @return the wifiHashId
+	 */
+	public String getWifiHashId() {
+		return wifiHashId;
+	}
+
+	/**
+	 * @param wifiHashId the wifiHashId to set
+	 */
+	public void setWifiHashId(String wifiHashId) {
+		this.wifiHashId = wifiHashId;
+	}
+
+	/**
+	 * @return the wifiStrength
+	 */
+	public int getWifiStrength() {
+		return wifiStrength;
+	}
+
+	/**
+	 * @param wifiStrength the wifiStrength to set
+	 */
+	public void setWifiStrength(int wifiStrength) {
+		this.wifiStrength = wifiStrength;
+	}
+
+	/**
+	 * @return the mobileHashId
+	 */
+	public String getMobileHashId() {
+		return mobileHashId;
+	}
+
+	/**
+	 * @param mobileHashId the mobileHashId to set
+	 */
+	public void setMobileHashId(String mobileHashId) {
+		this.mobileHashId = mobileHashId;
+	}
+
 	private int networkType;
 	private boolean isRoaming;
 	private String wifiHashId;

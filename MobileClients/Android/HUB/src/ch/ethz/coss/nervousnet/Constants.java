@@ -37,6 +37,7 @@ public final class Constants {
 	public final static int SENSOR_ACCELEROMETER = 0;
 	public final static int SENSOR_LIGHT = 4;
 	public final static int SENSOR_GYRO = 7;
+	public final static int SENSOR_CONNECTIVITY = 8;
 	public final static int SENSOR_LOCATION = 99;
 
 }

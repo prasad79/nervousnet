@@ -25,6 +25,8 @@ import ch.ethz.coss.nervousnet.Constants;
 import ch.ethz.coss.nervousnet.sensors.AccelerometerSensor;
 import ch.ethz.coss.nervousnet.sensors.BatterySensor;
 import ch.ethz.coss.nervousnet.sensors.BatterySensor.BatterySensorListener;
+import ch.ethz.coss.nervousnet.sensors.ConnectivitySensor;
+import ch.ethz.coss.nervousnet.sensors.ConnectivitySensor.ConnectivitySensorListener;
 import ch.ethz.coss.nervousnet.sensors.LocationSensor;
 import ch.ethz.coss.nervousnet.sensors.LocationSensor.LocationSensorListener;
 
@@ -52,6 +54,7 @@ public class NervousnetVMServiceHandler {
 	
 
 	protected BatterySensor sensorBattery = null;
+	protected ConnectivitySensor sensorConnectivity= null;
 	protected LocationSensor sensorLocation = null;
 //	protected AccelerometerSensor sensorAccel = null;
 //	protected LightSensor sensorLight;
@@ -107,6 +110,9 @@ public class NervousnetVMServiceHandler {
 				}else if (sensorId == Constants.SENSOR_GYRO) {
 					registerListener(listener, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE));
 					Log.d("NervousnetVMServiceHandler", "Registered for GYro sensor");
+				} else if (sensorId == Constants.SENSOR_CONNECTIVITY) {
+					startConnectivitySensor(context, (ConnectivitySensorListener)listener);
+					Log.d("NervousnetVMServiceHandler", "starting connectivity sensor");
 				}
 
 				
@@ -197,6 +203,12 @@ public class NervousnetVMServiceHandler {
 		sensorBattery = BatterySensor.getInstance(context);
 		sensorBattery.addListener(listener);
 		sensorBattery.start();
+	}
+	
+	private void startConnectivitySensor(Context context, ConnectivitySensorListener listener) {
+		sensorConnectivity = ConnectivitySensor.getInstance(context);
+		sensorConnectivity.addListener(listener);
+		sensorConnectivity.start();
 	}
 
 	private void startLocationSensor(Context context, LocationSensorListener listener) {

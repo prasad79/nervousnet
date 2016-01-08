@@ -93,6 +93,8 @@ public class LocationReading extends SensorReading {
 	};
 
 	public String toString() {
+		if(latnLong == null)
+		 return new String("Location not set");
 		return new String("Latitude = " + latnLong[0]+ ", Longitude = "+latnLong[1]+ ", Altitude = "+altitude);
 	}
 

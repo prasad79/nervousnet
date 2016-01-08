@@ -13,6 +13,8 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.telephony.CellInfo;
 import android.telephony.CellInfoCdma;
 import android.telephony.CellInfoGsm;
@@ -22,6 +24,7 @@ import android.telephony.CellLocation;
 import android.telephony.TelephonyManager;
 import android.telephony.cdma.CdmaCellLocation;
 import android.telephony.gsm.GsmCellLocation;
+import android.util.Log;
 import ch.ethz.coss.nervousnet.utils.ValueFormatter;
 import ch.ethz.coss.nervousnet.vm.ConnectivityReading;
 
@@ -30,20 +33,16 @@ public class ConnectivitySensor {
 	private Context context;
 	private ConnectivityReading reading;
 
-	public ConnectivitySensor(Context context) {
-		this.context = context;
-	}
-
-	private List<ConnectivityListener> listenerList = new ArrayList<ConnectivityListener>();
+	private List<ConnectivitySensorListener> listenerList = new ArrayList<ConnectivitySensorListener>();
 	private Lock listenerMutex = new ReentrantLock();
 
-	public void addListener(ConnectivityListener listener) {
+	public void addListener(ConnectivitySensorListener listener) {
 		listenerMutex.lock();
 		listenerList.add(listener);
 		listenerMutex.unlock();
 	}
 	
-	public void removeListener(ConnectivityListener listener) {
+	public void removeListener(ConnectivitySensorListener listener) {
 		listenerMutex.lock();
 		listenerList.remove(listener);
 		listenerMutex.unlock();
@@ -55,16 +54,101 @@ public class ConnectivitySensor {
 		listenerMutex.unlock();
 	}
 
-	public interface ConnectivityListener {
-		public void connectivitySensorDataReady(long timestamp, boolean isConnected, int networkType, boolean isRoaming, String wifiHashId, int wifiStrength, String mobileHashId);
+	public interface ConnectivitySensorListener {
+		public void connectivitySensorDataReady(ConnectivityReading reading);
 	}
 
-	public void dataReady(long timestamp, boolean isConnected, int networkType, boolean isRoaming, String wifiHashId, int wifiStrength, String mobileHashId) {
+	public void dataReady(ConnectivityReading reading) {
 		listenerMutex.lock();
-		for (ConnectivityListener listener : listenerList) {
-			listener.connectivitySensorDataReady(timestamp, isConnected, networkType, isRoaming, wifiHashId, wifiStrength, mobileHashId);
+		for (ConnectivitySensorListener listener : listenerList) {
+			listener.connectivitySensorDataReady(reading);
 		}
 		listenerMutex.unlock();
+	}
+	
+	public void runConnectivitySensor() {
+
+		ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+		boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+		int networkType = -1;
+		boolean isRoaming = false;
+		if (isConnected) {
+			networkType = activeNetwork.getType();
+			isRoaming = activeNetwork.isRoaming();
+		}
+
+		String wifiHashId = "";
+		int wifiStrength = Integer.MIN_VALUE;
+
+		if (networkType == ConnectivityManager.TYPE_WIFI) {
+			WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+			WifiInfo wi = wm.getConnectionInfo();
+			StringBuilder wifiInfoBuilder = new StringBuilder();
+			wifiInfoBuilder.append(wi.getBSSID());
+			wifiInfoBuilder.append(wi.getSSID());
+			try {
+				MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+				messageDigest.update(wifiInfoBuilder.toString().getBytes());
+				wifiHashId = new String(messageDigest.digest());
+			} catch (NoSuchAlgorithmException e) {
+			}
+			wifiStrength = wi.getRssi();
+		}
+
+		byte[] cdmaHashId = new byte[32];
+		byte[] lteHashId = new byte[32];
+		byte[] gsmHashId = new byte[32];
+		byte[] wcdmaHashId = new byte[32];
+
+		TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+
+		List<CellInfo> cis = tm.getAllCellInfo();
+		if (cis != null) {
+			// New method
+			for (CellInfo ci : cis) {
+				if (ci.isRegistered()) {
+					if (ci instanceof CellInfoCdma) {
+						CellInfoCdma cic = (CellInfoCdma) ci;
+						cdmaHashId = generateMobileDigestId(cic.getCellIdentity().getSystemId(), cic.getCellIdentity().getNetworkId(), cic.getCellIdentity().getBasestationId());
+					}
+					if (ci instanceof CellInfoGsm) {
+						CellInfoGsm cic = (CellInfoGsm) ci;
+						gsmHashId = generateMobileDigestId(cic.getCellIdentity().getMcc(), cic.getCellIdentity().getMnc(), cic.getCellIdentity().getCid());
+					}
+					if (ci instanceof CellInfoLte) {
+						CellInfoLte cic = (CellInfoLte) ci;
+						lteHashId = generateMobileDigestId(cic.getCellIdentity().getMcc(), cic.getCellIdentity().getMnc(), cic.getCellIdentity().getCi());
+					}
+					if (ci instanceof CellInfoWcdma) {
+						CellInfoWcdma cic = (CellInfoWcdma) ci;
+						wcdmaHashId = generateMobileDigestId(cic.getCellIdentity().getMcc(), cic.getCellIdentity().getMnc(), cic.getCellIdentity().getCid());
+					}
+				}
+			}
+		} else {
+			// Legacy method
+			CellLocation cl = tm.getCellLocation();
+			if (cl instanceof CdmaCellLocation) {
+				CdmaCellLocation cic = (CdmaCellLocation) cl;
+				cdmaHashId = generateMobileDigestId(cic.getSystemId(), cic.getNetworkId(), cic.getBaseStationId());
+			}
+			if (cl instanceof GsmCellLocation) {
+				GsmCellLocation cic = (GsmCellLocation) cl;
+				gsmHashId = generateMobileDigestId(cic.getLac(), 0, cic.getCid());
+			}
+		}
+
+		StringBuilder mobileHashBuilder = new StringBuilder();
+		mobileHashBuilder.append(new String(cdmaHashId));
+		mobileHashBuilder.append(new String(lteHashId));
+		mobileHashBuilder.append(new String(gsmHashId));
+		mobileHashBuilder.append(new String(wcdmaHashId));
+
+		dataReady(new ConnectivityReading((int) System.currentTimeMillis()/1000, isConnected, networkType, isRoaming, wifiHashId, wifiStrength, mobileHashBuilder.toString()));
+		
+	
+	
 	}
 
 	public class ConnectivityTask extends AsyncTask<Void, Void, Void> {
@@ -147,8 +231,9 @@ public class ConnectivitySensor {
 			mobileHashBuilder.append(new String(gsmHashId));
 			mobileHashBuilder.append(new String(wcdmaHashId));
 
-			dataReady(System.currentTimeMillis(), isConnected, networkType, isRoaming, wifiHashId, wifiStrength, mobileHashBuilder.toString());
+			dataReady(new ConnectivityReading((int) System.currentTimeMillis()/1000, isConnected, networkType, isRoaming, wifiHashId, wifiStrength, mobileHashBuilder.toString()));
 			return null;
+		
 		}
 	}
 
@@ -168,7 +253,39 @@ public class ConnectivitySensor {
 	}
 
 	public void start() {
-		new ConnectivityTask().execute();
+		 handler = new Handler(hthread.getLooper());
+		final Runnable run = new Runnable() {
+			@Override
+			public void run() {
+				Log.d("ConnectivitySensor", "Inside ConnectivitySensor  run ");
+				runConnectivitySensor();
+//				new ConnectivityTask().execute();
+				handler.postDelayed(this, 5000);
+			}
+			
+		};
+		
+		boolean flag = handler.postDelayed(run, 0);
+		Log.d("ConnectivitySensor", " flag = "+flag);
 	}
+
+	HandlerThread hthread;
+	Handler handler;
+	private ConnectivitySensor(Context context) {
+		this.context = context;
+
+		hthread = new HandlerThread("HandlerThread");
+		hthread.start();
+	}
+
+	public static ConnectivitySensor getInstance(Context context) {
+
+		if (_instance == null)
+			_instance = new ConnectivitySensor(context);
+
+		return _instance;
+	}
+
+	public static ConnectivitySensor _instance;
 
 }

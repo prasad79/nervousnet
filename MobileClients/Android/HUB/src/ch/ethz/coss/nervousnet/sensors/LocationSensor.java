@@ -133,12 +133,17 @@ public class LocationSensor implements SensorStatusImplementation, LocationListe
 	 * @param batteryReading
 	 */
 	private void dataReady() {
-		listenerMutex.lock();
-		for (LocationSensorListener listener : listenerList) {
-			System.out.println("Sending Location Reading");
-			listener.locSensorDataReady(reading);
+		if(reading != null)
+		{
+			listenerMutex.lock();
+			for (LocationSensorListener listener : listenerList) {
+				System.out.println("Sending Location Reading");
+			
+				listener.locSensorDataReady(reading);
+			}
+			listenerMutex.unlock();
 		}
-		listenerMutex.unlock();
+	
 	}
 
 	/*
