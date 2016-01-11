@@ -3,8 +3,8 @@
 
     <string name="app_name">Nervousnet Sample Extension App</string>
     <string name="button_accept_label">Accept</string>
-	<string name="button_label_accept">Accept</string>
-	<string name="terms_of_use"> &lt;b>TERMS OF USE&lt;/b>&lt;br>&lt;br>
+    <string name="button_label_accept">Accept</string>
+    <string name="terms_of_use"> &lt;b>TERMS OF USE&lt;/b>&lt;br>&lt;br>
 
 		This
 		Software application
@@ -123,4 +123,8 @@
 		Nervousnet 1.0 beta, give us feedback &lt;a
 		href=\'mailto:nervousnet@ethz.ch\'>nervousnet@ethz.ch&lt;/a>, and
 		help!&lt;/br></string>
+    <string name="title_activity_sample_app">SampleAppActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
 </resources>

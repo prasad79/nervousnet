@@ -265,7 +265,6 @@ public class ConnectivitySensor {
 		final Runnable run = new Runnable() {
 			@Override
 			public void run() {
-				Log.d("ConnectivitySensor", "Inside ConnectivitySensor  run ");
 				runConnectivitySensor();
 				// new ConnectivityTask().execute();
 				handler.postDelayed(this, 5000);
@@ -274,7 +273,6 @@ public class ConnectivitySensor {
 		};
 
 		boolean flag = handler.postDelayed(run, 0);
-		Log.d("ConnectivitySensor", " flag = " + flag);
 	}
 
 	HandlerThread hthread;

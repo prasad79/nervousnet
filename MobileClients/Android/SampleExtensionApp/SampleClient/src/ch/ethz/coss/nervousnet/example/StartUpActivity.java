@@ -29,7 +29,7 @@ public class StartUpActivity extends Activity {
 	}
 
 	public void skipTermsScreen() {
-		Intent intent = new Intent(StartUpActivity.this, MainActivity.class);
+		Intent intent = new Intent(StartUpActivity.this, SampleAppActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 
 		startActivity(intent);

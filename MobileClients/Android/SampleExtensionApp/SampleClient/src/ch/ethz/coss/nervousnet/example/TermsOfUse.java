@@ -87,7 +87,7 @@ public class TermsOfUse {
 			TextView textView = (TextView) alert.findViewById(android.R.id.message);
 			textView.setTextSize(12);
 		} else {
-			Intent intent = new Intent(mActivity, MainActivity.class);
+			Intent intent = new Intent(mActivity, SampleAppActivity.class);
 			intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 
 			mActivity.startActivity(intent);

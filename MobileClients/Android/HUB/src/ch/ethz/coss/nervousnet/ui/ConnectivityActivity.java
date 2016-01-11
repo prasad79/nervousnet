@@ -96,7 +96,8 @@ public class ConnectivityActivity extends BaseSensorActivity implements Connecti
 			public void run() {
 
 				connectionStatus.setText("Connected = " + reading.isConnected() + "\nRoaming = " + reading.isRoaming()
-						+ "\nWifi Strength = " + reading.getWifiStrength());
+						+ "\nWifi Strength = " + reading.getWifiStrength()
+						+ "\nMobile Hash ID = " + reading.getMobileHashId());
 			}
 		});
 	}
