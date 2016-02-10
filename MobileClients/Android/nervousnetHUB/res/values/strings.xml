@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<string name="app_name">Nervousnet</string>
+	<string name="you">YOU</string>
+	<string name="action_settings">Settings</string>
+	<string name="start_service">Start Service</string>
+	<string name="stop_service">Stop Service</string>
+	<string name="settings">Settings</string>
+	<string name="title_activity_if_this_then_that">IfThisThenThatActivity</string>
+	<string name="hello_world">Hello world!</string>
+	<string name="If">IF</string>
+	<string name="then">THEN</string>
+	<string name="For">for</string>
+	<string name="yes">Yes</string>
+	<string name="no">No</string>
+	<string name="contribute">Contribute to nervousnet?</string>
+	<string name="contribute_long">Enable sensor logging and uploading to help
+		nervousnet?
+	</string>
+	<string name="dont_show_again">Don\'t show this again</string>
+	<string name="title_activity_sensor_logging_toggle">Privacy settings</string>
+	<string name="title_activity_sensors_statistics">Sensor statistics</string>
+	<string name="title_activity_charts_webview">Statistics</string>
+
+	<string-array name="sensors_list">
+		<item>Accelerometer</item>
+		<item>Battery</item>
+		<item>Connectivity</item>
+		<item>Gyroscope</item>
+		<item>Humidity</item>
+		<item>Light</item>
+		<item>Magnetic</item>
+		<item>Microphone</item>
+		<item>Noise</item>
+		<item>Pressure</item>
+		<item>Proximity</item>
+		<item>Temperature</item>
+	</string-array>
+
+	<string name="title_activity_server_details">Proxy settings</string>
+	<string name="title_activity_sensor_frequency">Sensor logging interval</string>
+	<string name="title_activity_main_apps">Nervousnet Virtual Sensors</string>
+	<string name="button_label_accept">Accept</string>
+	<string name="terms_of_use"> &lt;b>TERMS OF USE&lt;/b>&lt;br>&lt;br>
+
+		This
+		Software application
+		("App") serves to jointly produce real-time data
+		about our world to
+		create new opportunities for everyone. In
+		particular, you may run other
+		apps on top of the Nervousnet platform,
+		including gaming
+		applications!&lt;br>&lt;br>
+
+		Nervousnet measures data as
+		you provide it
+		by opening up virtual or real sensors
+		in your smartphone,
+		other smart
+		devices, or external sensors you have
+		chosen to add to this
+		Internet-of-Things kind of system.&lt;br>&lt;br>
+
+		The control panel of
+		the Nervousnet 1.0 Beta App offers two privacy
+		control levels for each
+		sensor: you can decide to store information on
+		your own device only, or
+		share it with others. If you choose the
+		latter, the data are shared in
+		an anonymized way. We make efforts to
+		overlay filters to measurement
+		sensors that we feel would otherwise be
+		too privacy-intrusive (such as
+		the microphone) and to be transparent
+		about our code and what it does,
+		and about the measurements, too. For
+		this reason, the backend of
+		Nervousnet 1.0 Beta is open source under
+		the GPLv3
+		licence.&lt;br>&lt;br>
+
+		The data measured by this App may provide
+		information about your
+		environment and/or activities, and it may be
+		further processed for
+		personal, scientific, not-for-profit or
+		commercial use. If you choose
+		to share your measurement data, you
+		consent to such processing and
+		uses. This policy serves to enable an
+		information-, innovation- and
+		application-ecosystem that can unleash
+		the power of information for
+		you and everyone.&lt;br>&lt;br>
+
+		By using
+		Nervousnet and/or the data produced by it, you agree and ensure
+		to use
+		it only in lawful ways. In case of violations of laws, you take
+		full
+		legal responsibility for any consequences and you may be excluded
+		from
+		using Nervousnet and the data produced by it.&lt;br>&lt;br>
+
+		This
+		Software ("App") and related data are provided "as is", without
+		warranty of any kind, express or implied, including but not limited to
+		the warranties of merchantability, fitness for a particular purpose
+		and noninfringement. In no event shall the authors or copyright
+		holders be liable for any claim, damages or other liability, whether
+		in an action of contract, tort or otherwise, arising from, out of or
+		in connection with the Software or the use or other dealings in the
+		Software, including the gathering, production, storage, processing,
+		and use of data, or any loss of data.&lt;br>&lt;br>
+
+
+		&lt;b>FURTHER
+		NOTES&lt;/b>&lt;br>&lt;br>
+
+		The Nervousnet community aims to:&lt;br>
+		-
+		create participatory opportunities&lt;br>
+		- support informational
+		self-control&lt;br>
+		- increase distributed design and control
+		elements&lt;br>
+		- add transparency for the sake of trust&lt;br>
+		- reduce
+		information biases and noise&lt;br>
+		- enable user-controlled
+		information filters&lt;br>
+		- support socio-economic diversity&lt;br>
+		-
+		increase interoperability and innovation&lt;br>
+		- build coordination
+		tools&lt;br>
+		- create digital assistants&lt;br>
+		- support
+		collective/\"swarm\" intelligence&lt;br>
+		- measure and consider
+		externalities&lt;br>
+		- enable favorable feedback loops&lt;br>
+		- support
+		fair value exchange&lt;br>
+		- increase digital literacy and
+		awareness&lt;br>&lt;br>
+
+		&lt;p>Accordingly, in future we are planning to
+		extend the functionality of the App and user control of the data you
+		have decided to share. It will take time though to provide all
+		functionality we have in mind and to continuously increase security
+		standards. This will be gradually done, as announced on the
+		Nervousnet-related forums and websites &lt;a
+		href=\'http://nervousnet.ethz.ch\'>http://nervousnet.ethz.ch&lt;/a>,
+		and we would like to cordially invite you to contribute to the
+		development of this system, which we envisage to a system by for
+		citizens, similar to Wikipedia or OpenStreetMap. So, please test
+		Nervousnet 1.0 beta, give us feedback &lt;a
+		href=\'mailto:nervousnet@ethz.ch\'>nervousnet@ethz.ch&lt;/a>, and
+		help!&lt;/br></string>
+
+</resources>

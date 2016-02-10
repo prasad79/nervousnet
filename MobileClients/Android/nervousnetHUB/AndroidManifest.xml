@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="ch.ethz.coss.nervousnet"
+    android:versionCode="9"
+    android:versionName="0.7.2 beta" >
+
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIMAX_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="21" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        
+          <activity
+            android:name="ch.ethz.coss.nervousnet.StartUpActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="ch.ethz.coss.nervousnet.MainActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+            
+        </activity>
+
+        <service
+            android:name="ch.ethz.coss.nervousnet.SensorService"
+            android:enabled="true"
+            android:exported="true">"
+            <intent-filter>
+                <action android:name="ch.ethz.coss.nervousnet"/>
+            </intent-filter> 
+        </service>
+        <service
+            android:name="ch.ethz.coss.nervousnet.UploadService"
+            android:enabled="true" />
+
+        <!--
+        <activity
+            android:name=".IfThisThenThatActivity"
+            android:label="@string/title_activity_if_this_then_that"
+            android:theme="@style/AppTheme" >
+        </activity>
+        -->
+        <activity
+            android:name="ch.ethz.coss.nervousnet.SensorLoggingToggleActivity"
+            android:label="@string/title_activity_sensor_logging_toggle"
+            android:parentActivityName="ch.ethz.coss.nervousnet.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ch.ethz.soms.nervous.android.MainActivity" />
+        </activity>
+        <activity
+            android:name="ch.ethz.coss.nervousnet.SensorsStatisticsActivity"
+            android:label="@string/title_activity_sensors_statistics"
+            android:parentActivityName="ch.ethz.coss.nervousnet.MainActivity" >
+        </activity>
+        <activity
+            android:name="ch.ethz.coss.nervousnet.ChartsWebViewActivity"
+            android:label="@string/title_activity_charts_webview" >
+        </activity>
+        <activity
+            android:name="ch.ethz.coss.nervousnet.ServerDetailsActivity"
+            android:label="@string/title_activity_server_details"
+            android:parentActivityName="ch.ethz.coss.nervousnet.MainActivity" >
+        </activity>
+        <activity
+            android:name="ch.ethz.coss.nervousnet.SensorFrequencyActivity"
+            android:label="@string/title_activity_sensor_frequency"
+            android:parentActivityName="ch.ethz.coss.nervousnet.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ch.ethz.soms.nervous.android.MainActivity" />
+        </activity>
+
+        <!--
+        <activity
+            android:name=".SettingsActivity"
+            android:label="SettingsTest"
+            android:theme="@style/AppTheme" >
+        </activity>
+        -->
+        <activity
+            android:name="ch.ethz.coss.nervousnet.MainAppsActivity"
+            android:label="@string/title_activity_main_apps"
+            android:parentActivityName="ch.ethz.coss.nervousnet.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ch.ethz.soms.nervous.android.MainActivity" />
+        </activity>
+    </application>
+
+</manifest>
