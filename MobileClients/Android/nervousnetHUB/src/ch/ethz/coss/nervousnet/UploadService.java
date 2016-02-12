@@ -61,8 +61,8 @@ public class UploadService extends Service {
 
 		uploadPreferences = getSharedPreferences(NervousStatics.UPLOAD_PREFS, 0);
 
-		final int delay = uploadPreferences.getInt("UploadDelay", 10 * 1000);
-		final int period = uploadPreferences.getInt("UploadFrequency", 10 * 1000);
+		final int delay = uploadPreferences.getInt("UploadDelay", 30 * 1000);
+		final int period = uploadPreferences.getInt("UploadFrequency", 30 * 1000);
 
 		additionalIP = uploadPreferences.getString("serverIP", null);
 		additionalPort = uploadPreferences.getInt("serverPort", -1);

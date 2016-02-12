@@ -13,13 +13,13 @@ public class BatteryReading extends SensorReading {
 
 	private float percent;
 	private boolean isCharging;
-	private byte charging_type = 0; // 0 = Unknown, 1 = USB, 2 = AC
+	private byte charging_type = 0; // 0 = Unknown, 1 = USB, 2 = AC, 3 = Wireless
 	private float temp = 0;
-	private long volt = 0;
+	private int volt = 0;
 	private byte health = 0; // 0 = Unknown, -1 is not supported
 
 	public BatteryReading(int timestamp, float batteryPercent, boolean isCharging, boolean isUsbCharge,
-			boolean isAcCharge, float temp, long volt, byte health) {
+			boolean isAcCharge, float temp, int volt, byte health) {
 		this.timestamp = timestamp;
 		this.percent = batteryPercent;
 		this.isCharging = isCharging;
@@ -51,7 +51,7 @@ public class BatteryReading extends SensorReading {
 
 		charging_type = in.readByte();
 		temp = in.readFloat();
-		volt = in.readLong();
+		volt = in.readInt();
 		health = in.readByte();
 
 	}
@@ -79,7 +79,7 @@ public class BatteryReading extends SensorReading {
 		out.writeBooleanArray(new boolean[] { isCharging });
 		out.writeByte(charging_type);
 		out.writeFloat(temp);
-		out.writeLong(volt);
+		out.writeInt(volt);
 		out.writeByte(health);
 
 	}

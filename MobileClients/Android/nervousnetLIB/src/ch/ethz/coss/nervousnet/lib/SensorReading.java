@@ -10,7 +10,6 @@ import android.os.Parcelable;
  *
  */
 public abstract class SensorReading implements Parcelable {
-	public long SENSOR_ID = 0L;
 	public int type = 0; // 0-light, 1- sound,
 	public int timestamp;
 	public String uuid;
