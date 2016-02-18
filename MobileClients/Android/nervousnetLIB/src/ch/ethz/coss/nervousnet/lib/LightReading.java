@@ -1,10 +1,8 @@
 
 package ch.ethz.coss.nervousnet.lib;
 
-import android.os.BatteryManager;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 /**
  * @author prasad
@@ -13,7 +11,7 @@ public class LightReading extends SensorReading {
 
 	private float[] values = new float[3];
 
-	public LightReading(int timestamp, float[] values) {
+	public LightReading(long timestamp, float[] values) {
 		this.timestamp = timestamp;
 		this.values = values;
 	}
@@ -53,7 +51,7 @@ public class LightReading extends SensorReading {
 	 */
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
-		out.writeInt(timestamp);
+		out.writeLong(timestamp);
 		out.writeFloatArray(values);
 
 	}

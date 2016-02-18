@@ -31,8 +31,9 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
-import ch.ethz.coss.nervousnet.sensors.SensorDescBLEBeacon;
 import ch.ethz.coss.nervousnet.utils.NervousStatics;
+import ch.ethz.coss.nervousnet.vm.Constants;
+import ch.ethz.coss.nervousnet.vm.model.BeaconData;
 
 public class MainActivity extends Activity {
 
@@ -202,7 +203,7 @@ public class MainActivity extends Activity {
 			// If the user wants to collect BT/BLE data, ask to enable bluetooth
 			// if disabled
 			SensorConfiguration sc = SensorConfiguration.getInstance(getApplicationContext());
-			SensorCollectStatus scs = sc.getInitialSensorCollectStatus(SensorDescBLEBeacon.SENSOR_ID);
+			SensorCollectStatus scs = sc.getInitialSensorCollectStatus(Constants.SENSOR_BLEBEACON);
 			if (scs.isCollect()) {
 				// This will only work on API level 18 or higher
 				initializeBluetooth();
@@ -290,7 +291,7 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 
-		TestQueries tq = new TestQueries(getApplicationContext(), getFilesDir());
+		TestQueries tq = new TestQueries(getApplicationContext());
 
 		Intent intent;
 		switch (item.getItemId()) {
@@ -512,9 +513,9 @@ public class MainActivity extends Activity {
 					intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 					break;
 				case 2:
-					intent = new Intent(MainActivity.this, SensorsStatisticsActivity.class);
-					intent.putExtra("serviceSwitchIsChecked", serviceRunning);
-					intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+//					intent = new Intent(MainActivity.this, SensorsStatisticsActivity.class);
+//					intent.putExtra("serviceSwitchIsChecked", serviceRunning);
+//					intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 					break;
 				case 3:
 					intent = new Intent(MainActivity.this, SensorFrequencyActivity.class);

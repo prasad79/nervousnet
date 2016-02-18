@@ -6,19 +6,19 @@ class SensorCollectStatus {
 	private int measureInterval = 1;
 	private long measureDuration = -1;
 	private int collectAmount = -1;
-	private long sensorId;
+	private int sensorType;
 
 	private int currentCollectAmount = 0;
 	private long measureStop = -1;
 
-	public SensorCollectStatus(long sensorId, boolean doMeasure, boolean doShare, int measureInterval,
+	public SensorCollectStatus(int Type, boolean doMeasure, boolean doShare, int measureInterval,
 			long measureDuration, int collectAmount) {
 		this.doMeasure = doMeasure;
 		this.doShare = doShare;
 		this.measureInterval = measureInterval;
 		this.measureDuration = measureDuration;
 		this.collectAmount = collectAmount;
-		this.sensorId = sensorId;
+		this.sensorType = sensorType;
 	}
 
 	public synchronized void setMeasureStart(long measureStart) {
@@ -60,7 +60,7 @@ class SensorCollectStatus {
 		return measureInterval;
 	}
 
-	public long getSensorId() {
-		return sensorId;
+	public int getSensorId() {
+		return sensorType;
 	}
 }

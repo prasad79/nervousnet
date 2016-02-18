@@ -1,39 +1,35 @@
 package ch.ethz.coss.nervousnet.vm;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.TreeMap;
 import java.util.UUID;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
+import android.util.Log;
+import ch.ethz.coss.nervousnet.vm.model.AccelData;
+import ch.ethz.coss.nervousnet.vm.model.AccelDataDao;
 import ch.ethz.coss.nervousnet.vm.model.Config;
 import ch.ethz.coss.nervousnet.vm.model.ConfigDao;
 import ch.ethz.coss.nervousnet.vm.model.DaoMaster;
-import ch.ethz.coss.nervousnet.vm.model.DaoSession;
-import ch.ethz.coss.nervousnet.vm.model.SensorReading;
 import ch.ethz.coss.nervousnet.vm.model.DaoMaster.DevOpenHelper;
+import ch.ethz.coss.nervousnet.vm.model.DaoSession;
+import ch.ethz.coss.nervousnet.vm.model.SensorDataImpl;
 
 
 public class NervousVM {
 
 	private static NervousVM nervousVM;
+	private static String TAG = "NERVOUS_VM";
+	private static String DB_NAME = "NN-DB";
+	
 	private UUID uuid;
 	private Context context;
 	DaoMaster daoMaster;
 	DaoSession daoSession;
 	SQLiteDatabase sqlDB;
+	ConfigDao configDao;
+	AccelDataDao accDao;
 	
 	public static synchronized  NervousVM getInstance(Context context) {
 		if (nervousVM == null) {
@@ -43,17 +39,31 @@ public class NervousVM {
 	}
 
 	public NervousVM(Context context) {
+		Log.d(TAG, "Inside constructor");
+		 try {
+			DevOpenHelper helper = new DaoMaster.DevOpenHelper(context, DB_NAME, null);
+			
+			 Log.d(TAG, "Inside constructor1");
+			 sqlDB = helper.getWritableDatabase();
+		} catch (Exception e) {
+			Log.e(TAG, "Inside constructor and creating DB = "+DB_NAME, e);
+		}
+		 Log.d(TAG, "Inside constructor2");
+		 daoMaster = new DaoMaster(sqlDB);
+		 Log.d(TAG, "Inside constructor3");
+		 daoSession = daoMaster.newSession();
+		 Log.d(TAG, "Inside constructor4");
+		 configDao = daoSession.getConfigDao();
+		 
+		 accDao = daoSession.getAccelDataDao();
+		 
 	    boolean hasVMConfig = loadVMConfig();
 		if (!hasVMConfig) {
+			Log.d(TAG, "Inside no config found. Create a new config.");
 			uuid = UUID.randomUUID();
-			DevOpenHelper doh = new DaoMaster.DevOpenHelper(context, "nn-db", null);
-			 sqlDB = doh.getWritableDatabase();
-			 daoMaster = new DaoMaster(sqlDB);
-			 daoSession = daoMaster.newSession();
+			 
 			storeVMConfig();
 		}
-		
-		 
 		
 	}
 
@@ -127,14 +137,15 @@ public class NervousVM {
 	}
 
 	private synchronized boolean loadVMConfig() {
+		Log.d(TAG, "Inside loadVMConfig");
 		boolean success = true;
-		
-		ConfigDao configDao = daoSession.getConfigDao();
 		Config config = null;
 		
+		Log.d(TAG, "Config - count = "+configDao.queryBuilder().count());
 		if(configDao.queryBuilder().count() != 0){
 			config = configDao.queryBuilder().unique();
 			uuid = UUID.fromString(config.getUUID());
+			Log.d(TAG, "Config - UUID = "+uuid);
 		}else 
 			success = false;
 		
@@ -142,24 +153,79 @@ public class NervousVM {
 	}
 
 	private synchronized void storeVMConfig() {
-		
-		
-		
-		ConfigDao configDao = daoSession.getConfigDao();
+		Log.d(TAG, "Inside storeVMConfig");
 		Config config = null;
 		
 		if(configDao.queryBuilder().count() == 0){
-			config = new Config(0L, uuid.toString(), Build.MANUFACTURER, Build.MODEL, "Android", Build.VERSION.RELEASE, new Date()); 
+			config = new Config(0L, uuid.toString(), Build.MANUFACTURER, Build.MODEL, "Android", Build.VERSION.RELEASE, System.currentTimeMillis()); 
 			configDao.insert(config);
+			Log.d(TAG, "Config DB created");
+		} else {
+			Log.d(TAG, "Config DB exists");
 		}
-	
-		
 		
 	}
 
 
+	public synchronized boolean storeSensor(SensorDataImpl sensorData) {
+		Log.d(TAG, "Inside storeSensor ");
+		
+		if(sensorData == null) {
+			Log.e(TAG, "SensorData is null. please check it");
+			return false;
+		}else {
+			Log.d(TAG, "SensorData Type = (Type = "+sensorData.getType()+")"); //, Timestamp = "+sensorData.getTimeStamp()+", Volatility = "+sensorData.getVolatility());
+		}
+		
+		
+		switch(sensorData.getType()) {
+		case Constants.SENSOR_ACCELEROMETER:
+			
+			AccelData accelData = (AccelData) sensorData;
+			Log.d(TAG, "ACCEL_DATA table count = "+accDao.count());
+			Log.d(TAG, "Inside Switch, AccelData Type = (Type = "+accelData.getType()+", Timestamp = "+accelData.getTimeStamp()+", Volatility = "+accelData.getVolatility());
+			Log.d(TAG, "Inside Switch, AccelData Type = (X = "+accelData.getX()+", Y = "+accelData.getY()+", Z = "+accelData.getZ());
+			
+			accDao.insert(accelData);
+			return true;
+			
+		case Constants.SENSOR_BATTERY:
+			return true;
+			
+		case Constants.SENSOR_DEVICE:
+			return true;
+			
+		case Constants.SENSOR_LOCATION:
+			return true;
+			
+		case Constants.SENSOR_BLEBEACON:
+			return true;
+			
+		case Constants.SENSOR_CONNECTIVITY:
+			return true;
+		case Constants.SENSOR_GYROSCOPE:
+			return true;
+		case Constants.SENSOR_HUMIDITY:
+			return true;
+		case Constants.SENSOR_LIGHT:
+			return true;
+			
+		case Constants.SENSOR_MAGNETIC:
+			return true;
+		case Constants.SENSOR_NOISE:
+			return true;
+		case Constants.SENSOR_PRESSURE:
+			return true;
+		case Constants.SENSOR_PROXIMITY:
+			return true;
+		case Constants.SENSOR_TEMPERATURE:
+			return true;
+			
+		}
+		return false;
+	}
 
-//	public synchronized boolean storeSensor(long sensorID, SensorData sensorData) {
+//	public synchronized boolean storeSensor(long sensorID, SensorReading sensorReading) {
 //		if (sensorData != null) {
 //			boolean stmHasChanged = false;
 //			boolean success = true;

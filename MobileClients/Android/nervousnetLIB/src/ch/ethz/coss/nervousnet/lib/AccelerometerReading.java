@@ -10,7 +10,8 @@ public class AccelerometerReading extends SensorReading {
 
 	private float[] values = new float[3];
 
-	public AccelerometerReading(int timestamp, float[] values) {
+	public AccelerometerReading(int type, long timestamp, float[] values) {
+		this.type = type;
 		this.timestamp = timestamp;
 		this.values = values;
 	}
@@ -36,7 +37,7 @@ public class AccelerometerReading extends SensorReading {
 
 	public void readFromParcel(Parcel in) {
 
-		timestamp = in.readInt();
+		timestamp = in.readLong();
 
 		in.readFloatArray(values);
 	}
@@ -59,7 +60,7 @@ public class AccelerometerReading extends SensorReading {
 	 */
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
-		out.writeInt(timestamp);
+		out.writeLong(timestamp);
 		out.writeFloatArray(values);
 	}
 

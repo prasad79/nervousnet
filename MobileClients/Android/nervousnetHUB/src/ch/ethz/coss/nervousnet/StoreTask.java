@@ -1,11 +1,14 @@
 package ch.ethz.coss.nervousnet;
 
-import ch.ethz.coss.nervousnet.sensors.SensorDesc;
 import ch.ethz.coss.nervousnet.vm.NervousVM;
+import ch.ethz.coss.nervousnet.vm.model.SensorDataImpl;
+
+import java.util.ArrayList;
+
 import android.content.Context;
 import android.os.AsyncTask;
 
-public class StoreTask extends AsyncTask<SensorDesc, Void, Void> {
+public class StoreTask extends AsyncTask<SensorDataImpl, Void, Void> {
 
 	private Context context;
 
@@ -14,12 +17,13 @@ public class StoreTask extends AsyncTask<SensorDesc, Void, Void> {
 	}
 
 	@Override
-	protected Void doInBackground(SensorDesc... params) {
+	protected Void doInBackground(SensorDataImpl... params) {
 
 		if (params != null && params.length > 0) {
-			NervousVM nervousVM = NervousVM.getInstance(context.getFilesDir());
+			NervousVM nervousVM = NervousVM.getInstance(context);
 			for (int i = 0; i < params.length; i++) {
-				nervousVM.storeSensor(params[i].getSensorId(), params[i].toProtoSensor());
+				//TODO: PP
+				nervousVM.storeSensor(params[i]);
 			}
 		}
 		return null;

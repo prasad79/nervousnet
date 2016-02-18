@@ -27,128 +27,184 @@ public class NervousNetDaoGenerator {
         config.addStringProperty("DeviceModel");
         config.addStringProperty("DeviceOS");
         config.addStringProperty("DeviceOSversion");
-        config.addDateProperty("LastSyncTime");
+        config.addLongProperty("LastSyncTime");
         
     }
     
     private static void addSensors(Schema schema) {
-    	Entity sensorReading = schema.addEntity("SensorReading");
-    	sensorReading.addIntProperty("Type");
-    	sensorReading.addDateProperty("TimeStamp").primaryKey().notNull();
-    	sensorReading.addLongProperty("Volatility").notNull();
-    	sensorReading.addBooleanProperty("ShareFlag");
     	
-    	Entity locationReading = schema.addEntity("LocationReading");
-    	locationReading.setSuperclass("SensorReading");
-    	locationReading.addDateProperty("TimeStamp").primaryKey().notNull();
-    	locationReading.addDoubleProperty("Latitude");
-    	locationReading.addDoubleProperty("Longitude");
-    	locationReading.addDoubleProperty("Altitude");
+    	Entity locationData = schema.addEntity("LocationData");
+    	locationData.implementsInterface("SensorDataImpl");
+    	locationData.addLongProperty("TimeStamp").primaryKey().notNull();
+    	locationData.addDoubleProperty("Latitude");
+    	locationData.addDoubleProperty("Longitude");
+    	locationData.addDoubleProperty("Altitude");
+    	locationData.addLongProperty("Volatility").notNull();
+    	locationData.addBooleanProperty("ShareFlag");
     	
-    	Entity accelReading = schema.addEntity("AccelReading");
-    	accelReading.setSuperclass("SensorReading");
-    	accelReading.addDateProperty("TimeStamp").primaryKey().notNull();
-    	accelReading.addFloatProperty("X");
-    	accelReading.addFloatProperty("Y");
-    	accelReading.addFloatProperty("Z");
+    	Entity accelData = schema.addEntity("AccelData");
+    	accelData.implementsInterface("SensorDataImpl");
+    	accelData.addLongProperty("TimeStamp").primaryKey().notNull();
+    	accelData.addFloatProperty("X");
+    	accelData.addFloatProperty("Y");
+    	accelData.addFloatProperty("Z");
+    	accelData.addLongProperty("Volatility").notNull();
+    	accelData.addBooleanProperty("ShareFlag");
     	
-    	Entity batteryReading = schema.addEntity("BatteryReading");
-    	batteryReading.setSuperclass("SensorReading");
-    	batteryReading.addDateProperty("TimeStamp").primaryKey().notNull();
-    	batteryReading.addFloatProperty("Percent");
-    	batteryReading.addByteProperty("ChargingType"); //0 - No Charging, 1 - AC, 2 - USB, 3 - Wireless
-    	batteryReading.addByteProperty("Health"); 
-    	batteryReading.addFloatProperty("Temperature"); 
-    	batteryReading.addIntProperty("Volt"); 
+    	Entity batteryData = schema.addEntity("BatteryData");
+    	batteryData.implementsInterface("SensorDataImpl");
     	
-    	
-    	Entity beaconReading = schema.addEntity("BeaconReading");
-    	beaconReading.setSuperclass("SensorReading");
-    	beaconReading.addDateProperty("TimeStamp").primaryKey().notNull();
-    	
-    	Entity connectivityReading = schema.addEntity("ConnectivityReading");
-    	connectivityReading.setSuperclass("SensorReading");
-    	connectivityReading.addDateProperty("TimeStamp").primaryKey().notNull();
+    	batteryData.addLongProperty("TimeStamp").primaryKey().notNull();
+    	batteryData.addFloatProperty("Percent");
+    	batteryData.addByteProperty("ChargingType"); //0 - No Charging, 1 - AC, 2 - USB, 3 - Wireless
+    	batteryData.addByteProperty("Health"); 
+    	batteryData.addFloatProperty("Temperature"); 
+    	batteryData.addIntProperty("Volt"); 
+    	batteryData.addLongProperty("Volatility").notNull();
+    	batteryData.addBooleanProperty("ShareFlag");
     	
     	
-    	Entity gyroReading = schema.addEntity("GyroReading");
-    	gyroReading.setSuperclass("SensorReading");
-    	gyroReading.addDateProperty("TimeStamp").primaryKey().notNull();
-    	
-    	Entity humidityReading = schema.addEntity("HumidityReading");
-    	humidityReading.setSuperclass("SensorReading");
-    	humidityReading.addDateProperty("TimeStamp").primaryKey().notNull();
-    	
-    	Entity lightReading = schema.addEntity("LightReading");
-    	lightReading.setSuperclass("SensorReading");
-    	lightReading.addDateProperty("TimeStamp").primaryKey().notNull();
-    	lightReading.addFloatProperty("Lux");
-    	
-    	
-    	Entity magneticReading = schema.addEntity("MagneticReading");
-    	magneticReading.setSuperclass("SensorReading");
-    	magneticReading.addDateProperty("TimeStamp").primaryKey().notNull();
+    	Entity beaconData = schema.addEntity("BeaconData");
+    	beaconData.implementsInterface("SensorDataImpl");
     
-    	Entity noiseReading = schema.addEntity("NoiseReading");
-    	noiseReading.setSuperclass("SensorReading");
-    	noiseReading.addDateProperty("TimeStamp").primaryKey().notNull();
+    	beaconData.addLongProperty("TimeStamp").primaryKey().notNull();
+    	beaconData.addIntProperty("rssi");
+    	beaconData.addLongProperty("mac");
+    	beaconData.addLongProperty("advertisementMSB");
+    	beaconData.addLongProperty("advertisementLSB");
+    	beaconData.addLongProperty("bleuuidMSB");
+    	beaconData.addLongProperty("bleuuidLSB");
+    	beaconData.addIntProperty("major");
+    	beaconData.addIntProperty("minor");
+    	beaconData.addIntProperty("txpower");
+    	beaconData.addLongProperty("Volatility").notNull();
+    	beaconData.addBooleanProperty("ShareFlag");
     	
-    	Entity pressureReading = schema.addEntity("PressureReading");
-    	pressureReading.setSuperclass("SensorReading");
-    	pressureReading.addDateProperty("TimeStamp").primaryKey().notNull();
+    	Entity connectivityData = schema.addEntity("ConnectivityData");
+    	connectivityData.implementsInterface("SensorDataImpl");
+    
+    	connectivityData.addLongProperty("TimeStamp").primaryKey().notNull();
+    	connectivityData.addBooleanProperty("isConnected");
+    	connectivityData.addIntProperty("networkType");
+    	connectivityData.addBooleanProperty("isRoaming");
+    	connectivityData.addStringProperty("wifiHashId");
+    	connectivityData.addIntProperty("wifiStrength");
+    	connectivityData.addStringProperty("mobileHashId");
+    	connectivityData.addLongProperty("Volatility").notNull();
+    	connectivityData.addBooleanProperty("ShareFlag");
+    	
+    	Entity gyroData = schema.addEntity("GyroData");
+    	gyroData.implementsInterface("SensorDataImpl");
+    	
+    	gyroData.addLongProperty("TimeStamp").primaryKey().notNull();
+    	gyroData.addFloatProperty("GyroX");
+    	gyroData.addFloatProperty("GyroY");
+    	gyroData.addFloatProperty("GyroZ");
+    	gyroData.addLongProperty("Volatility").notNull();
+    	gyroData.addBooleanProperty("ShareFlag");
+    	
+    	Entity humidityData = schema.addEntity("HumidityData");
+    	humidityData.implementsInterface("SensorDataImpl");
+    	
+    	humidityData.addLongProperty("TimeStamp").primaryKey().notNull();
+    	humidityData.addFloatProperty("Humidity");
+    	humidityData.addLongProperty("Volatility").notNull();
+    	humidityData.addBooleanProperty("ShareFlag");
+    	
+    	Entity lightData = schema.addEntity("LightData");
+    	lightData.implementsInterface("SensorDataImpl");
+    	
+    	lightData.addLongProperty("TimeStamp").primaryKey().notNull();
+    	lightData.addFloatProperty("Lux");
+    	lightData.addLongProperty("Volatility").notNull();
+    	lightData.addBooleanProperty("ShareFlag");
+    	
+    	Entity magneticData = schema.addEntity("MagneticData");
+    	magneticData.implementsInterface("SensorDataImpl");
+    
+    	magneticData.addLongProperty("TimeStamp").primaryKey().notNull();
+    	magneticData.addFloatProperty("MagX");
+    	magneticData.addFloatProperty("MagY");
+    	magneticData.addFloatProperty("MagZ");
+    	magneticData.addLongProperty("Volatility").notNull();
+    	magneticData.addBooleanProperty("ShareFlag");
     	
     	
-    	Entity proximityReading = schema.addEntity("ProximityReading");
-    	proximityReading.setSuperclass("SensorReading");
-    	proximityReading.addDateProperty("TimeStamp").primaryKey().notNull();
+    	Entity noiseData = schema.addEntity("NoiseData");
+    	noiseData.implementsInterface("SensorDataImpl");
     	
-    	Entity temperatureReading = schema.addEntity("TemperatureReading");
-    	temperatureReading.setSuperclass("SensorReading");
-    	temperatureReading.addDateProperty("TimeStamp").primaryKey().notNull();
+    	noiseData.addLongProperty("TimeStamp").primaryKey().notNull();
+    	noiseData.addFloatProperty("Decibel");
+    	noiseData.addLongProperty("Volatility").notNull();
+    	noiseData.addBooleanProperty("ShareFlag");
+    	
+    	Entity pressureData = schema.addEntity("PressureData");
+    	pressureData.implementsInterface("SensorDataImpl");
+    	
+    	pressureData.addLongProperty("TimeStamp").primaryKey().notNull();
+    	pressureData.addFloatProperty("Pressure");
+    	pressureData.addLongProperty("Volatility").notNull();
+    	pressureData.addBooleanProperty("ShareFlag");
+    	
+    	
+    	Entity proximityData = schema.addEntity("ProximityData");
+    	proximityData.implementsInterface("SensorDataImpl");
+    
+    	proximityData.addLongProperty("TimeStamp").primaryKey().notNull();
+    	proximityData.addFloatProperty("Proximity");
+    	proximityData.addLongProperty("Volatility").notNull();
+    	proximityData.addBooleanProperty("ShareFlag");
+    	
+    	Entity temperatureData = schema.addEntity("TemperatureData");
+    	temperatureData.implementsInterface("SensorDataImpl");
+    
+    	temperatureData.addLongProperty("TimeStamp").primaryKey().notNull();
+    	temperatureData.addFloatProperty("Temperature");
+    	temperatureData.addLongProperty("Volatility").notNull();
+    	temperatureData.addBooleanProperty("ShareFlag");
     	
     	Entity nnPacket = schema.addEntity("Packet");
-    	nnPacket.addDateProperty("TimeStamp").primaryKey().notNull();
+    	nnPacket.addLongProperty("TimeStamp").primaryKey().notNull();   
+    	nnPacket.addByteProperty("SynceStatus"); // 0= unsynched, 1=synched, 2 = empty so don't sync (ideally this should not happen)
     	
+    	Property sensor1 = nnPacket.addLongProperty("sensor1").getProperty();
+    	nnPacket.addToOne(locationData, sensor1);
     	
-    	Property sensor1 = nnPacket.addDateProperty("sensor1").getProperty();
-    	nnPacket.addToOne(locationReading, sensor1);
+    	Property sensor2 = nnPacket.addLongProperty("sensor2").getProperty();
+    	nnPacket.addToOne(accelData, sensor2);
     	
-    	Property sensor2 = nnPacket.addDateProperty("sensor2").getProperty();
-    	nnPacket.addToOne(accelReading, sensor2);
+    	Property sensor3 = nnPacket.addLongProperty("sensor3").getProperty();
+    	nnPacket.addToOne(batteryData, sensor3);
     	
+    	Property sensor4 = nnPacket.addLongProperty("sensor4").getProperty();
+    	nnPacket.addToOne(beaconData, sensor4);
     	
-    	Property sensor3 = nnPacket.addDateProperty("sensor3").getProperty();
-    	nnPacket.addToOne(batteryReading, sensor3);
+    	Property sensor5 = nnPacket.addLongProperty("sensor5").getProperty();
+    	nnPacket.addToOne(connectivityData, sensor5);
     	
-    	Property sensor4 = nnPacket.addDateProperty("sensor4").getProperty();
-    	nnPacket.addToOne(beaconReading, sensor4);
+    	Property sensor6 = nnPacket.addLongProperty("sensor6").getProperty();
+    	nnPacket.addToOne(gyroData, sensor6);
     	
-    	Property sensor5 = nnPacket.addDateProperty("sensor5").getProperty();
-    	nnPacket.addToOne(connectivityReading, sensor5);
+    	Property sensor7 = nnPacket.addLongProperty("sensor7").getProperty();
+    	nnPacket.addToOne(humidityData, sensor7);
     	
-    	Property sensor6 = nnPacket.addDateProperty("sensor6").getProperty();
-    	nnPacket.addToOne(gyroReading, sensor6);
+    	Property sensor8 = nnPacket.addLongProperty("sensor8").getProperty();
+    	nnPacket.addToOne(lightData, sensor8);
     	
-    	Property sensor7 = nnPacket.addDateProperty("sensor7").getProperty();
-    	nnPacket.addToOne(humidityReading, sensor7);
+    	Property sensor9 = nnPacket.addLongProperty("sensor9").getProperty();
+    	nnPacket.addToOne(magneticData, sensor9);
     	
-    	Property sensor8 = nnPacket.addDateProperty("sensor8").getProperty();
-    	nnPacket.addToOne(lightReading, sensor8);
+    	Property sensor10 = nnPacket.addLongProperty("sensor10").getProperty();
+    	nnPacket.addToOne(noiseData, sensor10);
     	
-    	Property sensor9 = nnPacket.addDateProperty("sensor9").getProperty();
-    	nnPacket.addToOne(magneticReading, sensor9);
+    	Property sensor11 = nnPacket.addLongProperty("sensor11").getProperty();
+    	nnPacket.addToOne(pressureData, sensor11);
     	
-    	Property sensor10 = nnPacket.addDateProperty("sensor10").getProperty();
-    	nnPacket.addToOne(noiseReading, sensor10);
+    	Property sensor12 = nnPacket.addLongProperty("sensor12").getProperty();
+    	nnPacket.addToOne(proximityData, sensor12);
     	
-    	Property sensor11 = nnPacket.addDateProperty("sensor11").getProperty();
-    	nnPacket.addToOne(pressureReading, sensor11);
-    	
-    	Property sensor12 = nnPacket.addDateProperty("sensor12").getProperty();
-    	nnPacket.addToOne(proximityReading, sensor12);
-    	
-    	Property sensor13 = nnPacket.addDateProperty("sensor13").getProperty();
-    	nnPacket.addToOne(temperatureReading, sensor13);
+    	Property sensor13 = nnPacket.addLongProperty("sensor13").getProperty();
+    	nnPacket.addToOne(temperatureData, sensor13);
     	
     }
     

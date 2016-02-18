@@ -4,7 +4,6 @@ package ch.ethz.coss.nervousnet.lib;
 import android.os.BatteryManager;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 /**
  * @author prasad
@@ -13,12 +12,13 @@ public class BatteryReading extends SensorReading {
 
 	private float percent;
 	private boolean isCharging;
-	private byte charging_type = 0; // 0 = Unknown, 1 = USB, 2 = AC, 3 = Wireless
+	private byte charging_type = 0; // 0 = Unknown, 1 = USB, 2 = AC, 3 =
+									// Wireless
 	private float temp = 0;
 	private int volt = 0;
 	private byte health = 0; // 0 = Unknown, -1 is not supported
 
-	public BatteryReading(int timestamp, float batteryPercent, boolean isCharging, boolean isUsbCharge,
+	public BatteryReading(long timestamp, float batteryPercent, boolean isCharging, boolean isUsbCharge,
 			boolean isAcCharge, float temp, int volt, byte health) {
 		this.timestamp = timestamp;
 		this.percent = batteryPercent;
@@ -28,12 +28,10 @@ public class BatteryReading extends SensorReading {
 		this.volt = volt;
 		this.health = health;
 	}
-	
 
 	public BatteryReading(boolean isCollect) {
 		super(isCollect);
 	}
-	
 
 	/**
 	 * @param in
@@ -44,7 +42,7 @@ public class BatteryReading extends SensorReading {
 
 	public void readFromParcel(Parcel in) {
 
-		timestamp = in.readInt();
+		timestamp = in.readLong();
 		percent = in.readFloat();
 		boolean array[] = in.createBooleanArray();
 		isCharging = array[0];
@@ -74,7 +72,7 @@ public class BatteryReading extends SensorReading {
 	 */
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
-		out.writeInt(timestamp);
+		out.writeLong(timestamp);
 		out.writeFloat(percent);
 		out.writeBooleanArray(new boolean[] { isCharging });
 		out.writeByte(charging_type);

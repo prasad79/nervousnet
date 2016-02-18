@@ -1,10 +1,8 @@
 
 package ch.ethz.coss.nervousnet.lib;
 
-import android.os.BatteryManager;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 /**
  * @author prasad
@@ -109,7 +107,7 @@ public class ConnectivityReading extends SensorReading {
 	private int wifiStrength;
 	private String mobileHashId;
 
-	public ConnectivityReading(int timestamp, boolean isConnected, int networkType, boolean isRoaming,
+	public ConnectivityReading(long timestamp, boolean isConnected, int networkType, boolean isRoaming,
 			String wifiHashId, int wifiStrength, String mobileHashId) {
 		this.timestamp = timestamp;
 		this.isConnected = isConnected;
@@ -128,7 +126,7 @@ public class ConnectivityReading extends SensorReading {
 	}
 
 	public void readFromParcel(Parcel in) {
-		timestamp = in.readInt();
+		timestamp = in.readLong();
 		isConnected = in.readByte() == 1 ? true : false;
 		networkType = in.readInt();
 		isRoaming = in.readByte() == 1 ? true : false;
@@ -155,7 +153,7 @@ public class ConnectivityReading extends SensorReading {
 	 */
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
-		out.writeInt(timestamp);
+		out.writeLong(timestamp);
 		out.writeByte(isConnected ? (byte) 1 : (byte) 0);
 		out.writeInt(networkType);
 		out.writeByte(isRoaming ? (byte) 1 : (byte) 0);

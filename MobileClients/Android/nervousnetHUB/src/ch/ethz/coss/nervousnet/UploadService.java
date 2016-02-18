@@ -25,10 +25,6 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
 import android.widget.EditText;
-import ch.ethz.coss.nervousnet.nervousproto.SensorUploadProtos.SensorUpload;
-import ch.ethz.coss.nervousnet.nervousproto.SensorUploadProtos.SensorUpload.Builder;
-import ch.ethz.coss.nervousnet.nervousproto.SensorUploadProtos.SensorUpload.SensorData;
-import ch.ethz.coss.nervousnet.sensors.SensorDesc;
 import ch.ethz.coss.nervousnet.utils.NervousStatics;
 import ch.ethz.coss.nervousnet.vm.NervousVM;
 
@@ -96,8 +92,8 @@ public class UploadService extends Service {
 						e.printStackTrace();
 					}
 
-					UploadTask task = new UploadTask(nervousServer, additionalServer);
-					task.execute();
+//					UploadTask task = new UploadTask(nervousServer, additionalServer);
+//					task.execute();
 				}
 
 				handler.postDelayed(this, period);
@@ -135,57 +131,58 @@ public class UploadService extends Service {
 		return mBinder;
 	}
 
-	public class UploadTask extends AsyncTask<SensorDesc, Void, Void> {
-
-		Socket socket;
-		Socket optSocket;
-
-		public UploadTask(Socket socket, Socket optSocket) {
-			this.socket = socket;
-			this.optSocket = optSocket;
-		}
-
-		@Override
-		protected Void doInBackground(SensorDesc... params) {
-			final SharedPreferences settings = getApplicationContext().getSharedPreferences(NervousStatics.SENSOR_PREFS,
-					0);
-			try {
-				NervousVM nvm = NervousVM.getInstance(getApplicationContext().getFilesDir());
-				OutputStream os = socket.getOutputStream();
-				OutputStream os2 = optSocket != null ? optSocket.getOutputStream() : null;
-				for (long i = 0x0; i < 0xC; i++) {
-					boolean doShare = settings.getBoolean(Long.toHexString(i) + "_doShare", true);
-					if (doShare) {
-						Builder sub = SensorUpload.newBuilder();
-						sub.setHuuid(nvm.getUUID().getMostSignificantBits());
-						sub.setLuuid(nvm.getUUID().getLeastSignificantBits());
-						sub.setSensorId(i);
-						// Upload everything with "timestamp" > "last uploaded
-						// timestamp"
-						List<SensorData> sensorDataList = nvm.retrieve(i, nvm.getLastUploadedTimestamp(i) + 1,
-								Long.MAX_VALUE);
-						// Only upload if there is actual data
-						if (sensorDataList != null && sensorDataList.size() > 0) {
-							sub.addAllSensorValues(sensorDataList);
-							sub.setUploadTime(System.currentTimeMillis());
-							sub.build().writeDelimitedTo(os);
-							sub.build().writeDelimitedTo(os2);
-							nvm.setLastUploadedTimestamp(i,
-									sensorDataList.get(sensorDataList.size() - 1).getRecordTime());
-						}
-					}
-				}
-				os.flush();
-				os.close();
-				socket.close();
-			} catch (UnknownHostException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return null;
-		}
-	}
+//	public class UploadTask extends AsyncTask<SensorDesc, Void, Void> {
+//
+//		Socket socket;
+//		Socket optSocket;
+//
+//		public UploadTask(Socket socket, Socket optSocket) {
+//			this.socket = socket;
+//			this.optSocket = optSocket;
+//		}
+//
+//		@Override
+//		protected Void doInBackground(SensorDesc... params) {
+//			final SharedPreferences settings = getApplicationContext().getSharedPreferences(NervousStatics.SENSOR_PREFS,
+//					0);
+//			try {
+//				NervousVM nvm = NervousVM.getInstance(getApplicationContext());
+//				OutputStream os = socket.getOutputStream();
+//				OutputStream os2 = optSocket != null ? optSocket.getOutputStream() : null;
+//				for (long i = 0x0; i < 0xC; i++) {
+//					boolean doShare = settings.getBoolean(Long.toHexString(i) + "_doShare", true);
+//					if (doShare) {
+//						//TODO: PP
+////						Builder sub = SensorUpload.newBuilder();
+////						sub.setHuuid(nvm.getUUID().getMostSignificantBits());
+////						sub.setLuuid(nvm.getUUID().getLeastSignificantBits());
+////						sub.setSensorId(i);
+////						// Upload everything with "timestamp" > "last uploaded
+////						// timestamp"
+////						List<SensorData> sensorDataList = nvm.retrieve(i, nvm.getLastUploadedTimestamp(i) + 1,
+////								Long.MAX_VALUE);
+////						// Only upload if there is actual data
+////						if (sensorDataList != null && sensorDataList.size() > 0) {
+////							sub.addAllSensorValues(sensorDataList);
+////							sub.setUploadTime(System.currentTimeMillis());
+////							sub.build().writeDelimitedTo(os);
+////							sub.build().writeDelimitedTo(os2);
+////							nvm.setLastUploadedTimestamp(i,
+////									sensorDataList.get(sensorDataList.size() - 1).getRecordTime());
+////						}
+//					}
+//				}
+//				os.flush();
+//				os.close();
+//				socket.close();
+//			} catch (UnknownHostException e) {
+//				e.printStackTrace();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//			return null;
+//		}
+//	}
 
 	public static boolean isServiceRunning(Context context) {
 		ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);

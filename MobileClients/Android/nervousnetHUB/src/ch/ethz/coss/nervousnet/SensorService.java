@@ -25,29 +25,32 @@ import android.util.Log;
 import android.widget.Toast;
 import ch.ethz.coss.nervousnet.lib.AccelerometerReading;
 import ch.ethz.coss.nervousnet.lib.BatteryReading;
+import ch.ethz.coss.nervousnet.lib.ConnectivityReading;
+import ch.ethz.coss.nervousnet.lib.GyroReading;
+import ch.ethz.coss.nervousnet.lib.LightReading;
+import ch.ethz.coss.nervousnet.vm.Constants;
 import ch.ethz.coss.nervousnet.lib.LocationReading;
 import ch.ethz.coss.nervousnet.lib.NervousnetRemote;
+import ch.ethz.coss.nervousnet.lib.ProximityReading;
+import ch.ethz.coss.nervousnet.lib.SensorReading;
+import ch.ethz.coss.nervousnet.vm.model.AccelData;
+import ch.ethz.coss.nervousnet.vm.model.ConnectivityData;
+import ch.ethz.coss.nervousnet.vm.model.GyroData;
+import ch.ethz.coss.nervousnet.vm.model.HumidityData;
+import ch.ethz.coss.nervousnet.vm.model.LightData;
+import ch.ethz.coss.nervousnet.vm.model.MagneticData;
+import ch.ethz.coss.nervousnet.vm.model.PressureData;
+import ch.ethz.coss.nervousnet.vm.model.ProximityData;
+import ch.ethz.coss.nervousnet.vm.model.SensorDataImpl;
+import ch.ethz.coss.nervousnet.vm.model.TemperatureData;
 import ch.ethz.coss.nervousnet.sensors.BLEBeaconRecord;
 import ch.ethz.coss.nervousnet.sensors.BLESensor;
-import ch.ethz.coss.nervousnet.sensors.BatterySensor;
-import ch.ethz.coss.nervousnet.sensors.ConnectivitySensor;
-import ch.ethz.coss.nervousnet.sensors.NoiseSensor;
-import ch.ethz.coss.nervousnet.sensors.SensorDesc;
-import ch.ethz.coss.nervousnet.sensors.SensorDescAccelerometer;
-import ch.ethz.coss.nervousnet.sensors.SensorDescBLEBeacon;
-import ch.ethz.coss.nervousnet.sensors.SensorDescBattery;
-import ch.ethz.coss.nervousnet.sensors.SensorDescConnectivity;
-import ch.ethz.coss.nervousnet.sensors.SensorDescGyroscope;
-import ch.ethz.coss.nervousnet.sensors.SensorDescHumidity;
-import ch.ethz.coss.nervousnet.sensors.SensorDescLight;
-import ch.ethz.coss.nervousnet.sensors.SensorDescMagnetic;
-import ch.ethz.coss.nervousnet.sensors.SensorDescNoise;
-import ch.ethz.coss.nervousnet.sensors.SensorDescPressure;
-import ch.ethz.coss.nervousnet.sensors.SensorDescProximity;
-import ch.ethz.coss.nervousnet.sensors.SensorDescTemperature;
 import ch.ethz.coss.nervousnet.sensors.BLESensor.BLEBeaconListener;
+import ch.ethz.coss.nervousnet.sensors.BatterySensor;
 import ch.ethz.coss.nervousnet.sensors.BatterySensor.BatteryListener;
+import ch.ethz.coss.nervousnet.sensors.ConnectivitySensor;
 import ch.ethz.coss.nervousnet.sensors.ConnectivitySensor.ConnectivityListener;
+import ch.ethz.coss.nervousnet.sensors.NoiseSensor;
 import ch.ethz.coss.nervousnet.sensors.NoiseSensor.NoiseListener;
 
 public class SensorService extends Service
@@ -155,18 +158,18 @@ public class SensorService extends Service
 		sensorCollected = new ConcurrentHashMap<Long, SensorCollectStatus>();
 
 		// Initialize sensor collect status from configuration
-		scAccelerometer = sensorConfiguration.getInitialSensorCollectStatus(SensorDescAccelerometer.SENSOR_ID);
-		scBattery = sensorConfiguration.getInitialSensorCollectStatus(SensorDescBattery.SENSOR_ID);
-		scLight = sensorConfiguration.getInitialSensorCollectStatus(SensorDescLight.SENSOR_ID);
-		scMagnet = sensorConfiguration.getInitialSensorCollectStatus(SensorDescMagnetic.SENSOR_ID);
-		scProximity = sensorConfiguration.getInitialSensorCollectStatus(SensorDescProximity.SENSOR_ID);
-		scGyroscope = sensorConfiguration.getInitialSensorCollectStatus(SensorDescGyroscope.SENSOR_ID);
-		scTemperature = sensorConfiguration.getInitialSensorCollectStatus(SensorDescTemperature.SENSOR_ID);
-		scHumidity = sensorConfiguration.getInitialSensorCollectStatus(SensorDescHumidity.SENSOR_ID);
-		scPressure = sensorConfiguration.getInitialSensorCollectStatus(SensorDescPressure.SENSOR_ID);
-		scNoise = sensorConfiguration.getInitialSensorCollectStatus(SensorDescNoise.SENSOR_ID);
-		scBLEBeacon = sensorConfiguration.getInitialSensorCollectStatus(SensorDescBLEBeacon.SENSOR_ID);
-		scConnectivity = sensorConfiguration.getInitialSensorCollectStatus(SensorDescConnectivity.SENSOR_ID);
+		scAccelerometer = sensorConfiguration.getInitialSensorCollectStatus(Constants.SENSOR_ACCELEROMETER);
+		scBattery = sensorConfiguration.getInitialSensorCollectStatus(Constants.SENSOR_BATTERY);
+		scLight = sensorConfiguration.getInitialSensorCollectStatus(Constants.SENSOR_LIGHT);
+		scMagnet = sensorConfiguration.getInitialSensorCollectStatus(Constants.SENSOR_MAGNETIC);
+		scProximity = sensorConfiguration.getInitialSensorCollectStatus(Constants.SENSOR_PROXIMITY);
+		scGyroscope = sensorConfiguration.getInitialSensorCollectStatus(Constants.SENSOR_GYROSCOPE);
+		scTemperature = sensorConfiguration.getInitialSensorCollectStatus(Constants.SENSOR_TEMPERATURE);
+		scHumidity = sensorConfiguration.getInitialSensorCollectStatus(Constants.SENSOR_HUMIDITY);
+		scPressure = sensorConfiguration.getInitialSensorCollectStatus(Constants.SENSOR_PRESSURE);
+		scNoise = sensorConfiguration.getInitialSensorCollectStatus(Constants.SENSOR_NOISE);
+		scBLEBeacon = sensorConfiguration.getInitialSensorCollectStatus(Constants.SENSOR_BLEBEACON);
+		scConnectivity = sensorConfiguration.getInitialSensorCollectStatus(Constants.SENSOR_CONNECTIVITY);
 
 		// Get references to android default sensors
 		sensorAccelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -185,18 +188,17 @@ public class SensorService extends Service
 		sensorNoise = new NoiseSensor();
 
 		// Schedule all sensors (initially)
-		scheduleSensor(SensorDescAccelerometer.SENSOR_ID);
-		scheduleSensor(SensorDescLight.SENSOR_ID);
-		scheduleSensor(SensorDescMagnetic.SENSOR_ID);
-		scheduleSensor(SensorDescProximity.SENSOR_ID);
-		scheduleSensor(SensorDescGyroscope.SENSOR_ID);
-		scheduleSensor(SensorDescTemperature.SENSOR_ID);
-		scheduleSensor(SensorDescHumidity.SENSOR_ID);
-		scheduleSensor(SensorDescPressure.SENSOR_ID);
-		scheduleSensor(SensorDescNoise.SENSOR_ID);
-		scheduleSensor(SensorDescBLEBeacon.SENSOR_ID);
-		scheduleSensor(SensorDescConnectivity.SENSOR_ID);
-		scheduleSensor(SensorDescBattery.SENSOR_ID);
+		scheduleSensor(Constants.SENSOR_ACCELEROMETER);
+		scheduleSensor(Constants.SENSOR_BATTERY);
+		scheduleSensor(Constants.SENSOR_MAGNETIC);
+		scheduleSensor(Constants.SENSOR_PROXIMITY);
+		scheduleSensor(Constants.SENSOR_GYROSCOPE);
+		scheduleSensor(Constants.SENSOR_TEMPERATURE);
+		scheduleSensor(Constants.SENSOR_HUMIDITY);
+		scheduleSensor(Constants.SENSOR_PRESSURE);
+		scheduleSensor(Constants.SENSOR_NOISE);
+		scheduleSensor(Constants.SENSOR_BLEBEACON);
+		scheduleSensor(Constants.SENSOR_CONNECTIVITY);
 
 		Log.d(LOG_TAG, "Service execution started");
 		Toast.makeText(SensorService.this, "Service Started", Toast.LENGTH_SHORT).show();
@@ -213,54 +215,54 @@ public class SensorService extends Service
 				SensorCollectStatus sensorCollectStatus = null;
 				long startTime = System.currentTimeMillis();
 
-				if (sensorId == SensorDescAccelerometer.SENSOR_ID) {
+				if (sensorId == Constants.SENSOR_ACCELEROMETER) {
 					scAccelerometer.setMeasureStart(startTime);
 					doCollect = scAccelerometer.isCollect();
 					doCollect = doCollect ? sensorManager.registerListener(sensorListenerClass, sensorAccelerometer,
 							SensorManager.SENSOR_DELAY_NORMAL) : false;
 					sensorCollectStatus = scAccelerometer;
-				} else if (sensorId == SensorDescPressure.SENSOR_ID) {
+				} else if (sensorId == Constants.SENSOR_PRESSURE) {
 					scPressure.setMeasureStart(startTime);
 					doCollect = scPressure.isCollect();
 					doCollect = doCollect ? sensorManager.registerListener(sensorListenerClass, sensorPressure,
 							SensorManager.SENSOR_DELAY_NORMAL) : false;
 					sensorCollectStatus = scPressure;
-				} else if (sensorId == SensorDescGyroscope.SENSOR_ID) {
+				} else if (sensorId == Constants.SENSOR_GYROSCOPE) {
 					doCollect = scGyroscope.isCollect();
 					doCollect = doCollect ? sensorManager.registerListener(sensorListenerClass, sensorGyroscope,
 							SensorManager.SENSOR_DELAY_NORMAL) : false;
 					sensorCollectStatus = scGyroscope;
-				} else if (sensorId == SensorDescHumidity.SENSOR_ID) {
+				} else if (sensorId == Constants.SENSOR_HUMIDITY) {
 					scHumidity.setMeasureStart(startTime);
 					doCollect = scHumidity.isCollect();
 					doCollect = doCollect ? sensorManager.registerListener(sensorListenerClass, sensorHumidity,
 							SensorManager.SENSOR_DELAY_NORMAL) : false;
 					sensorCollectStatus = scHumidity;
-				} else if (sensorId == SensorDescLight.SENSOR_ID) {
+				} else if (sensorId == Constants.SENSOR_LIGHT) {
 					scLight.setMeasureStart(startTime);
 					doCollect = scLight.isCollect();
 					doCollect = doCollect ? sensorManager.registerListener(sensorListenerClass, sensorLight,
 							SensorManager.SENSOR_DELAY_NORMAL) : false;
 					sensorCollectStatus = scLight;
-				} else if (sensorId == SensorDescMagnetic.SENSOR_ID) {
+				} else if (sensorId == Constants.SENSOR_MAGNETIC) {
 					scMagnet.setMeasureStart(startTime);
 					doCollect = scMagnet.isCollect();
 					doCollect = doCollect ? sensorManager.registerListener(sensorListenerClass, sensorMagnet,
 							SensorManager.SENSOR_DELAY_NORMAL) : false;
 					sensorCollectStatus = scMagnet;
-				} else if (sensorId == SensorDescProximity.SENSOR_ID) {
+				} else if (sensorId == Constants.SENSOR_PROXIMITY) {
 					scProximity.setMeasureStart(startTime);
 					doCollect = scProximity.isCollect();
 					doCollect = doCollect ? sensorManager.registerListener(sensorListenerClass, sensorProximity,
 							SensorManager.SENSOR_DELAY_NORMAL) : false;
 					sensorCollectStatus = scProximity;
-				} else if (sensorId == SensorDescTemperature.SENSOR_ID) {
+				} else if (sensorId == Constants.SENSOR_TEMPERATURE) {
 					scTemperature.setMeasureStart(startTime);
 					doCollect = scTemperature.isCollect();
 					doCollect = doCollect ? sensorManager.registerListener(sensorListenerClass, sensorTemperature,
 							SensorManager.SENSOR_DELAY_NORMAL) : false;
 					sensorCollectStatus = scTemperature;
-				} else if (sensorId == SensorDescBattery.SENSOR_ID) {
+				} else if (sensorId == Constants.SENSOR_BATTERY) {
 					scBattery.setMeasureStart(startTime);
 					doCollect = scBattery.isCollect();
 					if (doCollect) {
@@ -269,7 +271,7 @@ public class SensorService extends Service
 						sensorBattery.start();
 					}
 					sensorCollectStatus = scBattery;
-				} else if (sensorId == SensorDescConnectivity.SENSOR_ID) {
+				} else if (sensorId == Constants.SENSOR_CONNECTIVITY) {
 					scConnectivity.setMeasureStart(startTime);
 					doCollect = scConnectivity.isCollect();
 					if (doCollect) {
@@ -278,7 +280,7 @@ public class SensorService extends Service
 						sensorConnectivity.start();
 					}
 					sensorCollectStatus = scConnectivity;
-				} else if (sensorId == SensorDescBLEBeacon.SENSOR_ID) {
+				} else if (sensorId == Constants.SENSOR_BLEBEACON) {
 					scBLEBeacon.setMeasureStart(startTime);
 					doCollect = scBLEBeacon.isCollect();
 					if (doCollect) {
@@ -291,7 +293,7 @@ public class SensorService extends Service
 					// TODO Fix for now, agressive BLE scanning
 					// scBLEBeacon.setMeasureInterval(3000);
 					sensorCollectStatus = scBLEBeacon;
-				} else if (sensorId == SensorDescNoise.SENSOR_ID) {
+				} else if (sensorId == Constants.SENSOR_NOISE) {
 					scNoise.setMeasureStart(startTime);
 					doCollect = scNoise.isCollect();
 					if (doCollect) {
@@ -317,6 +319,7 @@ public class SensorService extends Service
 
 			}
 		};
+		
 		// 10 seconds initial delay
 		handler.postDelayed(run, 10000);
 	}
@@ -358,163 +361,154 @@ public class SensorService extends Service
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		ArrayList<SensorDesc> sensorDescs = new ArrayList<SensorDesc>();
-
+		
 		long timestamp = System.currentTimeMillis();
 		Sensor sensor = event.sensor;
-		SensorDesc sensorDesc = null;
+		SensorReading sensorReading = null;
 
 		switch (sensor.getType()) {
 		case Sensor.TYPE_LIGHT:
-			sensorDesc = new SensorDescLight(timestamp, event.values[0]);
+			sensorReading = new LightReading(timestamp, event.values);
 			Log.d(LOG_TAG, "Light data collected");
 			break;
 		case Sensor.TYPE_PROXIMITY:
-			sensorDesc = new SensorDescProximity(timestamp, event.values[0]);
+			sensorReading = new ProximityReading(timestamp, event.values[0]);
 			Log.d(LOG_TAG, "Proximity data collected");
 			break;
 		case Sensor.TYPE_ACCELEROMETER:
-			sensorDesc = new SensorDescAccelerometer(timestamp, event.values[0], event.values[1], event.values[2]);
+			sensorReading = new AccelerometerReading(Constants.SENSOR_ACCELEROMETER, timestamp, event.values);
 			Log.d(LOG_TAG, "Accelerometer data collected");
 			break;
 		case Sensor.TYPE_MAGNETIC_FIELD:
-			sensorDesc = new SensorDescMagnetic(timestamp, event.values[0], event.values[1], event.values[2]);
 			Log.d(LOG_TAG, "Magnetic data collected");
 			break;
 		case Sensor.TYPE_GYROSCOPE:
-			sensorDesc = new SensorDescGyroscope(timestamp, event.values[0], event.values[1], event.values[2]);
+			sensorReading = new GyroReading(timestamp, event.values);
 			Log.d(LOG_TAG, "Gyroscope data collected");
 			break;
 		case Sensor.TYPE_AMBIENT_TEMPERATURE:
-			sensorDesc = new SensorDescTemperature(timestamp, event.values[0]);
+//			sensorReading = new TemperatureData(timestamp, event.values[0]);
 			Log.d(LOG_TAG, "Temperature data collected");
 			break;
 		case Sensor.TYPE_RELATIVE_HUMIDITY:
-			sensorDesc = new SensorDescHumidity(timestamp, event.values[0]);
+//			sensorReading = new HumidityData(timestamp, event.values[0]);
 			Log.d(LOG_TAG, "Humidity data collected");
 			break;
 		case Sensor.TYPE_PRESSURE:
-			sensorDesc = new SensorDescPressure(timestamp, event.values[0]);
+//			sensorReading = new PressureData(timestamp, event.values[0]);
 			Log.d(LOG_TAG, "Pressure data collected");
 			break;
 		}
-
-		sensorDescs.add(sensorDesc);
-		store(sensorDesc.getSensorId(), sensorDescs);
+		
+		store(sensorReading);
 	}
 
 	@Override
 	public void connectivitySensorDataReady(long timestamp, boolean isConnected, int networkType, boolean isRoaming,
 			String wifiHashId, int wifiStrength, String mobileHashId) {
-		ArrayList<SensorDesc> sensorDescs = new ArrayList<SensorDesc>();
-		SensorDesc sensorDesc = new SensorDescConnectivity(timestamp, isConnected, networkType, isRoaming, wifiHashId,
-				wifiStrength, mobileHashId);
+		
+		SensorReading connReading = new ConnectivityReading(timestamp, isConnected, networkType, isRoaming, wifiHashId, wifiStrength, mobileHashId);
 		Log.d(LOG_TAG, "Connectivity data collected");
-		sensorDescs.add(sensorDesc);
-		store(sensorDesc.getSensorId(), sensorDescs);
+	
+		store(connReading);
 	}
 
 	@Override
 	public void noiseSensorDataReady(long timestamp, float rms, float spl, float[] bands) {
-		ArrayList<SensorDesc> sensorDescs = new ArrayList<SensorDesc>();
-		SensorDesc sensorDesc = new SensorDescNoise(timestamp, rms, spl, bands);
+//		SensorReading Reading = new NoiseRea(timestamp, rms, spl, bands);
 		Log.d(LOG_TAG, "Noise data collected");
-		sensorDescs.add(sensorDesc);
-		store(sensorDesc.getSensorId(), sensorDescs);
+//		store(sensorDesc.getSensorId(), sensorDescs);
 	}
 
-	public void batterySensorDataReady(long timestamp, float batteryPercent, boolean isCharging, boolean isUsbCharge,
-			boolean isAcCharge) {
-		ArrayList<SensorDesc> sensorDescs = new ArrayList<SensorDesc>();
-		SensorDesc sensorDesc = new SensorDescBattery(timestamp, batteryPercent, isCharging, isUsbCharge, isAcCharge);
-		Log.d(LOG_TAG, "Battery data collected");
-		sensorDescs.add(sensorDesc);
-		store(sensorDesc.getSensorId(), sensorDescs);
-	}
+
 
 	@Override
 	public void batterySensorDataReady(BatteryReading reading) {
-		// TODO Please change
-		// ArrayList<SensorDesc> sensorDescs = new ArrayList<SensorDesc>();
-		// SensorDesc sensorDesc = new SensorDescBattery(reading.timestamp,
-		// reading.getPercent(), reading.isCharging(), reading., isAcCharge);
-		// Log.d(LOG_TAG, "Battery data collected");
-		// sensorDescs.add(sensorDesc);
-		// store(sensorDesc.getSensorId(), sensorDescs);
+		
+		Log.d(LOG_TAG, "Battery data collected");
+		store(reading);
 	}
 
 	@Override
 	public void bleSensorDataReady(List<BLEBeaconRecord> beaconRecordList) {
-		ArrayList<SensorDesc> sensorDescs = new ArrayList<SensorDesc>();
-		if (beaconRecordList != null && beaconRecordList.size() > 0) {
-			for (BLEBeaconRecord bbr : beaconRecordList) {
-				SensorDesc sensorDesc = new SensorDescBLEBeacon(bbr.getTokenDetectTime(), bbr.getRssi(), bbr.getMac(),
-						bbr.getAdvertisement().getMostSignificantBits(),
-						bbr.getAdvertisement().getLeastSignificantBits(), bbr.getUuid().getMostSignificantBits(),
-						bbr.getUuid().getLeastSignificantBits(), bbr.getMajor(), bbr.getMinor(), bbr.getTxpower());
-				sensorDescs.add(sensorDesc);
-			}
-			store(SensorDescBLEBeacon.SENSOR_ID, sensorDescs);
-		}
+//		if (beaconRecordList != null && beaconRecordList.size() > 0) {
+//			for (BLEBeaconRecord bbr : beaconRecordList) {
+//				
+//				Ble
+//				SensorDesc sensorDesc = new SensorDescBLEBeacon(bbr.getTokenDetectTime(), bbr.getRssi(), bbr.getMac(),
+//						bbr.getAdvertisement().getMostSignificantBits(),
+//						bbr.getAdvertisement().getLeastSignificantBits(), bbr.getUuid().getMostSignificantBits(),
+//						bbr.getUuid().getLeastSignificantBits(), bbr.getMajor(), bbr.getMinor(), bbr.getTxpower());
+//				sensorDescs.add(sensorDesc);
+//			}
+//			store(SensorDescBLEBeacon.SENSOR_ID, sensorDescs);
+//		}
 		Log.d(LOG_TAG, "BLEBeacon data collected");
 		// Kick this sensor out anyways as it is possible to retrieve no data at
 		// all after the measurement interval
-		sensorCollected.remove(SensorDescBLEBeacon.class);
+//		sensorCollected.remove(SensorDescBLEBeacon.class);
 	}
 
-	private synchronized void store(long sensorId, List<SensorDesc> sensorDescs) {
+	private synchronized void store(SensorReading sensorReading) {
+		if(sensorReading == null)
+			return;
 		storeMutex.lock();
-		SensorCollectStatus scs = sensorCollected.get(sensorId);
-
-		if (sensorDescs != null && !sensorDescs.isEmpty()) {
-			if (scs != null) {
-				if (!scs.isDone(System.currentTimeMillis())) {
-					// Collected new data of this type, count it
-					scs.increaseCollectAmount();
-					// Enough collected, remove from list
-					if (scs.isDone(System.currentTimeMillis())) {
-						sensorCollected.remove(scs.getSensorId());
-						// Remove from listener list
-						unregisterSensor(scs.getSensorId());
-					}
-					for (SensorDesc sensorDesc : sensorDescs) {
-						new StoreTask(getApplicationContext()).execute(sensorDesc);
-					}
-				} else {
-					unregisterSensor(scs.getSensorId());
-				}
-			}
-		}
+		
+		SensorDataImpl sensorData = convertSensorReadingToSensorData(sensorReading);
+		if(sensorData != null)
+			new StoreTask(getApplicationContext()).execute(sensorData);
+		else
+			Log.d(LOG_TAG, "sensorData is null");
+					
 		storeMutex.unlock();
 	}
 
-	private void unregisterSensor(long sensorId) {
-		if (sensorId == SensorDescAccelerometer.SENSOR_ID) {
-			sensorManager.unregisterListener(this, sensorAccelerometer);
-		} else if (sensorId == SensorDescPressure.SENSOR_ID) {
-			sensorManager.unregisterListener(this, sensorPressure);
-		} else if (sensorId == SensorDescGyroscope.SENSOR_ID) {
-			sensorManager.unregisterListener(this, sensorGyroscope);
-		} else if (sensorId == SensorDescHumidity.SENSOR_ID) {
-			sensorManager.unregisterListener(this, sensorHumidity);
-		} else if (sensorId == SensorDescLight.SENSOR_ID) {
-			sensorManager.unregisterListener(this, sensorLight);
-		} else if (sensorId == SensorDescMagnetic.SENSOR_ID) {
-			sensorManager.unregisterListener(this, sensorMagnet);
-		} else if (sensorId == SensorDescProximity.SENSOR_ID) {
-			sensorManager.unregisterListener(this, sensorProximity);
-		} else if (sensorId == SensorDescTemperature.SENSOR_ID) {
-			sensorManager.unregisterListener(this, sensorTemperature);
-		} else if (sensorId == SensorDescNoise.SENSOR_ID) {
-			sensorNoise.removeListener(this);
-		} else if (sensorId == SensorDescBattery.SENSOR_ID) {
-			sensorBattery.removeListener(this);
-		} else if (sensorId == SensorDescBLEBeacon.SENSOR_ID) {
-			sensorBLEBeacon.removeListener(this);
-		} else if (sensorId == SensorDescConnectivity.SENSOR_ID) {
-			sensorConnectivity.removeListener(this);
+	private synchronized SensorDataImpl convertSensorReadingToSensorData(SensorReading reading) {
+		Log.d(LOG_TAG, "convertSensorReadingToSensorData reading Type = "+reading.type);
+		SensorDataImpl sensorData;
+		
+		switch(reading.type) {
+		
+		case Constants.SENSOR_ACCELEROMETER:
+			AccelerometerReading areading = (AccelerometerReading) reading;
+			sensorData = new AccelData(reading.timestamp, areading.getX(),  areading.getY(), areading.getZ(), 0l, true);
+			sensorData.setType(Constants.SENSOR_ACCELEROMETER);
+			return sensorData;
+		
+			
+		default:
+			return null;
+			
 		}
 	}
+	
+//	private void unregisterSensor(long sensorId) {
+//		if (sensorId == SensorDescAccelerometer.SENSOR_ID) {
+//			sensorManager.unregisterListener(this, sensorAccelerometer);
+//		} else if (sensorId == SensorDescPressure.SENSOR_ID) {
+//			sensorManager.unregisterListener(this, sensorPressure);
+//		} else if (sensorId == SensorDescGyroscope.SENSOR_ID) {
+//			sensorManager.unregisterListener(this, sensorGyroscope);
+//		} else if (sensorId == SensorDescHumidity.SENSOR_ID) {
+//			sensorManager.unregisterListener(this, sensorHumidity);
+//		} else if (sensorId == SensorDescLight.SENSOR_ID) {
+//			sensorManager.unregisterListener(this, sensorLight);
+//		} else if (sensorId == SensorDescMagnetic.SENSOR_ID) {
+//			sensorManager.unregisterListener(this, sensorMagnet);
+//		} else if (sensorId == SensorDescProximity.SENSOR_ID) {
+//			sensorManager.unregisterListener(this, sensorProximity);
+//		} else if (sensorId == SensorDescTemperature.SENSOR_ID) {
+//			sensorManager.unregisterListener(this, sensorTemperature);
+//		} else if (sensorId == SensorDescNoise.SENSOR_ID) {
+//			sensorNoise.removeListener(this);
+//		} else if (sensorId == SensorDescBattery.SENSOR_ID) {
+//			sensorBattery.removeListener(this);
+//		} else if (sensorId == SensorDescBLEBeacon.SENSOR_ID) {
+//			sensorBLEBeacon.removeListener(this);
+//		} else if (sensorId == SensorDescConnectivity.SENSOR_ID) {
+//			sensorConnectivity.removeListener(this);
+//		}
+//	}
 
 	public static boolean isServiceRunning(Context context) {
 		ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);

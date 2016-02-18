@@ -11,7 +11,7 @@ import android.os.Parcelable;
  */
 public abstract class SensorReading implements Parcelable {
 	public int type = 0; // 0-light, 1- sound,
-	public int timestamp;
+	public long timestamp;
 	public String uuid;
 
 	/*
@@ -23,13 +23,13 @@ public abstract class SensorReading implements Parcelable {
 	 * kept alive in the database in Seconds.
 	 */
 	public long volatility = -1;
-	
+
 	public boolean isCollect;
 	public boolean isShare;
-	
+
 	public SensorReading() {
-		
 	}
-	
-	public SensorReading(boolean isCollect){}
+
+	public SensorReading(boolean isCollect) {
+	}
 }

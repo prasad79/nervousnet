@@ -3,14 +3,13 @@ package ch.ethz.coss.nervousnet.lib;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 /**
  * @author prasad
  */
 public class LocationReading extends SensorReading {
 
-	public LocationReading(int timestamp, double[] latnLong, double altitude) {
+	public LocationReading(long timestamp, double[] latnLong, double altitude) {
 		this.timestamp = timestamp;
 		this.latnLong = latnLong;
 		this.altitude = altitude;
@@ -50,7 +49,7 @@ public class LocationReading extends SensorReading {
 	}
 
 	public void readFromParcel(Parcel in) {
-		timestamp = in.readInt();
+		timestamp = in.readLong();
 		latnLong = in.createDoubleArray();
 		altitude = in.readDouble();
 	}
@@ -73,7 +72,7 @@ public class LocationReading extends SensorReading {
 	 */
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
-		out.writeInt(timestamp);
+		out.writeLong(timestamp);
 		out.writeDoubleArray(latnLong);
 		out.writeDouble(altitude);
 
