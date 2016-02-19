@@ -27,7 +27,7 @@ public class SensorConfiguration {
 		boolean doShare = settings.getBoolean(sensorType + "_doShare", true);
 
 		int measureInterval = (int) context.getSharedPreferences(NervousStatics.SENSOR_FREQ, 0)
-				.getInt(sensorType + "_freqValue", 2) * 1000;
+				.getInt(sensorType + "_freqValue", 2) * 2000;
 		// int measureInterval = settings.getInt(Long.toHexString(sensorID) +
 		// "_measureInterval", 30 * 1000);
 

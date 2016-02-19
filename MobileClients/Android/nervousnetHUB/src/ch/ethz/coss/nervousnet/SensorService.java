@@ -15,7 +15,10 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Location;
+import android.location.LocationListener;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -38,6 +41,7 @@ import ch.ethz.coss.nervousnet.vm.model.ConnectivityData;
 import ch.ethz.coss.nervousnet.vm.model.GyroData;
 import ch.ethz.coss.nervousnet.vm.model.HumidityData;
 import ch.ethz.coss.nervousnet.vm.model.LightData;
+import ch.ethz.coss.nervousnet.vm.model.LocationData;
 import ch.ethz.coss.nervousnet.vm.model.MagneticData;
 import ch.ethz.coss.nervousnet.vm.model.PressureData;
 import ch.ethz.coss.nervousnet.vm.model.ProximityData;
@@ -50,15 +54,16 @@ import ch.ethz.coss.nervousnet.sensors.BatterySensor;
 import ch.ethz.coss.nervousnet.sensors.BatterySensor.BatteryListener;
 import ch.ethz.coss.nervousnet.sensors.ConnectivitySensor;
 import ch.ethz.coss.nervousnet.sensors.ConnectivitySensor.ConnectivityListener;
+import ch.ethz.coss.nervousnet.sensors.LocationSensor;
+import ch.ethz.coss.nervousnet.sensors.LocationSensor.LocationDataReadyListener;
 import ch.ethz.coss.nervousnet.sensors.NoiseSensor;
 import ch.ethz.coss.nervousnet.sensors.NoiseSensor.NoiseListener;
 
 public class SensorService extends Service
-		implements SensorEventListener, NoiseListener, BatteryListener, BLEBeaconListener, ConnectivityListener {
+		implements SensorEventListener, NoiseListener, BatteryListener, BLEBeaconListener, ConnectivityListener, LocationDataReadyListener {
 
 	private static final String LOG_TAG = SensorService.class.getSimpleName();
 
-	// private final IBinder mBinder = new SensorBinder();
 	private SensorManager sensorManager = null;
 
 	private PowerManager.WakeLock wakeLock;
@@ -82,6 +87,7 @@ public class SensorService extends Service
 	private Sensor sensorPressure = null;
 	private NoiseSensor sensorNoise = null;
 	private BLESensor sensorBLEBeacon = null;
+	private LocationSensor sensorLocation = null;
 
 	// Those need to be reset on every collect call
 	private SensorCollectStatus scAccelerometer = null;
@@ -96,15 +102,11 @@ public class SensorService extends Service
 	private SensorCollectStatus scNoise = null;
 	private SensorCollectStatus scBLEBeacon = null;
 	private SensorCollectStatus scConnectivity = null;
+	private SensorCollectStatus scLocation = null;
 
 	// Threadsafe because handling can get called from different threads
 	private ConcurrentHashMap<Long, SensorCollectStatus> sensorCollected;
 
-	// public class SensorBinder extends Binder {
-	// SensorService getService() {
-	// return SensorService.this;
-	// }
-	// }
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -137,7 +139,7 @@ public class SensorService extends Service
 
 		@Override
 		public AccelerometerReading getAccelerometerReading() throws RemoteException {
-			// TODO Auto-generated method stub
+			
 			return null;
 		}
 
@@ -170,6 +172,7 @@ public class SensorService extends Service
 		scNoise = sensorConfiguration.getInitialSensorCollectStatus(Constants.SENSOR_NOISE);
 		scBLEBeacon = sensorConfiguration.getInitialSensorCollectStatus(Constants.SENSOR_BLEBEACON);
 		scConnectivity = sensorConfiguration.getInitialSensorCollectStatus(Constants.SENSOR_CONNECTIVITY);
+		scLocation = sensorConfiguration.getInitialSensorCollectStatus(Constants.SENSOR_LOCATION);
 
 		// Get references to android default sensors
 		sensorAccelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -180,14 +183,16 @@ public class SensorService extends Service
 		sensorTemperature = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
 		sensorHumidity = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
 		sensorPressure = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
-
+		
 		// Custom sensors
 		sensorBattery = new BatterySensor(getApplicationContext());
 		sensorConnectivity = new ConnectivitySensor(getApplicationContext());
 		sensorBLEBeacon = new BLESensor(getApplicationContext());
 		sensorNoise = new NoiseSensor();
+		sensorLocation = new LocationSensor(getApplicationContext());
 
 		// Schedule all sensors (initially)
+		scheduleSensor(Constants.SENSOR_LOCATION);
 		scheduleSensor(Constants.SENSOR_ACCELEROMETER);
 		scheduleSensor(Constants.SENSOR_BATTERY);
 		scheduleSensor(Constants.SENSOR_MAGNETIC);
@@ -206,6 +211,7 @@ public class SensorService extends Service
 	}
 
 	private void scheduleSensor(final long sensorId) {
+		Log.d(LOG_TAG, "scheduleSensor called.");
 		handler = new Handler(hthread.getLooper());
 		final Runnable run = new Runnable() {
 			@Override
@@ -290,8 +296,6 @@ public class SensorService extends Service
 						// unavailable
 						doCollect = sensorBLEBeacon.startScanning(Math.max(scBLEBeacon.getMeasureDuration(), 2000));
 					}
-					// TODO Fix for now, agressive BLE scanning
-					// scBLEBeacon.setMeasureInterval(3000);
 					sensorCollectStatus = scBLEBeacon;
 				} else if (sensorId == Constants.SENSOR_NOISE) {
 					scNoise.setMeasureStart(startTime);
@@ -299,11 +303,19 @@ public class SensorService extends Service
 					if (doCollect) {
 						sensorNoise.clearListeners();
 						sensorNoise.addListener(sensorListenerClass);
-						// Noise sensor doesn't really make sense with less than
-						// 500ms
 						sensorNoise.startRecording(Math.max(scNoise.getMeasureDuration(), 500));
 					}
 					sensorCollectStatus = scNoise;
+				} else if (sensorId == Constants.SENSOR_LOCATION) {
+					scLocation.setMeasureStart(startTime);
+					doCollect = scLocation.isCollect();
+					if (doCollect) {
+						sensorLocation.clearListeners();
+						sensorLocation.addListener(sensorListenerClass);
+						sensorLocation.startLocationCollection();
+					}
+					sensorCollectStatus = scLocation;
+					
 				}
 
 				if (doCollect && sensorCollectStatus != null) {
@@ -403,6 +415,8 @@ public class SensorService extends Service
 		store(sensorReading);
 	}
 
+	
+	
 	@Override
 	public void connectivitySensorDataReady(long timestamp, boolean isConnected, int networkType, boolean isRoaming,
 			String wifiHashId, int wifiStrength, String mobileHashId) {
@@ -448,6 +462,13 @@ public class SensorService extends Service
 		// all after the measurement interval
 //		sensorCollected.remove(SensorDescBLEBeacon.class);
 	}
+	
+	
+	@Override
+	public void locationSensorDataReady(LocationReading reading) {
+		Log.d(LOG_TAG, "inside locationSensorDataReady()");
+		store(reading);
+	}
 
 	private synchronized void store(SensorReading sensorReading) {
 		if(sensorReading == null)
@@ -473,6 +494,12 @@ public class SensorService extends Service
 			AccelerometerReading areading = (AccelerometerReading) reading;
 			sensorData = new AccelData(reading.timestamp, areading.getX(),  areading.getY(), areading.getZ(), 0l, true);
 			sensorData.setType(Constants.SENSOR_ACCELEROMETER);
+			return sensorData;		
+			
+		case Constants.SENSOR_LOCATION:
+			LocationReading locReading = (LocationReading) reading;
+			sensorData = new LocationData(reading.timestamp, locReading.getLatnLong()[0], locReading.getLatnLong()[1], locReading.getAltitude(), 0l, true);
+			sensorData.setType(Constants.SENSOR_LOCATION);
 			return sensorData;
 		
 			
@@ -530,4 +557,8 @@ public class SensorService extends Service
 		context.stopService(sensorIntent);
 	}
 
+	
+
+	
+	
 }

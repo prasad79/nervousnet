@@ -14,6 +14,8 @@ import ch.ethz.coss.nervousnet.vm.model.ConfigDao;
 import ch.ethz.coss.nervousnet.vm.model.DaoMaster;
 import ch.ethz.coss.nervousnet.vm.model.DaoMaster.DevOpenHelper;
 import ch.ethz.coss.nervousnet.vm.model.DaoSession;
+import ch.ethz.coss.nervousnet.vm.model.LocationData;
+import ch.ethz.coss.nervousnet.vm.model.LocationDataDao;
 import ch.ethz.coss.nervousnet.vm.model.SensorDataImpl;
 
 
@@ -30,6 +32,7 @@ public class NervousVM {
 	SQLiteDatabase sqlDB;
 	ConfigDao configDao;
 	AccelDataDao accDao;
+	LocationDataDao locDao;
 	
 	public static synchronized  NervousVM getInstance(Context context) {
 		if (nervousVM == null) {
@@ -56,6 +59,8 @@ public class NervousVM {
 		 configDao = daoSession.getConfigDao();
 		 
 		 accDao = daoSession.getAccelDataDao();
+		 
+		 locDao = daoSession.getLocationDataDao();
 		 
 	    boolean hasVMConfig = loadVMConfig();
 		if (!hasVMConfig) {
@@ -196,6 +201,12 @@ public class NervousVM {
 			return true;
 			
 		case Constants.SENSOR_LOCATION:
+			LocationData locData = (LocationData) sensorData;
+			Log.d(TAG, "LOCATION_DATA table count = "+locDao.count());
+			Log.d(TAG, "Inside Switch, LocationData Type = (Type = "+locData.getType()+", Timestamp = "+locData.getTimeStamp()+", Volatility = "+locData.getVolatility());
+			Log.d(TAG, "Inside Switch, LocationData Type = (Latitude = "+locData.getLatitude()+", Longitude = "+locData.getLongitude()+", ALtitude = "+locData.getAltitude());
+			
+			locDao.insert(locData);
 			return true;
 			
 		case Constants.SENSOR_BLEBEACON:
