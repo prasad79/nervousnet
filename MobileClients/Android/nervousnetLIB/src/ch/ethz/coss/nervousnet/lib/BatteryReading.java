@@ -20,6 +20,7 @@ public class BatteryReading extends SensorReading {
 
 	public BatteryReading(long timestamp, float batteryPercent, boolean isCharging, boolean isUsbCharge,
 			boolean isAcCharge, float temp, int volt, byte health) {
+		this.type = Constants.SENSOR_BATTERY;
 		this.timestamp = timestamp;
 		this.percent = batteryPercent;
 		this.isCharging = isCharging;

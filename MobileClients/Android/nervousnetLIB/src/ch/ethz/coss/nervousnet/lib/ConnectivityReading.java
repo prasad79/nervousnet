@@ -109,6 +109,7 @@ public class ConnectivityReading extends SensorReading {
 
 	public ConnectivityReading(long timestamp, boolean isConnected, int networkType, boolean isRoaming,
 			String wifiHashId, int wifiStrength, String mobileHashId) {
+		this.type = Constants.SENSOR_CONNECTIVITY;
 		this.timestamp = timestamp;
 		this.isConnected = isConnected;
 		this.networkType = networkType;

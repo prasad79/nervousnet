@@ -10,6 +10,7 @@ public class DeviceReading extends SensorReading {
 
 
 	public DeviceReading(long timestamp, float[] values) {
+		this.type = Constants.SENSOR_DEVICE;
 		this.timestamp = timestamp;
 	}
 

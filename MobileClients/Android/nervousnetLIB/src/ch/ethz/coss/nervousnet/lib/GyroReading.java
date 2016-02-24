@@ -12,6 +12,7 @@ public class GyroReading extends SensorReading {
 	private float[] values = new float[3];
 
 	public GyroReading(long timestamp, float[] values) {
+		this.type = Constants.SENSOR_GYROSCOPE;
 		this.timestamp = timestamp;
 		this.values = values;
 	}
