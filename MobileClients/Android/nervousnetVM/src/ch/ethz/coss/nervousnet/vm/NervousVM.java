@@ -7,6 +7,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.util.Log;
+import ch.ethz.coss.nervousnet.lib.Constants;
 import ch.ethz.coss.nervousnet.vm.model.AccelData;
 import ch.ethz.coss.nervousnet.vm.model.AccelDataDao;
 import ch.ethz.coss.nervousnet.vm.model.Config;
