@@ -1,4 +1,3 @@
-
 package ch.ethz.coss.nervousnet.lib;
 
 import android.os.Parcel;
@@ -7,12 +6,12 @@ import android.os.Parcelable;
 /**
  * @author prasad
  */
-public class LightReading extends SensorReading {
+public class NoiseReading extends SensorReading {
 
 	private float value;
 
-	public LightReading(long timestamp, float value) {
-		this.type = Constants.SENSOR_LIGHT;
+	public NoiseReading(long timestamp, float value) {
+		this.type = Constants.SENSOR_NOISE;
 		this.timestamp = timestamp;
 		this.value = value;
 	}
@@ -20,12 +19,11 @@ public class LightReading extends SensorReading {
 	/**
 	 * @param in
 	 */
-	public LightReading(Parcel in) {
+	public NoiseReading(Parcel in) {
 		readFromParcel(in);
 	}
 
 	public void readFromParcel(Parcel in) {
-
 		timestamp = in.readInt();
 		value = in.readFloat();
 	}
@@ -54,18 +52,17 @@ public class LightReading extends SensorReading {
 	public void writeToParcel(Parcel out, int flags) {
 		out.writeLong(timestamp);
 		out.writeFloat(value);
-
 	}
 
-	public static final Parcelable.Creator<LightReading> CREATOR = new Parcelable.Creator<LightReading>() {
+	public static final Parcelable.Creator<NoiseReading> CREATOR = new Parcelable.Creator<NoiseReading>() {
 		@Override
-		public LightReading createFromParcel(Parcel in) {
-			return new LightReading(in);
+		public NoiseReading createFromParcel(Parcel in) {
+			return new NoiseReading(in);
 		}
 
 		@Override
-		public LightReading[] newArray(int size) {
-			return new LightReading[size];
+		public NoiseReading[] newArray(int size) {
+			return new NoiseReading[size];
 		}
 	};
 
