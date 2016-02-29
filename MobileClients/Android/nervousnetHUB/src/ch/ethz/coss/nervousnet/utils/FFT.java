@@ -1,28 +1,29 @@
 package ch.ethz.coss.nervousnet.utils;
 
-/*
- *  Copyright 2006-2007 Columbia University.
- *  Copyright 2014	ETH Zürich
+/*******************************************************************************
  *
- *  This file is part of MEAPsoft.
- *  This file is part of Nervous for Android.
- *
- *  MEAPsoft is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License version 2 as
- *  published by the Free Software Foundation.
- *
- *  MEAPsoft is distributed in the hope that it will be useful, but
- *  WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with MEAPsoft; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA
- *
- *  See the file "COPYING" for the text of the license.
- */
+ *  *     Nervousnet - a distributed middleware software for social sensing. 
+ *  *      It is responsible for collecting and managing data in a fully de-centralised fashion
+ *  *
+ *  *     Copyright (C) 2016 ETH Zürich, COSS
+ *  *
+ *  *     This file is part of Nervousnet Framework
+ *  *
+ *  *     Nervousnet is free software: you can redistribute it and/or modify
+ *  *     it under the terms of the GNU General Public License as published by
+ *  *     the Free Software Foundation, either version 3 of the License, or
+ *  *     (at your option) any later version.
+ *  *
+ *  *     Nervousnet is distributed in the hope that it will be useful,
+ *  *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  *     GNU General Public License for more details.
+ *  *
+ *  *     You should have received a copy of the GNU General Public License
+ *  *     along with SwarmPulse. If not, see <http://www.gnu.org/licenses/>.
+ *  *
+ *  *
+ *******************************************************************************/
 
 public class FFT {
 
