@@ -2,7 +2,7 @@ package ch.ethz.coss.nervousnet.utils;
 
 /*
  *  Copyright 2006-2007 Columbia University.
- *  Copyright 2014	ETH Zurich
+ *  Copyright 2014	ETH Zürich
  *
  *  This file is part of MEAPsoft.
  *  This file is part of Nervous for Android.
@@ -78,13 +78,17 @@ public class FFT {
 	}
 
 	/***************************************************************
-	 * fft.c Douglas L. Jones University of Illinois at Urbana-Champaign January 19, 1992 http://cnx.rice.edu/content/m12016/latest/
+	 * fft.c Douglas L. Jones University of Illinois at Urbana-Champaign January
+	 * 19, 1992 http://cnx.rice.edu/content/m12016/latest/
 	 * 
 	 * fft: in-place radix-2 DIT DFT of a complex input
 	 * 
-	 * input: n: length of FFT: must be a power of two m: n = 2**m input/output x: double array of length n with real part of data y: double array of length n with imag part of data
+	 * input: n: length of FFT: must be a power of two m: n = 2**m input/output
+	 * x: double array of length n with real part of data y: double array of
+	 * length n with imag part of data
 	 * 
-	 * Permission to copy and use this program is granted as long as this header is included.
+	 * Permission to copy and use this program is granted as long as this header
+	 * is included.
 	 ****************************************************************/
 	public void fft(double[] x, double[] y) {
 		int i, j, k, n1, n2, a;

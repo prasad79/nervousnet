@@ -65,16 +65,14 @@ public class DBAccessHelper extends SQLiteOpenHelper {
 
 	public synchronized void openDB() {
 		sqldb = SQLiteDatabase.openDatabase(dbPath, null,
-				SQLiteDatabase.OPEN_READWRITE
-						| SQLiteDatabase.NO_LOCALIZED_COLLATORS);
+				SQLiteDatabase.OPEN_READWRITE | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
 	}
 
 	public synchronized boolean checkDB() {
 		SQLiteDatabase sqrdb = null;
 		try {
 			sqrdb = SQLiteDatabase.openDatabase(dbPath, null,
-					SQLiteDatabase.OPEN_READONLY
-							| SQLiteDatabase.NO_LOCALIZED_COLLATORS);
+					SQLiteDatabase.OPEN_READONLY | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
 		} catch (SQLiteException e) {
 			return false;
 		}
@@ -94,7 +92,7 @@ public class DBAccessHelper extends SQLiteOpenHelper {
 	public SQLiteDatabase getDatabase() {
 		return sqldb;
 	}
-	
+
 	public File getDatabaseFile() {
 		return new File(dbPath);
 	}

@@ -1,12 +1,10 @@
 package ch.ethz.coss.nervousnet;
 
+import android.os.AsyncTask;
+import android.content.Context;
 import ch.ethz.coss.nervousnet.vm.NervousVM;
 import ch.ethz.coss.nervousnet.vm.model.SensorDataImpl;
 
-import java.util.ArrayList;
-
-import android.content.Context;
-import android.os.AsyncTask;
 
 public class StoreTask extends AsyncTask<SensorDataImpl, Void, Void> {
 

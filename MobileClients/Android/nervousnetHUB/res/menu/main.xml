@@ -1,43 +1,61 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <!-- <item
+    <!--
+         <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="@string/action_settings"/> -->
+        android:title="@string/action_settings"/>
+    -->
     <item
         android:id="@+id/menu_main"
         android:title="Main Apps">
     </item>
-    
-    <!-- <item
+
+    <!--
+    <item
         android:id="@+id/menu_SensorsStatistics"
         android:title="Sensor statistics">
-    </item> -->
-    
-    <!-- <item
+    </item>
+    -->
+
+
+    <!--
+    <item
         android:id="@+id/menu_visualizer"
         android:title="Visualizer">
-    </item> -->
-    <!-- <item
+    </item>
+    -->
+    <!--
+    <item
         android:id="@+id/menu_privacy"
         android:title="Privacy">
-    </item> -->
-    
-<!--     <item
+    </item>
+    -->
+
+
+    <!--
+         <item
         android:id="@+id/menu_settings"
         android:title="Settings">
-    </item> -->
-<!--     <item
+    </item>
+    -->
+    <!--
+         <item
         android:id="@+id/menu_IfThisThenThat"
         android:title="If This Then That">
-    </item> -->
-<!--     <item
+    </item>
+    -->
+    <!--
+         <item
         android:id="@+id/menu_SensorLoggingToggle"
         android:title="Sensor Logging Toggle">
-    </item> -->
+    </item>
+    -->
 
-   <!--  <item
+
+    <!--
+    <item
         android:id="@+id/menu_TestQuery"
         android:title="Test Query">
         <menu>
@@ -135,6 +153,7 @@
                 </menu>
             </item>
         </menu>
-    </item> -->
+    </item>
+    -->
 
 </menu>

@@ -6,32 +6,32 @@ public class UnsignedArithmetic {
 
 	public static short upcastToShort(byte in) {
 		// ............................0xHHLL
-		return (short) (((short) in) & 0x00FF);
+		return (short) ((in) & 0x00FF);
 	}
 
 	public static int upcastToInt(byte in) {
 		// .................0xHHHHLLLL
-		return ((int) in) & 0x000000FF;
+		return (in) & 0x000000FF;
 	}
 
 	public static long upcastToLong(byte in) {
 		// ..................0xHHHHHHHHLLLLLLLL
-		return ((long) in) & 0x00000000000000FFL;
+		return (in) & 0x00000000000000FFL;
 	}
 
 	public static int upcastToInt(short in) {
 		// .................0xHHHHLLLL
-		return ((int) in) & 0x0000FFFF;
+		return (in) & 0x0000FFFF;
 	}
 
 	public static long upcastToLong(short in) {
 		// ..................0xHHHHHHHHLLLLLLLL
-		return ((long) in) & 0x000000000000FFFFL;
+		return (in) & 0x000000000000FFFFL;
 	}
 
 	public static long upcastToLong(int in) {
 		// ..................0xHHHHHHHHLLLLLLLL
-		return ((long) in) & 0x00000000FFFFFFFFL;
+		return (in) & 0x00000000FFFFFFFFL;
 	}
 
 	public static UUID toUUIDLittleEndian(byte[] data, int start, int stop) {
@@ -69,7 +69,8 @@ public class UnsignedArithmetic {
 		String[] macSplit = mac.split(":");
 		int length = macSplit.length;
 		for (int i = 0; i < length; i++) {
-			// Workaround for stupid sign extension that always is the case with Java
+			// Workaround for stupid sign extension that always is the case with
+			// Java
 			macLong |= upcastToLong(Short.decode("0x" + macSplit[i])) << (length - 1 - i) * 8;
 		}
 		return macLong;

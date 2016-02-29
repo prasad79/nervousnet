@@ -14,9 +14,19 @@ import ch.ethz.coss.nervousnet.utils.FFT;
 public class NoiseSensor {
 
 	public static final int BANDCOUNT = 12;
-	public static final int SAMPPERSEC = 8000; // 8000Hz sampling rate, the minimum
-	public static final int NYQUIST = 4000; // Take this 4000Hz regardless of SAMPPERSEC
-	public static final float BANDLOGBASE = (float) Math.exp(Math.log(NYQUIST) / BANDCOUNT); // Get the basis for the log structured frequency bands
+	public static final int SAMPPERSEC = 8000; // 8000Hz sampling rate, the
+												// minimum
+	public static final int NYQUIST = 4000; // Take this 4000Hz regardless of
+											// SAMPPERSEC
+	public static final float BANDLOGBASE = (float) Math.exp(Math.log(NYQUIST) / BANDCOUNT); // Get
+																								// the
+																								// basis
+																								// for
+																								// the
+																								// log
+																								// structured
+																								// frequency
+																								// bands
 	public static final int ENCODING = AudioFormat.ENCODING_PCM_16BIT;
 	public static final int CHANNEL = AudioFormat.CHANNEL_IN_MONO;
 
@@ -39,13 +49,13 @@ public class NoiseSensor {
 		listenerList.add(listener);
 		listenerMutex.unlock();
 	}
-	
+
 	public void removeListener(NoiseListener listener) {
 		listenerMutex.lock();
 		listenerList.remove(listener);
 		listenerMutex.unlock();
 	}
-	
+
 	public void clearListeners() {
 		listenerMutex.lock();
 		listenerList.clear();
@@ -95,13 +105,15 @@ public class NoiseSensor {
 			double rms = 0.0;
 
 			for (int i = 0; i < buflen; i++) {
-				re[i] = ((double) (buffer[i])) / 32768.d;
+				re[i] = ((buffer[i])) / 32768.d;
 				rms = rms + Math.abs(buffer[i]);
 			}
 			rms = rms / buflen;
 
-			// See for the pressure formula: http://de.wikipedia.org/wiki/Schalldruckpegel
-			// See http://www.reddit.com/r/androiddev/comments/14bnrp/how_to_find_microphone_modelspec_of_android_device/
+			// See for the pressure formula:
+			// http://de.wikipedia.org/wiki/Schalldruckpegel
+			// See
+			// http://www.reddit.com/r/androiddev/comments/14bnrp/how_to_find_microphone_modelspec_of_android_device/
 			// See "Android 4.0 compability definition guideline", chapter 5.3
 			// Basically devices are required to conform to the equation:
 			// --------- 20.d * Math.log10(gain * 2500) == 90.d
@@ -109,7 +121,9 @@ public class NoiseSensor {
 			// --------- gain = Math.pow(10.0, 90.0 / 20.0) / 2500.0
 			// and
 			// --------- spl = 20.d * Math.log10(gain * rms);
-			// (This is as close as we can get to absolute sound pressure levels (spl). The accuracy depends on how close the device is to Googles requirements.)
+			// (This is as close as we can get to absolute sound pressure levels
+			// (spl). The accuracy depends on how close the device is to Googles
+			// requirements.)
 			//
 			double gain = Math.pow(10.0, 90.0 / 20.0) / 2500.0;
 			spl = 20.d * Math.log10(gain * rms);
@@ -121,21 +135,22 @@ public class NoiseSensor {
 
 			double[] power = new double[fftlen];
 			for (int i = 0; i < fftlen; i++) {
-				power[i] = (re[i] * re[i] - im[i] * im[i]) / (double) buflen;
+				power[i] = (re[i] * re[i] - im[i] * im[i]) / buflen;
 			}
 
 			double freqFact = (double) (SAMPPERSEC) / (double) buflen;
 			// double freq = freqFact * peaki;
 
 			// Logarithmic structured band counting, from 0Hz to 4000Hz
-			// Frequency splits (given 12 bands): 2, 4, 8, 16, 32, 63, 126, 252, 503, 1004, 2004, 4000 (in Hz)
+			// Frequency splits (given 12 bands): 2, 4, 8, 16, 32, 63, 126, 252,
+			// 503, 1004, 2004, 4000 (in Hz)
 			float[] bands = new float[BANDCOUNT];
 			for (int i = 0; i < BANDCOUNT; i++) {
 				float avg = 0;
-				int lowFreq = (int) Math.round((float) Math.pow(BANDLOGBASE, i));
-				int hiFreq = (int) Math.round((float) Math.pow(BANDLOGBASE, i + 1));
-				int fromIndex = (int) Math.round(((double) lowFreq) / freqFact);
-				int toIndex = Math.min((int) Math.round(((double) hiFreq) / freqFact), fftlen);
+				int lowFreq = Math.round((float) Math.pow(BANDLOGBASE, i));
+				int hiFreq = Math.round((float) Math.pow(BANDLOGBASE, i + 1));
+				int fromIndex = (int) Math.round((lowFreq) / freqFact);
+				int toIndex = Math.min((int) Math.round((hiFreq) / freqFact), fftlen);
 				for (int j = fromIndex; j < toIndex; j++) {
 					avg += Math.abs(power[j]);
 				}
@@ -144,7 +159,8 @@ public class NoiseSensor {
 			}
 
 			// Pass data to listeners
-			// Data: PCM RMS raw value, total noise level (spl in dB), log structured frequency bands
+			// Data: PCM RMS raw value, total noise level (spl in dB), log
+			// structured frequency bands
 			this.recordTime = recordTime;
 			this.rms = (float) rms;
 			this.spl = (float) spl;

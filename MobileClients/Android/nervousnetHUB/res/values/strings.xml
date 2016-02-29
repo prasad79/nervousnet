@@ -1,48 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources 
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation" >
 
-	<string name="app_name">Nervousnet</string>
-	<string name="you">YOU</string>
-	<string name="action_settings">Settings</string>
-	<string name="start_service">Start Service</string>
-	<string name="stop_service">Stop Service</string>
-	<string name="settings">Settings</string>
-	<string name="title_activity_if_this_then_that">IfThisThenThatActivity</string>
-	<string name="hello_world">Hello world!</string>
-	<string name="If">IF</string>
-	<string name="then">THEN</string>
-	<string name="For">for</string>
-	<string name="yes">Yes</string>
-	<string name="no">No</string>
-	<string name="contribute">Contribute to nervousnet?</string>
-	<string name="contribute_long">Enable sensor logging and uploading to help
-		nervousnet?
-	</string>
-	<string name="dont_show_again">Don\'t show this again</string>
-	<string name="title_activity_sensor_logging_toggle">Privacy settings</string>
-	<string name="title_activity_sensors_statistics">Sensor statistics</string>
-	<string name="title_activity_charts_webview">Statistics</string>
+    <string name="action_settings">Settings</string>
+    <string name="label_sensors">Sensors</string>
+    <string name="label_share">Share</string>
+    <string name="label_settings">More</string>
+    <string name="organization">ETH Zürich,\n Department of Humanities and Social Sciences (D-GESS)\n
+Professorship of Computational Social Science (COSS)\n
+Clausiusstrasse 50,\n 8092 Zürich,\n Switzerland\n</string>
+    <string name="rate_app_label">Rate App</string>
+    <string name="terms">Terms and Conditions</string>
+    <string name="license_label">License</string>
+    <string name="title_data_retention">Data Retention</string>
+    <string name="default_checkbox_data_retention"></string>
+    <string name="title_data_privacy">Data Privacy</string>
 
-	<string-array name="sensors_list">
-		<item>Accelerometer</item>
-		<item>Battery</item>
-		<item>Connectivity</item>
-		<item>Gyroscope</item>
-		<item>Humidity</item>
-		<item>Light</item>
-		<item>Magnetic</item>
-		<item>Microphone</item>
-		<item>Noise</item>
-		<item>Pressure</item>
-		<item>Proximity</item>
-		<item>Temperature</item>
-	</string-array>
 
-	<string name="title_activity_server_details">Proxy settings</string>
-	<string name="title_activity_sensor_frequency">Sensor logging interval</string>
-	<string name="title_activity_main_apps">Nervousnet Virtual Sensors</string>
-	<string name="button_label_accept">Accept</string>
-	<string name="terms_of_use"> &lt;b>TERMS OF USE&lt;/b>&lt;br>&lt;br>
+    <string name="app_name">nervousnet HUB</string>
+    <string name="button_accept_label">Accept</string>
+
+    <string-array name="main_grid">
+        <item>Sensors</item>
+        <item>Sensor Analytics</item>
+        <item>App Showcase</item>
+        <item>Settings</item>
+        <item>Help</item>
+        <item>About</item>
+        <item>Show Sensor</item>
+    </string-array>
+    <string-array name="sensors_list">
+        <item>Accelerometer</item>
+        <item>Battery</item>
+        <item>Beacons</item>
+        <item>Connectivity</item>
+        <item>Gyroscope</item>
+        <item>Humidity</item>
+        <item>Location</item>
+        <item>Light</item>
+        <item>Magnetic</item>
+        <item>Noise</item>
+        <item>Pressure</item>
+        <item>Proximity</item>
+        <item>Temperature</item>
+    </string-array>
+
+    <string name="terms_of_use"> &lt;b>TERMS OF USE&lt;/b>&lt;br>&lt;br>
 
 		This
 		Software application
@@ -161,5 +165,12 @@
 		Nervousnet 1.0 beta, give us feedback &lt;a
 		href=\'mailto:nervousnet@ethz.ch\'>nervousnet@ethz.ch&lt;/a>, and
 		help!&lt;/br></string>
+		
+    
+    <string name="title_activity_sensors">SensorsActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_base_sensor">BaseSensorActivity</string>
+    <string name="title_activity_acc_sensor">AccSensorActivity</string>
+    <string name="title_activity_loc_sensor">LocSensorActivity</string>
 
 </resources>

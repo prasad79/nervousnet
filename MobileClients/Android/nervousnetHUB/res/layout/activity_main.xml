@@ -1,82 +1,22 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:custom="http://schemas.android.com/apk/res-auto"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    android:orientation="vertical" >
+    android:background="@color/white"
+    tools:context=".MainActivity" >
 
-    <ch.ethz.coss.nervousnet.DrawView
-        android:id="@+id/signature_canvas"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:textColor="#FFFFFF" />
-
-    <ImageButton
-        android:id="@+id/btn_main"
+    <GridView
+        android:id="@+id/main_grid"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/circle_orange1"
-        android:padding="20dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/nervousnet_icon_white" />
-
-    <ImageButton
-        android:id="@+id/btn_collectionFrequency"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/circle_orange1"
-        android:padding="10dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/schedule" />
-
-    <ImageButton
-        android:id="@+id/btn_privacy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/circle_orange1"
-        android:padding="10dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/lock" />
-
-    <ImageButton
-        android:id="@+id/btn_serverInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/circle_orange1"
-        android:padding="18dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/ico_server" />
-    
-    <ImageButton
-        android:id="@+id/btn_DataVisualizer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/circle_orange1"
-        android:padding="10dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/sensor" />
-
-    <ImageButton
-        android:id="@+id/btn_on"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:background="@drawable/circle_orange1"
-        android:padding="10dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/ico_on" />
-
-    <ImageButton
-        android:id="@+id/btn_off"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:background="@drawable/circle_orange_dark"
-        android:padding="10dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/ico_off" />
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:columnWidth="@dimen/griditem_size"
+        android:gravity="center"
+        android:horizontalSpacing="10dp"
+        android:numColumns="auto_fit"
+        android:textColor="@color/red"
+        android:verticalSpacing="10dp" >
+    </GridView>
 
 </RelativeLayout>

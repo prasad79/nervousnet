@@ -1,6 +1,5 @@
 package ch.ethz.coss.nervousnet;
 
-import ch.ethz.coss.nervousnet.R;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -13,6 +12,8 @@ import android.preference.PreferenceManager;
 import android.text.Html;
 import android.util.Log;
 import android.widget.TextView;
+import ch.ethz.coss.nervousnet.ui.MainActivity;
+import ch.ethz.coss.nervousnet.ui.StartUpActivity;
 
 /**
  * This class allows the app to display the Terms of Use Dialog. Conditions for
@@ -20,6 +21,8 @@ import android.widget.TextView;
  * not accepted the Terms.
  */
 public class TermsOfUse {
+
+	private static String LOG_TAG = TermsOfUse.class.getSimpleName();
 
 	private Activity mActivity;
 	private String TERMS_PREFIX = "TERMS_";
@@ -37,7 +40,7 @@ public class TermsOfUse {
 			pkgInfo = mActivity.getPackageManager().getPackageInfo(mActivity.getPackageName(), 0);
 
 		} catch (NameNotFoundException e) {
-			Log.d(MainActivity.LOG_TAG,
+			Log.e(LOG_TAG,
 					"TermsOfUse : Version Code could not be retrieved for checking if Terms of Use has been shown.");
 			e.printStackTrace();
 		}
@@ -53,7 +56,7 @@ public class TermsOfUse {
 
 			AlertDialog.Builder builder = new AlertDialog.Builder(mActivity).setTitle(title)
 					.setMessage(Html.fromHtml(message))
-					.setPositiveButton(R.string.button_label_accept, new Dialog.OnClickListener() {
+					.setPositiveButton(R.string.button_accept_label, new Dialog.OnClickListener() {
 
 						@Override
 						public void onClick(DialogInterface dialogInterface, int i) {

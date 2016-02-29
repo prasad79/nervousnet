@@ -1,14 +1,18 @@
-<PreferenceScreen
-        xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <PreferenceCategory
-            android:title="TEST">
+    <PreferenceCategory android:title="@string/title_data_retention" >
+        <SwitchPreference
+            android:key="data_rentention"
+            android:switchTextOff="No"
+            android:switchTextOn="Yes"
+            android:title="Store shared data on the server." />
 
-        <CheckBoxPreference
-                android:key="checkbox_preference"
-                android:title="TEST"
-                android:summary="TEST" />
-
+        <ListPreference
+            android:dependency="data_rentention"
+            android:entries="@array/time_limit"
+            android:entryValues="@array/time_limit_secs"
+            android:key="time_limit_data_retention"
+            android:title="Store shared data for:" android:summary="*** days" android:defaultValue="-1"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

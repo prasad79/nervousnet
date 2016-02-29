@@ -1,0 +1,48 @@
+/**
+ * 
+ */
+package ch.ethz.coss.nervousnet;
+
+/**
+ * @author prasad
+ *
+ */
+public final class Constants {
+
+	public final static String APPLICATION_LOG_TAG = "NervousNetHUB";
+
+	public static boolean DEBUG = true;
+
+	public final static int VIBRATION_DURATION = 50;
+
+	public static Integer[] dummy_icon_array_home = { R.drawable.ic_missing, R.drawable.ic_missing,
+			R.drawable.ic_missing, R.drawable.ic_missing, R.drawable.ic_missing, R.drawable.ic_missing,
+			R.drawable.ic_missing };
+
+	public static Integer[] dummy_icon_array_sensors = { R.drawable.ic_missing, R.drawable.ic_missing,
+			R.drawable.ic_missing, R.drawable.ic_missing, R.drawable.ic_missing, R.drawable.ic_missing,
+			R.drawable.ic_missing, R.drawable.ic_missing, R.drawable.ic_missing, R.drawable.ic_missing,
+			R.drawable.ic_missing, R.drawable.ic_missing, R.drawable.ic_missing };
+
+	public static String[] sensor_labels = { "Accelerometer", "Battery", "Beacons", "Connectivity", "Gyroscope",
+			"Humidity", "Location", "Light", "Magnetic", "Noise", "Pressure", "Proximity", "Temperature"
+
+	};
+
+	/****************** Preferences ****************/
+	public final static String SENSOR_PREFS = "SensorPreferences";
+	public final static String SENSOR_FREQ = "SensorFrequencies";
+	public final static String SERVICE_PREFS = "ServicePreferences";
+	public final static String UPLOAD_PREFS = "UploadPreferences";
+
+	public final static int REQUEST_ENABLE_BT = 0;
+
+	/****************** Sensors **********************/
+
+	public final static int SENSOR_ACCELEROMETER = 0;
+	public final static int SENSOR_LIGHT = 4;
+	public final static int SENSOR_GYRO = 7;
+	public final static int SENSOR_CONNECTIVITY = 8;
+	public final static int SENSOR_LOCATION = 99;
+
+}
