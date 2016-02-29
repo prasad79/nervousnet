@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import ch.ethz.coss.nervousnet.sample.R;
 import ch.ethz.coss.nervousnet.lib.SensorReading;
 
@@ -37,6 +38,14 @@ public class GyroFragment extends BaseFragment {
 	@Override
 	public void updateReadings(SensorReading reading) {
 		// TODO Auto-generated method stub
+		
+	}
+	
+
+	@Override
+	public void handleError(String message) {
+		TextView status = (TextView) getActivity().findViewById(R.id.sensor_status);
+		 status.setText(message);
 		
 	}
 

@@ -25,5 +25,7 @@ public abstract class BaseFragment extends Fragment {
 	
 	
 	public abstract void updateReadings(SensorReading reading);
+	
+	public abstract void handleError(String message);
 
 }

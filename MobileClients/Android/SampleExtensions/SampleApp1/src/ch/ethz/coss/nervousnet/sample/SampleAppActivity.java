@@ -118,7 +118,10 @@ public class SampleAppActivity extends BaseSampleActivity {
 	@Override
 	protected void updateStatus(SensorReading reading) {
 		 Log.d("AccelFragment", "Inside updateStatus");
-		fragment.updateReadings(reading);
+		 if(reading != null)
+			 fragment.updateReadings(reading);
+		 else
+			 fragment.handleError("Reading is null");
 	}
 	
 	

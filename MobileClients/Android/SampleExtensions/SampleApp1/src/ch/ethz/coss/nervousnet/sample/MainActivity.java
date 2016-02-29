@@ -97,7 +97,7 @@ public class MainActivity extends Activity {
 		if (mService == null) {
 			Intent it = new Intent();
 			// it.setPackage("ch.ethz.coss.nervousnet.service");
-			it.setClassName("ch.ethz.coss.nervousnet", "ch.ethz.coss.nervousnet.vm.NervousnetVMService");
+			it.setClassName("ch.ethz.coss.nervousnet", "ch.ethz.coss.nervousnet.SensorService");
 			// it.setAction("ch.ethz.nervousnet.VM");
 
 			try {

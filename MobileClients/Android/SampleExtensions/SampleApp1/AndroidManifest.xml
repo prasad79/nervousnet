@@ -37,10 +37,6 @@ android:name="android.permission.ACCESS_BACKGROUND_SERVICE" />
             </intent-filter>
         </activity>
         <activity
-            android:name="ch.ethz.coss.nervousnet.sample.MainActivity"
-            android:label="@string/app_name" >
-        </activity>
-        <activity
             android:name="ch.ethz.coss.nervousnet.sample.SampleAppActivity"
             android:label="@string/app_name"
             android:parentActivityName="android.support.v4.app.FragmentActivity" >
