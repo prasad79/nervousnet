@@ -30,8 +30,10 @@
 package ch.ethz.coss.nervousnet.sample;
 
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -135,10 +137,25 @@ public abstract class BaseSampleActivity extends FragmentActivity {
 
 				Boolean flag = bindService(it, mServiceConnection, 0);
 				Log.d("DEBUG", flag.toString()); // will return "true"
-				if (!flag)
+				if (!flag){
+
+					Utils.displayAlert(BaseSampleActivity.this, "Alert",
+							"Nervousnet HUB application is required to be installed and running to use this app. Please download it from the App Store.",
+							"Download Now", new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int id) {
+									startActivity(new Intent(Intent.ACTION_VIEW,
+											Uri.parse("https://play.google.com/store/apps/details?id=ch.ethz.coss.nervous.pulse")));
+								}
+							}, "Exit", new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int id) {
+									System.exit(0);
+								}
+							});
 					Toast.makeText(BaseSampleActivity.this,
 							"Please check if the Nervousnet Remote Service is installed and running.",
 							Toast.LENGTH_SHORT).show();
+				}
+					
 				else
 					Toast.makeText(BaseSampleActivity.this, "Nervousnet Remote is running fine", Toast.LENGTH_SHORT).show();
 

@@ -39,10 +39,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-/**
- * @author prasad
- *
- */
+
 public class AccelFragment extends BaseFragment{
 
 	/**
@@ -54,7 +51,6 @@ public class AccelFragment extends BaseFragment{
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_accel, container, false);
-		
 		return rootView;
 	}
 	
@@ -65,6 +61,7 @@ public class AccelFragment extends BaseFragment{
 	@Override
 	public void updateReadings(SensorReading reading){
 		 Log.d("AccelFragment", "Inside updateReadings");
+
 		 TextView x_value = (TextView) getActivity().findViewById(R.id.accel_x);
 		 x_value.setText("" + ((AccelerometerReading)reading).getX());
 	     

@@ -28,6 +28,7 @@ package ch.ethz.coss.nervousnet.sample;
 
 import android.app.Activity;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
@@ -92,13 +93,13 @@ public class MainActivity extends Activity {
 				// TODO Auto-generated method stub
 				mService = NervousnetRemote.Stub.asInterface(service);
 				System.out.println("onServiceConnected 1");
-//
-//				try {
-//					count.setText(mService.getCounter() + "");
-//				} catch (RemoteException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
+				//
+				// try {
+				// count.setText(mService.getCounter() + "");
+				// } catch (RemoteException e) {
+				// // TODO Auto-generated catch block
+				// e.printStackTrace();
+				// }
 
 				// try {
 				// BatteryReading reading = mService.getBatteryReading();
@@ -130,10 +131,13 @@ public class MainActivity extends Activity {
 
 				Boolean flag = bindService(it, mServiceConnection, 0);
 				Log.d("DEBUG", flag.toString()); // will return "true"
-				if (!flag)
+				if (!flag) {
+
 					Toast.makeText(MainActivity.this,
-							"Please check if the Nervousnet Remote Service is installed and running.",
+							"Nervousnet HUB application is required to be installed and running to use this app.",
 							Toast.LENGTH_SHORT).show();
+				}
+
 				else
 					Toast.makeText(MainActivity.this, "Nervousnet Remote is running fine", Toast.LENGTH_SHORT).show();
 
@@ -164,16 +168,17 @@ public class MainActivity extends Activity {
 	public void onBackPressed() {
 		finish();
 	}
-	
+
 	@Override
-	public void onStop(){
+	public void onStop() {
 		unbindService(mServiceConnection);
 	}
+
 	public void updateStatus() {
 		try {
 			System.out.println("Get Battery Reading");
 
-//			count.setText(mService.getCounter() + "");
+			// count.setText(mService.getCounter() + "");
 
 			BatteryReading breading = mService.getBatteryReading();
 			LocationReading lreading = mService.getLocationReading();
