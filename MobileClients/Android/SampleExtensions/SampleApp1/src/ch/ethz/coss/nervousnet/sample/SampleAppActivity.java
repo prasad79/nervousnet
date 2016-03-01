@@ -92,8 +92,7 @@ public class SampleAppActivity extends BaseSampleActivity {
 
         @Override
         public Fragment getItem(int i) {
-//            Fragment fragment = null;
-            
+        	
             switch(i){
             case 0:
             	fragment = new AccelFragment(0);
@@ -112,6 +111,12 @@ public class SampleAppActivity extends BaseSampleActivity {
             	break;
             case 5:
             	fragment = new HumidFragment(5);
+            	break;
+            case 6:
+            	fragment = new LocationFragment(6);
+            	break; 	
+            case 7:
+            	fragment = new LightFragment(7);
             	break;
             	
             default:
@@ -150,11 +155,17 @@ public class SampleAppActivity extends BaseSampleActivity {
 			 fragment.handleError("Reading is null");
 	}
 	
-	
+	@Override
+	public void onPause() {
+		super.onPause();
+		doUnbindService();
+	}
 	
 	@Override
 	public void onBackPressed() {
+		doUnbindService();
 		finish();
+		System.exit(0);
 	}
 
 }

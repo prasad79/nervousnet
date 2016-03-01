@@ -30,19 +30,14 @@
 package ch.ethz.coss.nervousnet.sample;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import ch.ethz.coss.nervousnet.sample.R;
-import ch.ethz.coss.nervousnet.lib.AccelerometerReading;
 import ch.ethz.coss.nervousnet.lib.BatteryReading;
 import ch.ethz.coss.nervousnet.lib.SensorReading;
-/**
- * @author prasad
- *
- */
+
 public class BatteryFragment extends BaseFragment {
 
 	/**
@@ -82,14 +77,7 @@ public class BatteryFragment extends BaseFragment {
 			 status.setText("Please enable the Battery Sensor Log checkbox in Nervousnet HUB");
 		}
 		 
-		
 	}
 
-	@Override
-	public void handleError(String message) {
-		TextView status = (TextView) getActivity().findViewById(R.id.sensor_status);
-		 status.setText(message);
-		
-	}
 
 }

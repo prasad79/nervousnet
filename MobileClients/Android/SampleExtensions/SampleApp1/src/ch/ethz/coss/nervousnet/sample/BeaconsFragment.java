@@ -68,10 +68,4 @@ public class BeaconsFragment extends BaseFragment {
 		
 	}
 
-	@Override
-	public void handleError(String message) {
-		TextView status = (TextView) getActivity().findViewById(R.id.sensor_status);
-		 status.setText(message);
-		
-	}
 }

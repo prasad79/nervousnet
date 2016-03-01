@@ -30,6 +30,7 @@
 package ch.ethz.coss.nervousnet.sample;
 
 import android.support.v4.app.Fragment;
+import android.widget.TextView;
 import ch.ethz.coss.nervousnet.lib.SensorReading;
 
 /**
@@ -52,6 +53,11 @@ public abstract class BaseFragment extends Fragment {
 	
 	public abstract void updateReadings(SensorReading reading);
 	
-	public abstract void handleError(String message);
+	
+	public void handleError(String message) {
+		TextView status = (TextView) getActivity().findViewById(R.id.sensor_status);
+		 status.setText(message);
+		
+	}
 
 }

@@ -53,8 +53,9 @@ import ch.ethz.coss.nervousnet.lib.SensorReading;
  */
 public abstract class BaseSampleActivity extends FragmentActivity {
 
-	 NervousnetRemote mService;
-	 ServiceConnection mServiceConnection;
+	 private NervousnetRemote mService;
+	 private ServiceConnection mServiceConnection;
+	 private Boolean bindFlag;
 	
 	 int m_interval = 2000; // 1 seconds by default, can be changed later
 	 Handler m_handler = new Handler();
@@ -135,16 +136,16 @@ public abstract class BaseSampleActivity extends FragmentActivity {
 
 			try {
 
-				Boolean flag = bindService(it, mServiceConnection, 0);
-				Log.d("DEBUG", flag.toString()); // will return "true"
-				if (!flag){
+				bindFlag = bindService(it, mServiceConnection, 0);
+				Log.d("DEBUG", bindFlag.toString()); // will return "true"
+				if (!bindFlag){
 
 					Utils.displayAlert(BaseSampleActivity.this, "Alert",
 							"Nervousnet HUB application is required to be installed and running to use this app. Please download it from the App Store.",
 							"Download Now", new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog, int id) {
 									startActivity(new Intent(Intent.ACTION_VIEW,
-											Uri.parse("https://play.google.com/store/apps/details?id=ch.ethz.coss.nervous.pulse")));
+											Uri.parse("https://play.google.com/store/apps/details?id=ch.ethz.soms.nervousnet")));
 								}
 							}, "Exit", new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog, int id) {
@@ -172,12 +173,18 @@ public abstract class BaseSampleActivity extends FragmentActivity {
 		}
 	}
 	
+	
+	protected void doUnbindService() {
+		unbindService(mServiceConnection);
+		bindFlag = false;
+		 Log.d("BaseSampleActivity", "doUnbindService successfull");
+	}
 
 	Runnable m_statusChecker = new Runnable() {
 		@Override
 		public void run() {
 
-			 Log.d("BaseSampleActivity", "before updating");
+		    Log.d("BaseSampleActivity", "before updating");
 			update(); // this function can change value of m_interval.
 
 			m_handler.postDelayed(m_statusChecker, m_interval);
@@ -185,6 +192,7 @@ public abstract class BaseSampleActivity extends FragmentActivity {
 	};
 
 	void startRepeatingTask() {
+		
 		m_statusChecker.run();
 	}
 
@@ -215,9 +223,10 @@ public abstract class BaseSampleActivity extends FragmentActivity {
 			 case 1:
 				 updateStatus(breading);
 				 break;
-			 case 5:
+			 case 6:
 				 updateStatus(lreading);
 				 break;
+					 
 			 }
 			
 			 
