@@ -26,7 +26,7 @@ The local analytics engine performs lightweight statistics and machine learning 
 
 
 ### Authors and Contributors
-Prasad P. Pulikal (@prasad79)
+Prasad P. Pulikal (@prasad79) <br>
 Patrick Mistelli (@mistelip)
 
 ### Support or Contact
