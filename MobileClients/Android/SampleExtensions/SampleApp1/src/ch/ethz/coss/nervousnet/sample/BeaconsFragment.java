@@ -44,9 +44,11 @@ import ch.ethz.coss.nervousnet.lib.SensorReading;
  */
 public class BeaconsFragment extends BaseFragment {
 
-	/**
-	 * 
-	 */
+	
+	
+	public BeaconsFragment() {
+	}
+	
 	public BeaconsFragment(int type) {
 		super(type);
 	}

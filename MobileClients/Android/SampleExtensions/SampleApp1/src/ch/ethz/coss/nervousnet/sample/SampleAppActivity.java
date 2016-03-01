@@ -155,6 +155,13 @@ public class SampleAppActivity extends BaseSampleActivity {
 			 fragment.handleError("Reading is null");
 	}
 	
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		doBindService();
+	}
+	
 	@Override
 	public void onPause() {
 		super.onPause();

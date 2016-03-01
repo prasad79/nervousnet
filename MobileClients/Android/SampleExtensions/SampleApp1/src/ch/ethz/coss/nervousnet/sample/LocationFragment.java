@@ -41,9 +41,10 @@ import ch.ethz.coss.nervousnet.lib.SensorReading;
 
 public class LocationFragment extends BaseFragment {
 
-	/**
-	 * 
-	 */
+	
+	public LocationFragment() {
+	}
+	
 	public LocationFragment(int type) {
 		super(type);
 	}

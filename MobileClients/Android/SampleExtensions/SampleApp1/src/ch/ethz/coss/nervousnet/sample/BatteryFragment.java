@@ -40,9 +40,11 @@ import ch.ethz.coss.nervousnet.lib.SensorReading;
 
 public class BatteryFragment extends BaseFragment {
 
-	/**
-	 * 
-	 */
+	
+	
+	public BatteryFragment() {
+	}
+	
 	public BatteryFragment(int type) {
 		super(type);
 	}

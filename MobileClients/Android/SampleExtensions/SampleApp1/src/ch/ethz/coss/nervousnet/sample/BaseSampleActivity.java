@@ -47,10 +47,6 @@ import ch.ethz.coss.nervousnet.lib.LocationReading;
 import ch.ethz.coss.nervousnet.lib.NervousnetRemote;
 import ch.ethz.coss.nervousnet.lib.SensorReading;
 
-/**
- * @author prasad
- *
- */
 public abstract class BaseSampleActivity extends FragmentActivity {
 
 	 private NervousnetRemote mService;
@@ -75,7 +71,7 @@ public abstract class BaseSampleActivity extends FragmentActivity {
 	
 	void initConnection() {
 
-		 Log.d("BaseSampleActivity", "Inside initConnection");
+		Log.d("BaseSampleActivity", "Inside initConnection");
 		mServiceConnection = new ServiceConnection() {
 
 			
@@ -124,19 +120,15 @@ public abstract class BaseSampleActivity extends FragmentActivity {
 				startRepeatingTask();
 				Toast.makeText(getApplicationContext(), "Nervousnet Remote Service Connected", Toast.LENGTH_SHORT)
 						.show();
-				Log.d("IRemote", "Binding is done - Service connected");
+				Log.d("BaseSampleActivity", "Binding is done - Service connected");
 			}
 		};
 		if (mService == null) {
-			Intent it = new Intent();
-			// it.setPackage("ch.ethz.coss.nervousnet.service");
-//			it.setClassName("ch.ethz.coss.nervousnet", "ch.ethz.coss.nervousnet.vm.NervousnetVMService");
-			it.setClassName("ch.ethz.coss.nervousnet", "ch.ethz.coss.nervousnet.SensorService");
-			// it.setAction("ch.ethz.nervousnet.VM");
+			
 
 			try {
 
-				bindFlag = bindService(it, mServiceConnection, 0);
+				doBindService();
 				Log.d("DEBUG", bindFlag.toString()); // will return "true"
 				if (!bindFlag){
 
@@ -173,6 +165,15 @@ public abstract class BaseSampleActivity extends FragmentActivity {
 		}
 	}
 	
+	
+	protected void doBindService() {
+		Log.d("BaseSampleActivity", "doBindService successfull");
+		 
+		Intent it = new Intent();
+		it.setClassName("ch.ethz.coss.nervousnet", "ch.ethz.coss.nervousnet.SensorService");
+		bindFlag = bindService(it, mServiceConnection, 0);
+		 
+	}
 	
 	protected void doUnbindService() {
 		unbindService(mServiceConnection);

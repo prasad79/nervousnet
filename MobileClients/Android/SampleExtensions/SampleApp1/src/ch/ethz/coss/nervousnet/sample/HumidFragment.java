@@ -44,9 +44,10 @@ import ch.ethz.coss.nervousnet.lib.SensorReading;
  */
 public class HumidFragment extends BaseFragment {
 
-	/**
-	 * 
-	 */
+	public HumidFragment() {
+	}
+	
+	
 	public HumidFragment(int type) {
 		super(type);
 	}

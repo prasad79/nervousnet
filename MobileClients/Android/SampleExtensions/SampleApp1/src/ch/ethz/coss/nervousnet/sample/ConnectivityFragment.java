@@ -44,9 +44,10 @@ import ch.ethz.coss.nervousnet.lib.SensorReading;
  */
 public class ConnectivityFragment extends BaseFragment {
 
-	/**
-	 * 
-	 */
+	
+	public ConnectivityFragment() {
+	}
+	
 	public ConnectivityFragment(int type) {
 		super(type);
 	}

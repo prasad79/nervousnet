@@ -42,9 +42,12 @@ import android.widget.TextView;
 
 public class AccelFragment extends BaseFragment{
 
-	/**
-	 * 
-	 */
+	
+	
+	public AccelFragment() {
+	}
+	
+	
 	public AccelFragment(int type) {
 		super(type);
 	}

@@ -44,9 +44,11 @@ import ch.ethz.coss.nervousnet.lib.SensorReading;
  */
 public class GyroFragment extends BaseFragment {
 
-	/**
-	 * 
-	 */
+	
+	
+	public GyroFragment() {
+	}
+	
 	public GyroFragment(int type) {
 		super(type);
 	}
