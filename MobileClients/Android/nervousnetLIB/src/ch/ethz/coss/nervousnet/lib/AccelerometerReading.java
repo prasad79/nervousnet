@@ -39,7 +39,7 @@ public class AccelerometerReading extends SensorReading {
 	private float[] values = new float[3];
 
 	public AccelerometerReading(long timestamp, float[] values) {
-		this.type = Constants.SENSOR_ACCELEROMETER;
+		this.type = LibConstants.SENSOR_ACCELEROMETER;
 		this.timestamp = timestamp;
 		this.values = values;
 	}

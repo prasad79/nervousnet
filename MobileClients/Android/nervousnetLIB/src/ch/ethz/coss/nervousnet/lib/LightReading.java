@@ -38,7 +38,7 @@ public class LightReading extends SensorReading {
 	private float value;
 
 	public LightReading(long timestamp, float value) {
-		this.type = Constants.SENSOR_LIGHT;
+		this.type = LibConstants.SENSOR_LIGHT;
 		this.timestamp = timestamp;
 		this.value = value;
 	}

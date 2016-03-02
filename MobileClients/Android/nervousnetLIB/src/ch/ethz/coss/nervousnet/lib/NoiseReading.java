@@ -37,7 +37,7 @@ public class NoiseReading extends SensorReading {
 	private float value;
 
 	public NoiseReading(long timestamp, float value) {
-		this.type = Constants.SENSOR_NOISE;
+		this.type = LibConstants.SENSOR_NOISE;
 		this.timestamp = timestamp;
 		this.value = value;
 	}

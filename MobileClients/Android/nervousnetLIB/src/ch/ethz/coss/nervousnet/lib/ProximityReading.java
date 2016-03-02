@@ -37,7 +37,7 @@ public class ProximityReading extends SensorReading {
 	private float proximity;
 
 	public ProximityReading(long timestamp, float proximity) {
-		this.type = Constants.SENSOR_PROXIMITY;
+		this.type = LibConstants.SENSOR_PROXIMITY;
 		this.timestamp = timestamp;
 		this.proximity = proximity;
 	}

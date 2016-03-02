@@ -36,7 +36,7 @@ import android.os.Parcelable;
 public class LocationReading extends SensorReading {
 
 	public LocationReading(long timestamp, double[] latnLong, double altitude) {
-		this.type = Constants.SENSOR_LOCATION;
+		this.type = LibConstants.SENSOR_LOCATION;
 		this.timestamp = timestamp;
 		this.latnLong = latnLong;
 		this.altitude = altitude;

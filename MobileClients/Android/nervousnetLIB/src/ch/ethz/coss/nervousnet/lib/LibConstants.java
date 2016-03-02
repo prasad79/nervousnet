@@ -26,7 +26,7 @@
  *******************************************************************************/
 package ch.ethz.coss.nervousnet.lib;
 
-public class Constants {
+public class LibConstants {
 
 	public static final int SENSOR_DEVICE= 1;
 	public static final int SENSOR_LOCATION = 2;
