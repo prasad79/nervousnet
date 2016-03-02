@@ -23,14 +23,15 @@ public class BatteryDataDao extends AbstractDao<BatteryData, Long> {
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property TimeStamp = new Property(0, long.class, "TimeStamp", true, "TIME_STAMP");
-        public final static Property Percent = new Property(1, Float.class, "Percent", false, "PERCENT");
-        public final static Property ChargingType = new Property(2, Byte.class, "ChargingType", false, "CHARGING_TYPE");
-        public final static Property Health = new Property(3, Byte.class, "Health", false, "HEALTH");
-        public final static Property Temperature = new Property(4, Float.class, "Temperature", false, "TEMPERATURE");
-        public final static Property Volt = new Property(5, Integer.class, "Volt", false, "VOLT");
-        public final static Property Volatility = new Property(6, long.class, "Volatility", false, "VOLATILITY");
-        public final static Property ShareFlag = new Property(7, Boolean.class, "ShareFlag", false, "SHARE_FLAG");
+        public final static Property Id = new Property(0, Long.class, "id", true, "_id");
+        public final static Property TimeStamp = new Property(1, Long.class, "TimeStamp", false, "TIME_STAMP");
+        public final static Property Percent = new Property(2, Float.class, "Percent", false, "PERCENT");
+        public final static Property ChargingType = new Property(3, Byte.class, "ChargingType", false, "CHARGING_TYPE");
+        public final static Property Health = new Property(4, Byte.class, "Health", false, "HEALTH");
+        public final static Property Temperature = new Property(5, Float.class, "Temperature", false, "TEMPERATURE");
+        public final static Property Volt = new Property(6, Integer.class, "Volt", false, "VOLT");
+        public final static Property Volatility = new Property(7, long.class, "Volatility", false, "VOLATILITY");
+        public final static Property ShareFlag = new Property(8, Boolean.class, "ShareFlag", false, "SHARE_FLAG");
     };
 
 
@@ -46,14 +47,15 @@ public class BatteryDataDao extends AbstractDao<BatteryData, Long> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"BATTERY_DATA\" (" + //
-                "\"TIME_STAMP\" INTEGER PRIMARY KEY NOT NULL ," + // 0: TimeStamp
-                "\"PERCENT\" REAL," + // 1: Percent
-                "\"CHARGING_TYPE\" INTEGER," + // 2: ChargingType
-                "\"HEALTH\" INTEGER," + // 3: Health
-                "\"TEMPERATURE\" REAL," + // 4: Temperature
-                "\"VOLT\" INTEGER," + // 5: Volt
-                "\"VOLATILITY\" INTEGER NOT NULL ," + // 6: Volatility
-                "\"SHARE_FLAG\" INTEGER);"); // 7: ShareFlag
+                "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
+                "\"TIME_STAMP\" INTEGER," + // 1: TimeStamp
+                "\"PERCENT\" REAL," + // 2: Percent
+                "\"CHARGING_TYPE\" INTEGER," + // 3: ChargingType
+                "\"HEALTH\" INTEGER," + // 4: Health
+                "\"TEMPERATURE\" REAL," + // 5: Temperature
+                "\"VOLT\" INTEGER," + // 6: Volt
+                "\"VOLATILITY\" INTEGER NOT NULL ," + // 7: Volatility
+                "\"SHARE_FLAG\" INTEGER);"); // 8: ShareFlag
     }
 
     /** Drops the underlying database table. */
@@ -66,58 +68,68 @@ public class BatteryDataDao extends AbstractDao<BatteryData, Long> {
     @Override
     protected void bindValues(SQLiteStatement stmt, BatteryData entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getTimeStamp());
+ 
+        Long id = entity.getId();
+        if (id != null) {
+            stmt.bindLong(1, id);
+        }
+ 
+        Long TimeStamp = entity.getTimeStamp();
+        if (TimeStamp != null) {
+            stmt.bindLong(2, TimeStamp);
+        }
  
         Float Percent = entity.getPercent();
         if (Percent != null) {
-            stmt.bindDouble(2, Percent);
+            stmt.bindDouble(3, Percent);
         }
  
         Byte ChargingType = entity.getChargingType();
         if (ChargingType != null) {
-            stmt.bindLong(3, ChargingType);
+            stmt.bindLong(4, ChargingType);
         }
  
         Byte Health = entity.getHealth();
         if (Health != null) {
-            stmt.bindLong(4, Health);
+            stmt.bindLong(5, Health);
         }
  
         Float Temperature = entity.getTemperature();
         if (Temperature != null) {
-            stmt.bindDouble(5, Temperature);
+            stmt.bindDouble(6, Temperature);
         }
  
         Integer Volt = entity.getVolt();
         if (Volt != null) {
-            stmt.bindLong(6, Volt);
+            stmt.bindLong(7, Volt);
         }
-        stmt.bindLong(7, entity.getVolatility());
+        stmt.bindLong(8, entity.getVolatility());
  
         Boolean ShareFlag = entity.getShareFlag();
         if (ShareFlag != null) {
-            stmt.bindLong(8, ShareFlag ? 1L: 0L);
+            stmt.bindLong(9, ShareFlag ? 1L: 0L);
         }
     }
 
     /** @inheritdoc */
     @Override
     public Long readKey(Cursor cursor, int offset) {
-        return cursor.getLong(offset + 0);
+        return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
     }    
 
     /** @inheritdoc */
     @Override
     public BatteryData readEntity(Cursor cursor, int offset) {
         BatteryData entity = new BatteryData( //
-            cursor.getLong(offset + 0), // TimeStamp
-            cursor.isNull(offset + 1) ? null : cursor.getFloat(offset + 1), // Percent
-            cursor.isNull(offset + 2) ? null : (byte) cursor.getShort(offset + 2), // ChargingType
-            cursor.isNull(offset + 3) ? null : (byte) cursor.getShort(offset + 3), // Health
-            cursor.isNull(offset + 4) ? null : cursor.getFloat(offset + 4), // Temperature
-            cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5), // Volt
-            cursor.getLong(offset + 6), // Volatility
-            cursor.isNull(offset + 7) ? null : cursor.getShort(offset + 7) != 0 // ShareFlag
+            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
+            cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // TimeStamp
+            cursor.isNull(offset + 2) ? null : cursor.getFloat(offset + 2), // Percent
+            cursor.isNull(offset + 3) ? null : (byte) cursor.getShort(offset + 3), // ChargingType
+            cursor.isNull(offset + 4) ? null : (byte) cursor.getShort(offset + 4), // Health
+            cursor.isNull(offset + 5) ? null : cursor.getFloat(offset + 5), // Temperature
+            cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6), // Volt
+            cursor.getLong(offset + 7), // Volatility
+            cursor.isNull(offset + 8) ? null : cursor.getShort(offset + 8) != 0 // ShareFlag
         );
         return entity;
     }
@@ -125,20 +137,21 @@ public class BatteryDataDao extends AbstractDao<BatteryData, Long> {
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, BatteryData entity, int offset) {
-        entity.setTimeStamp(cursor.getLong(offset + 0));
-        entity.setPercent(cursor.isNull(offset + 1) ? null : cursor.getFloat(offset + 1));
-        entity.setChargingType(cursor.isNull(offset + 2) ? null : (byte) cursor.getShort(offset + 2));
-        entity.setHealth(cursor.isNull(offset + 3) ? null : (byte) cursor.getShort(offset + 3));
-        entity.setTemperature(cursor.isNull(offset + 4) ? null : cursor.getFloat(offset + 4));
-        entity.setVolt(cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5));
-        entity.setVolatility(cursor.getLong(offset + 6));
-        entity.setShareFlag(cursor.isNull(offset + 7) ? null : cursor.getShort(offset + 7) != 0);
+        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
+        entity.setTimeStamp(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
+        entity.setPercent(cursor.isNull(offset + 2) ? null : cursor.getFloat(offset + 2));
+        entity.setChargingType(cursor.isNull(offset + 3) ? null : (byte) cursor.getShort(offset + 3));
+        entity.setHealth(cursor.isNull(offset + 4) ? null : (byte) cursor.getShort(offset + 4));
+        entity.setTemperature(cursor.isNull(offset + 5) ? null : cursor.getFloat(offset + 5));
+        entity.setVolt(cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6));
+        entity.setVolatility(cursor.getLong(offset + 7));
+        entity.setShareFlag(cursor.isNull(offset + 8) ? null : cursor.getShort(offset + 8) != 0);
      }
     
     /** @inheritdoc */
     @Override
     protected Long updateKeyAfterInsert(BatteryData entity, long rowId) {
-        entity.setTimeStamp(rowId);
+        entity.setId(rowId);
         return rowId;
     }
     
@@ -146,7 +159,7 @@ public class BatteryDataDao extends AbstractDao<BatteryData, Long> {
     @Override
     public Long getKey(BatteryData entity) {
         if(entity != null) {
-            return entity.getTimeStamp();
+            return entity.getId();
         } else {
             return null;
         }

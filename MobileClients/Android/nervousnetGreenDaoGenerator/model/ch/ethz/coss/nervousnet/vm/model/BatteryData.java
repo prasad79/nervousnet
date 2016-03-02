@@ -9,7 +9,8 @@ package ch.ethz.coss.nervousnet.vm.model;
  */
 public class BatteryData implements SensorDataImpl {
 
-    private long TimeStamp;
+    private Long id;
+    private Long TimeStamp;
     private Float Percent;
     private Byte ChargingType;
     private Byte Health;
@@ -19,16 +20,18 @@ public class BatteryData implements SensorDataImpl {
     private Boolean ShareFlag;
 
     // KEEP FIELDS - put your custom fields here
+    private int type;
     // KEEP FIELDS END
 
     public BatteryData() {
     }
 
-    public BatteryData(long TimeStamp) {
-        this.TimeStamp = TimeStamp;
+    public BatteryData(Long id) {
+        this.id = id;
     }
 
-    public BatteryData(long TimeStamp, Float Percent, Byte ChargingType, Byte Health, Float Temperature, Integer Volt, long Volatility, Boolean ShareFlag) {
+    public BatteryData(Long id, Long TimeStamp, Float Percent, Byte ChargingType, Byte Health, Float Temperature, Integer Volt, long Volatility, Boolean ShareFlag) {
+        this.id = id;
         this.TimeStamp = TimeStamp;
         this.Percent = Percent;
         this.ChargingType = ChargingType;
@@ -39,11 +42,19 @@ public class BatteryData implements SensorDataImpl {
         this.ShareFlag = ShareFlag;
     }
 
-    public long getTimeStamp() {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getTimeStamp() {
         return TimeStamp;
     }
 
-    public void setTimeStamp(long TimeStamp) {
+    public void setTimeStamp(Long TimeStamp) {
         this.TimeStamp = TimeStamp;
     }
 
@@ -104,16 +115,17 @@ public class BatteryData implements SensorDataImpl {
     }
 
     // KEEP METHODS - put your custom methods here
+	@Override
+	public Integer getType() {
+		// TODO Auto-generated method stub
+		return type;
+	}
 
 	@Override
-	  public Integer getType() {
-      return Type;
-  }
-	
-	@Override
-  public void setType(Integer Type) {
-      this.Type = Type;
-  }
+	public void setType(Integer type) {
+		// TODO Auto-generated method stub
+		this.type = type;
+	}
     // KEEP METHODS END
 
 }

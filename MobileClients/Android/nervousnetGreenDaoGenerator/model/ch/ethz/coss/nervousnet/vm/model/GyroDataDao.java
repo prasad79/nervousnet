@@ -23,12 +23,13 @@ public class GyroDataDao extends AbstractDao<GyroData, Long> {
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property TimeStamp = new Property(0, long.class, "TimeStamp", true, "TIME_STAMP");
-        public final static Property GyroX = new Property(1, Float.class, "GyroX", false, "GYRO_X");
-        public final static Property GyroY = new Property(2, Float.class, "GyroY", false, "GYRO_Y");
-        public final static Property GyroZ = new Property(3, Float.class, "GyroZ", false, "GYRO_Z");
-        public final static Property Volatility = new Property(4, long.class, "Volatility", false, "VOLATILITY");
-        public final static Property ShareFlag = new Property(5, Boolean.class, "ShareFlag", false, "SHARE_FLAG");
+        public final static Property Id = new Property(0, Long.class, "id", true, "_id");
+        public final static Property TimeStamp = new Property(1, Long.class, "TimeStamp", false, "TIME_STAMP");
+        public final static Property GyroX = new Property(2, Float.class, "GyroX", false, "GYRO_X");
+        public final static Property GyroY = new Property(3, Float.class, "GyroY", false, "GYRO_Y");
+        public final static Property GyroZ = new Property(4, Float.class, "GyroZ", false, "GYRO_Z");
+        public final static Property Volatility = new Property(5, long.class, "Volatility", false, "VOLATILITY");
+        public final static Property ShareFlag = new Property(6, Boolean.class, "ShareFlag", false, "SHARE_FLAG");
     };
 
 
@@ -44,12 +45,13 @@ public class GyroDataDao extends AbstractDao<GyroData, Long> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"GYRO_DATA\" (" + //
-                "\"TIME_STAMP\" INTEGER PRIMARY KEY NOT NULL ," + // 0: TimeStamp
-                "\"GYRO_X\" REAL," + // 1: GyroX
-                "\"GYRO_Y\" REAL," + // 2: GyroY
-                "\"GYRO_Z\" REAL," + // 3: GyroZ
-                "\"VOLATILITY\" INTEGER NOT NULL ," + // 4: Volatility
-                "\"SHARE_FLAG\" INTEGER);"); // 5: ShareFlag
+                "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
+                "\"TIME_STAMP\" INTEGER," + // 1: TimeStamp
+                "\"GYRO_X\" REAL," + // 2: GyroX
+                "\"GYRO_Y\" REAL," + // 3: GyroY
+                "\"GYRO_Z\" REAL," + // 4: GyroZ
+                "\"VOLATILITY\" INTEGER NOT NULL ," + // 5: Volatility
+                "\"SHARE_FLAG\" INTEGER);"); // 6: ShareFlag
     }
 
     /** Drops the underlying database table. */
@@ -62,46 +64,56 @@ public class GyroDataDao extends AbstractDao<GyroData, Long> {
     @Override
     protected void bindValues(SQLiteStatement stmt, GyroData entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getTimeStamp());
+ 
+        Long id = entity.getId();
+        if (id != null) {
+            stmt.bindLong(1, id);
+        }
+ 
+        Long TimeStamp = entity.getTimeStamp();
+        if (TimeStamp != null) {
+            stmt.bindLong(2, TimeStamp);
+        }
  
         Float GyroX = entity.getGyroX();
         if (GyroX != null) {
-            stmt.bindDouble(2, GyroX);
+            stmt.bindDouble(3, GyroX);
         }
  
         Float GyroY = entity.getGyroY();
         if (GyroY != null) {
-            stmt.bindDouble(3, GyroY);
+            stmt.bindDouble(4, GyroY);
         }
  
         Float GyroZ = entity.getGyroZ();
         if (GyroZ != null) {
-            stmt.bindDouble(4, GyroZ);
+            stmt.bindDouble(5, GyroZ);
         }
-        stmt.bindLong(5, entity.getVolatility());
+        stmt.bindLong(6, entity.getVolatility());
  
         Boolean ShareFlag = entity.getShareFlag();
         if (ShareFlag != null) {
-            stmt.bindLong(6, ShareFlag ? 1L: 0L);
+            stmt.bindLong(7, ShareFlag ? 1L: 0L);
         }
     }
 
     /** @inheritdoc */
     @Override
     public Long readKey(Cursor cursor, int offset) {
-        return cursor.getLong(offset + 0);
+        return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
     }    
 
     /** @inheritdoc */
     @Override
     public GyroData readEntity(Cursor cursor, int offset) {
         GyroData entity = new GyroData( //
-            cursor.getLong(offset + 0), // TimeStamp
-            cursor.isNull(offset + 1) ? null : cursor.getFloat(offset + 1), // GyroX
-            cursor.isNull(offset + 2) ? null : cursor.getFloat(offset + 2), // GyroY
-            cursor.isNull(offset + 3) ? null : cursor.getFloat(offset + 3), // GyroZ
-            cursor.getLong(offset + 4), // Volatility
-            cursor.isNull(offset + 5) ? null : cursor.getShort(offset + 5) != 0 // ShareFlag
+            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
+            cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // TimeStamp
+            cursor.isNull(offset + 2) ? null : cursor.getFloat(offset + 2), // GyroX
+            cursor.isNull(offset + 3) ? null : cursor.getFloat(offset + 3), // GyroY
+            cursor.isNull(offset + 4) ? null : cursor.getFloat(offset + 4), // GyroZ
+            cursor.getLong(offset + 5), // Volatility
+            cursor.isNull(offset + 6) ? null : cursor.getShort(offset + 6) != 0 // ShareFlag
         );
         return entity;
     }
@@ -109,18 +121,19 @@ public class GyroDataDao extends AbstractDao<GyroData, Long> {
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, GyroData entity, int offset) {
-        entity.setTimeStamp(cursor.getLong(offset + 0));
-        entity.setGyroX(cursor.isNull(offset + 1) ? null : cursor.getFloat(offset + 1));
-        entity.setGyroY(cursor.isNull(offset + 2) ? null : cursor.getFloat(offset + 2));
-        entity.setGyroZ(cursor.isNull(offset + 3) ? null : cursor.getFloat(offset + 3));
-        entity.setVolatility(cursor.getLong(offset + 4));
-        entity.setShareFlag(cursor.isNull(offset + 5) ? null : cursor.getShort(offset + 5) != 0);
+        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
+        entity.setTimeStamp(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
+        entity.setGyroX(cursor.isNull(offset + 2) ? null : cursor.getFloat(offset + 2));
+        entity.setGyroY(cursor.isNull(offset + 3) ? null : cursor.getFloat(offset + 3));
+        entity.setGyroZ(cursor.isNull(offset + 4) ? null : cursor.getFloat(offset + 4));
+        entity.setVolatility(cursor.getLong(offset + 5));
+        entity.setShareFlag(cursor.isNull(offset + 6) ? null : cursor.getShort(offset + 6) != 0);
      }
     
     /** @inheritdoc */
     @Override
     protected Long updateKeyAfterInsert(GyroData entity, long rowId) {
-        entity.setTimeStamp(rowId);
+        entity.setId(rowId);
         return rowId;
     }
     
@@ -128,7 +141,7 @@ public class GyroDataDao extends AbstractDao<GyroData, Long> {
     @Override
     public Long getKey(GyroData entity) {
         if(entity != null) {
-            return entity.getTimeStamp();
+            return entity.getId();
         } else {
             return null;
         }

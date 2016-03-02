@@ -61,7 +61,8 @@ public class NervousNetDaoGenerator {
     	
     	Entity locationData = schema.addEntity("LocationData");
     	locationData.implementsInterface("SensorDataImpl");
-    	locationData.addLongProperty("TimeStamp").primaryKey().notNull();
+    	locationData.addIdProperty().autoincrement().primaryKey();
+    	locationData.addLongProperty("TimeStamp");
     	locationData.addDoubleProperty("Latitude");
     	locationData.addDoubleProperty("Longitude");
     	locationData.addDoubleProperty("Altitude");
@@ -70,7 +71,8 @@ public class NervousNetDaoGenerator {
     	
     	Entity accelData = schema.addEntity("AccelData");
     	accelData.implementsInterface("SensorDataImpl");
-    	accelData.addLongProperty("TimeStamp").primaryKey().notNull();
+    	accelData.addIdProperty().autoincrement().primaryKey();
+    	accelData.addLongProperty("TimeStamp");
     	accelData.addFloatProperty("X");
     	accelData.addFloatProperty("Y");
     	accelData.addFloatProperty("Z");
@@ -79,8 +81,8 @@ public class NervousNetDaoGenerator {
     	
     	Entity batteryData = schema.addEntity("BatteryData");
     	batteryData.implementsInterface("SensorDataImpl");
-    	
-    	batteryData.addLongProperty("TimeStamp").primaryKey().notNull();
+    	batteryData.addIdProperty().autoincrement().primaryKey();
+    	batteryData.addLongProperty("TimeStamp");
     	batteryData.addFloatProperty("Percent");
     	batteryData.addByteProperty("ChargingType"); //0 - No Charging, 1 - AC, 2 - USB, 3 - Wireless
     	batteryData.addByteProperty("Health"); 
@@ -92,8 +94,8 @@ public class NervousNetDaoGenerator {
     	
     	Entity beaconData = schema.addEntity("BeaconData");
     	beaconData.implementsInterface("SensorDataImpl");
-    
-    	beaconData.addLongProperty("TimeStamp").primaryKey().notNull();
+    	beaconData.addIdProperty().autoincrement().primaryKey();
+    	beaconData.addLongProperty("TimeStamp");
     	beaconData.addIntProperty("rssi");
     	beaconData.addLongProperty("mac");
     	beaconData.addLongProperty("advertisementMSB");
@@ -108,8 +110,8 @@ public class NervousNetDaoGenerator {
     	
     	Entity connectivityData = schema.addEntity("ConnectivityData");
     	connectivityData.implementsInterface("SensorDataImpl");
-    
-    	connectivityData.addLongProperty("TimeStamp").primaryKey().notNull();
+    	connectivityData.addIdProperty().autoincrement().primaryKey();
+    	connectivityData.addLongProperty("TimeStamp");
     	connectivityData.addBooleanProperty("isConnected");
     	connectivityData.addIntProperty("networkType");
     	connectivityData.addBooleanProperty("isRoaming");
@@ -121,8 +123,8 @@ public class NervousNetDaoGenerator {
     	
     	Entity gyroData = schema.addEntity("GyroData");
     	gyroData.implementsInterface("SensorDataImpl");
-    	
-    	gyroData.addLongProperty("TimeStamp").primaryKey().notNull();
+    	gyroData.addIdProperty().autoincrement().primaryKey();
+    	gyroData.addLongProperty("TimeStamp");
     	gyroData.addFloatProperty("GyroX");
     	gyroData.addFloatProperty("GyroY");
     	gyroData.addFloatProperty("GyroZ");
@@ -131,24 +133,24 @@ public class NervousNetDaoGenerator {
     	
     	Entity humidityData = schema.addEntity("HumidityData");
     	humidityData.implementsInterface("SensorDataImpl");
-    	
-    	humidityData.addLongProperty("TimeStamp").primaryKey().notNull();
+    	humidityData.addIdProperty().autoincrement().primaryKey();
+    	humidityData.addLongProperty("TimeStamp");
     	humidityData.addFloatProperty("Humidity");
     	humidityData.addLongProperty("Volatility").notNull();
     	humidityData.addBooleanProperty("ShareFlag");
     	
     	Entity lightData = schema.addEntity("LightData");
     	lightData.implementsInterface("SensorDataImpl");
-    	
-    	lightData.addLongProperty("TimeStamp").primaryKey().notNull();
+    	lightData.addIdProperty().autoincrement().primaryKey();
+    	lightData.addLongProperty("TimeStamp");
     	lightData.addFloatProperty("Lux");
     	lightData.addLongProperty("Volatility").notNull();
     	lightData.addBooleanProperty("ShareFlag");
     	
     	Entity magneticData = schema.addEntity("MagneticData");
     	magneticData.implementsInterface("SensorDataImpl");
-    
-    	magneticData.addLongProperty("TimeStamp").primaryKey().notNull();
+    	magneticData.addIdProperty().autoincrement().primaryKey();
+    	magneticData.addLongProperty("TimeStamp");
     	magneticData.addFloatProperty("MagX");
     	magneticData.addFloatProperty("MagY");
     	magneticData.addFloatProperty("MagZ");
@@ -158,16 +160,16 @@ public class NervousNetDaoGenerator {
     	
     	Entity noiseData = schema.addEntity("NoiseData");
     	noiseData.implementsInterface("SensorDataImpl");
-    	
-    	noiseData.addLongProperty("TimeStamp").primaryKey().notNull();
+    	noiseData.addIdProperty().autoincrement().primaryKey();
+    	noiseData.addLongProperty("TimeStamp");
     	noiseData.addFloatProperty("Decibel");
     	noiseData.addLongProperty("Volatility").notNull();
     	noiseData.addBooleanProperty("ShareFlag");
     	
     	Entity pressureData = schema.addEntity("PressureData");
     	pressureData.implementsInterface("SensorDataImpl");
-    	
-    	pressureData.addLongProperty("TimeStamp").primaryKey().notNull();
+    	pressureData.addIdProperty().autoincrement().primaryKey();
+    	pressureData.addLongProperty("TimeStamp");
     	pressureData.addFloatProperty("Pressure");
     	pressureData.addLongProperty("Volatility").notNull();
     	pressureData.addBooleanProperty("ShareFlag");
@@ -175,22 +177,23 @@ public class NervousNetDaoGenerator {
     	
     	Entity proximityData = schema.addEntity("ProximityData");
     	proximityData.implementsInterface("SensorDataImpl");
-    
-    	proximityData.addLongProperty("TimeStamp").primaryKey().notNull();
+    	proximityData.addIdProperty().autoincrement().primaryKey();
+    	proximityData.addLongProperty("TimeStamp");
     	proximityData.addFloatProperty("Proximity");
     	proximityData.addLongProperty("Volatility").notNull();
     	proximityData.addBooleanProperty("ShareFlag");
     	
     	Entity temperatureData = schema.addEntity("TemperatureData");
     	temperatureData.implementsInterface("SensorDataImpl");
-    
-    	temperatureData.addLongProperty("TimeStamp").primaryKey().notNull();
+    	temperatureData.addIdProperty().autoincrement().primaryKey();
+    	temperatureData.addLongProperty("TimeStamp");
     	temperatureData.addFloatProperty("Temperature");
     	temperatureData.addLongProperty("Volatility").notNull();
     	temperatureData.addBooleanProperty("ShareFlag");
     	
     	Entity nnPacket = schema.addEntity("Packet");
-    	nnPacket.addLongProperty("TimeStamp").primaryKey().notNull();   
+    	nnPacket.addIdProperty().autoincrement().primaryKey();
+    	nnPacket.addLongProperty("TimeStamp");   
     	nnPacket.addByteProperty("SynceStatus"); // 0= unsynched, 1=synched, 2 = empty so don't sync (ideally this should not happen)
     	
     	Property sensor1 = nnPacket.addLongProperty("sensor1").getProperty();

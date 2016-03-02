@@ -26,21 +26,22 @@ public class PacketDao extends AbstractDao<Packet, Long> {
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property TimeStamp = new Property(0, long.class, "TimeStamp", true, "TIME_STAMP");
-        public final static Property SynceStatus = new Property(1, Byte.class, "SynceStatus", false, "SYNCE_STATUS");
-        public final static Property Sensor1 = new Property(2, Long.class, "sensor1", false, "SENSOR1");
-        public final static Property Sensor2 = new Property(3, Long.class, "sensor2", false, "SENSOR2");
-        public final static Property Sensor3 = new Property(4, Long.class, "sensor3", false, "SENSOR3");
-        public final static Property Sensor4 = new Property(5, Long.class, "sensor4", false, "SENSOR4");
-        public final static Property Sensor5 = new Property(6, Long.class, "sensor5", false, "SENSOR5");
-        public final static Property Sensor6 = new Property(7, Long.class, "sensor6", false, "SENSOR6");
-        public final static Property Sensor7 = new Property(8, Long.class, "sensor7", false, "SENSOR7");
-        public final static Property Sensor8 = new Property(9, Long.class, "sensor8", false, "SENSOR8");
-        public final static Property Sensor9 = new Property(10, Long.class, "sensor9", false, "SENSOR9");
-        public final static Property Sensor10 = new Property(11, Long.class, "sensor10", false, "SENSOR10");
-        public final static Property Sensor11 = new Property(12, Long.class, "sensor11", false, "SENSOR11");
-        public final static Property Sensor12 = new Property(13, Long.class, "sensor12", false, "SENSOR12");
-        public final static Property Sensor13 = new Property(14, Long.class, "sensor13", false, "SENSOR13");
+        public final static Property Id = new Property(0, Long.class, "id", true, "_id");
+        public final static Property TimeStamp = new Property(1, Long.class, "TimeStamp", false, "TIME_STAMP");
+        public final static Property SynceStatus = new Property(2, Byte.class, "SynceStatus", false, "SYNCE_STATUS");
+        public final static Property Sensor1 = new Property(3, Long.class, "sensor1", false, "SENSOR1");
+        public final static Property Sensor2 = new Property(4, Long.class, "sensor2", false, "SENSOR2");
+        public final static Property Sensor3 = new Property(5, Long.class, "sensor3", false, "SENSOR3");
+        public final static Property Sensor4 = new Property(6, Long.class, "sensor4", false, "SENSOR4");
+        public final static Property Sensor5 = new Property(7, Long.class, "sensor5", false, "SENSOR5");
+        public final static Property Sensor6 = new Property(8, Long.class, "sensor6", false, "SENSOR6");
+        public final static Property Sensor7 = new Property(9, Long.class, "sensor7", false, "SENSOR7");
+        public final static Property Sensor8 = new Property(10, Long.class, "sensor8", false, "SENSOR8");
+        public final static Property Sensor9 = new Property(11, Long.class, "sensor9", false, "SENSOR9");
+        public final static Property Sensor10 = new Property(12, Long.class, "sensor10", false, "SENSOR10");
+        public final static Property Sensor11 = new Property(13, Long.class, "sensor11", false, "SENSOR11");
+        public final static Property Sensor12 = new Property(14, Long.class, "sensor12", false, "SENSOR12");
+        public final static Property Sensor13 = new Property(15, Long.class, "sensor13", false, "SENSOR13");
     };
 
     private DaoSession daoSession;
@@ -59,21 +60,22 @@ public class PacketDao extends AbstractDao<Packet, Long> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"PACKET\" (" + //
-                "\"TIME_STAMP\" INTEGER PRIMARY KEY NOT NULL ," + // 0: TimeStamp
-                "\"SYNCE_STATUS\" INTEGER," + // 1: SynceStatus
-                "\"SENSOR1\" INTEGER," + // 2: sensor1
-                "\"SENSOR2\" INTEGER," + // 3: sensor2
-                "\"SENSOR3\" INTEGER," + // 4: sensor3
-                "\"SENSOR4\" INTEGER," + // 5: sensor4
-                "\"SENSOR5\" INTEGER," + // 6: sensor5
-                "\"SENSOR6\" INTEGER," + // 7: sensor6
-                "\"SENSOR7\" INTEGER," + // 8: sensor7
-                "\"SENSOR8\" INTEGER," + // 9: sensor8
-                "\"SENSOR9\" INTEGER," + // 10: sensor9
-                "\"SENSOR10\" INTEGER," + // 11: sensor10
-                "\"SENSOR11\" INTEGER," + // 12: sensor11
-                "\"SENSOR12\" INTEGER," + // 13: sensor12
-                "\"SENSOR13\" INTEGER);"); // 14: sensor13
+                "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
+                "\"TIME_STAMP\" INTEGER," + // 1: TimeStamp
+                "\"SYNCE_STATUS\" INTEGER," + // 2: SynceStatus
+                "\"SENSOR1\" INTEGER," + // 3: sensor1
+                "\"SENSOR2\" INTEGER," + // 4: sensor2
+                "\"SENSOR3\" INTEGER," + // 5: sensor3
+                "\"SENSOR4\" INTEGER," + // 6: sensor4
+                "\"SENSOR5\" INTEGER," + // 7: sensor5
+                "\"SENSOR6\" INTEGER," + // 8: sensor6
+                "\"SENSOR7\" INTEGER," + // 9: sensor7
+                "\"SENSOR8\" INTEGER," + // 10: sensor8
+                "\"SENSOR9\" INTEGER," + // 11: sensor9
+                "\"SENSOR10\" INTEGER," + // 12: sensor10
+                "\"SENSOR11\" INTEGER," + // 13: sensor11
+                "\"SENSOR12\" INTEGER," + // 14: sensor12
+                "\"SENSOR13\" INTEGER);"); // 15: sensor13
     }
 
     /** Drops the underlying database table. */
@@ -86,76 +88,85 @@ public class PacketDao extends AbstractDao<Packet, Long> {
     @Override
     protected void bindValues(SQLiteStatement stmt, Packet entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getTimeStamp());
+ 
+        Long id = entity.getId();
+        if (id != null) {
+            stmt.bindLong(1, id);
+        }
+ 
+        Long TimeStamp = entity.getTimeStamp();
+        if (TimeStamp != null) {
+            stmt.bindLong(2, TimeStamp);
+        }
  
         Byte SynceStatus = entity.getSynceStatus();
         if (SynceStatus != null) {
-            stmt.bindLong(2, SynceStatus);
+            stmt.bindLong(3, SynceStatus);
         }
  
         Long sensor1 = entity.getSensor1();
         if (sensor1 != null) {
-            stmt.bindLong(3, sensor1);
+            stmt.bindLong(4, sensor1);
         }
  
         Long sensor2 = entity.getSensor2();
         if (sensor2 != null) {
-            stmt.bindLong(4, sensor2);
+            stmt.bindLong(5, sensor2);
         }
  
         Long sensor3 = entity.getSensor3();
         if (sensor3 != null) {
-            stmt.bindLong(5, sensor3);
+            stmt.bindLong(6, sensor3);
         }
  
         Long sensor4 = entity.getSensor4();
         if (sensor4 != null) {
-            stmt.bindLong(6, sensor4);
+            stmt.bindLong(7, sensor4);
         }
  
         Long sensor5 = entity.getSensor5();
         if (sensor5 != null) {
-            stmt.bindLong(7, sensor5);
+            stmt.bindLong(8, sensor5);
         }
  
         Long sensor6 = entity.getSensor6();
         if (sensor6 != null) {
-            stmt.bindLong(8, sensor6);
+            stmt.bindLong(9, sensor6);
         }
  
         Long sensor7 = entity.getSensor7();
         if (sensor7 != null) {
-            stmt.bindLong(9, sensor7);
+            stmt.bindLong(10, sensor7);
         }
  
         Long sensor8 = entity.getSensor8();
         if (sensor8 != null) {
-            stmt.bindLong(10, sensor8);
+            stmt.bindLong(11, sensor8);
         }
  
         Long sensor9 = entity.getSensor9();
         if (sensor9 != null) {
-            stmt.bindLong(11, sensor9);
+            stmt.bindLong(12, sensor9);
         }
  
         Long sensor10 = entity.getSensor10();
         if (sensor10 != null) {
-            stmt.bindLong(12, sensor10);
+            stmt.bindLong(13, sensor10);
         }
  
         Long sensor11 = entity.getSensor11();
         if (sensor11 != null) {
-            stmt.bindLong(13, sensor11);
+            stmt.bindLong(14, sensor11);
         }
  
         Long sensor12 = entity.getSensor12();
         if (sensor12 != null) {
-            stmt.bindLong(14, sensor12);
+            stmt.bindLong(15, sensor12);
         }
  
         Long sensor13 = entity.getSensor13();
         if (sensor13 != null) {
-            stmt.bindLong(15, sensor13);
+            stmt.bindLong(16, sensor13);
         }
     }
 
@@ -168,28 +179,29 @@ public class PacketDao extends AbstractDao<Packet, Long> {
     /** @inheritdoc */
     @Override
     public Long readKey(Cursor cursor, int offset) {
-        return cursor.getLong(offset + 0);
+        return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
     }    
 
     /** @inheritdoc */
     @Override
     public Packet readEntity(Cursor cursor, int offset) {
         Packet entity = new Packet( //
-            cursor.getLong(offset + 0), // TimeStamp
-            cursor.isNull(offset + 1) ? null : (byte) cursor.getShort(offset + 1), // SynceStatus
-            cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2), // sensor1
-            cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3), // sensor2
-            cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4), // sensor3
-            cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5), // sensor4
-            cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6), // sensor5
-            cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7), // sensor6
-            cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8), // sensor7
-            cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9), // sensor8
-            cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10), // sensor9
-            cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11), // sensor10
-            cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12), // sensor11
-            cursor.isNull(offset + 13) ? null : cursor.getLong(offset + 13), // sensor12
-            cursor.isNull(offset + 14) ? null : cursor.getLong(offset + 14) // sensor13
+            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
+            cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // TimeStamp
+            cursor.isNull(offset + 2) ? null : (byte) cursor.getShort(offset + 2), // SynceStatus
+            cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3), // sensor1
+            cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4), // sensor2
+            cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5), // sensor3
+            cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6), // sensor4
+            cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7), // sensor5
+            cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8), // sensor6
+            cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9), // sensor7
+            cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10), // sensor8
+            cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11), // sensor9
+            cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12), // sensor10
+            cursor.isNull(offset + 13) ? null : cursor.getLong(offset + 13), // sensor11
+            cursor.isNull(offset + 14) ? null : cursor.getLong(offset + 14), // sensor12
+            cursor.isNull(offset + 15) ? null : cursor.getLong(offset + 15) // sensor13
         );
         return entity;
     }
@@ -197,27 +209,28 @@ public class PacketDao extends AbstractDao<Packet, Long> {
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, Packet entity, int offset) {
-        entity.setTimeStamp(cursor.getLong(offset + 0));
-        entity.setSynceStatus(cursor.isNull(offset + 1) ? null : (byte) cursor.getShort(offset + 1));
-        entity.setSensor1(cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2));
-        entity.setSensor2(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
-        entity.setSensor3(cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4));
-        entity.setSensor4(cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5));
-        entity.setSensor5(cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6));
-        entity.setSensor6(cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7));
-        entity.setSensor7(cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8));
-        entity.setSensor8(cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9));
-        entity.setSensor9(cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10));
-        entity.setSensor10(cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11));
-        entity.setSensor11(cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12));
-        entity.setSensor12(cursor.isNull(offset + 13) ? null : cursor.getLong(offset + 13));
-        entity.setSensor13(cursor.isNull(offset + 14) ? null : cursor.getLong(offset + 14));
+        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
+        entity.setTimeStamp(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
+        entity.setSynceStatus(cursor.isNull(offset + 2) ? null : (byte) cursor.getShort(offset + 2));
+        entity.setSensor1(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
+        entity.setSensor2(cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4));
+        entity.setSensor3(cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5));
+        entity.setSensor4(cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6));
+        entity.setSensor5(cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7));
+        entity.setSensor6(cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8));
+        entity.setSensor7(cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9));
+        entity.setSensor8(cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10));
+        entity.setSensor9(cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11));
+        entity.setSensor10(cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12));
+        entity.setSensor11(cursor.isNull(offset + 13) ? null : cursor.getLong(offset + 13));
+        entity.setSensor12(cursor.isNull(offset + 14) ? null : cursor.getLong(offset + 14));
+        entity.setSensor13(cursor.isNull(offset + 15) ? null : cursor.getLong(offset + 15));
      }
     
     /** @inheritdoc */
     @Override
     protected Long updateKeyAfterInsert(Packet entity, long rowId) {
-        entity.setTimeStamp(rowId);
+        entity.setId(rowId);
         return rowId;
     }
     
@@ -225,7 +238,7 @@ public class PacketDao extends AbstractDao<Packet, Long> {
     @Override
     public Long getKey(Packet entity) {
         if(entity != null) {
-            return entity.getTimeStamp();
+            return entity.getId();
         } else {
             return null;
         }
@@ -270,19 +283,19 @@ public class PacketDao extends AbstractDao<Packet, Long> {
             builder.append(',');
             SqlUtils.appendColumns(builder, "T12", daoSession.getTemperatureDataDao().getAllColumns());
             builder.append(" FROM PACKET T");
-            builder.append(" LEFT JOIN LOCATION_DATA T0 ON T.\"SENSOR1\"=T0.\"TIME_STAMP\"");
-            builder.append(" LEFT JOIN ACCEL_DATA T1 ON T.\"SENSOR2\"=T1.\"TIME_STAMP\"");
-            builder.append(" LEFT JOIN BATTERY_DATA T2 ON T.\"SENSOR3\"=T2.\"TIME_STAMP\"");
-            builder.append(" LEFT JOIN BEACON_DATA T3 ON T.\"SENSOR4\"=T3.\"TIME_STAMP\"");
-            builder.append(" LEFT JOIN CONNECTIVITY_DATA T4 ON T.\"SENSOR5\"=T4.\"TIME_STAMP\"");
-            builder.append(" LEFT JOIN GYRO_DATA T5 ON T.\"SENSOR6\"=T5.\"TIME_STAMP\"");
-            builder.append(" LEFT JOIN HUMIDITY_DATA T6 ON T.\"SENSOR7\"=T6.\"TIME_STAMP\"");
-            builder.append(" LEFT JOIN LIGHT_DATA T7 ON T.\"SENSOR8\"=T7.\"TIME_STAMP\"");
-            builder.append(" LEFT JOIN MAGNETIC_DATA T8 ON T.\"SENSOR9\"=T8.\"TIME_STAMP\"");
-            builder.append(" LEFT JOIN NOISE_DATA T9 ON T.\"SENSOR10\"=T9.\"TIME_STAMP\"");
-            builder.append(" LEFT JOIN PRESSURE_DATA T10 ON T.\"SENSOR11\"=T10.\"TIME_STAMP\"");
-            builder.append(" LEFT JOIN PROXIMITY_DATA T11 ON T.\"SENSOR12\"=T11.\"TIME_STAMP\"");
-            builder.append(" LEFT JOIN TEMPERATURE_DATA T12 ON T.\"SENSOR13\"=T12.\"TIME_STAMP\"");
+            builder.append(" LEFT JOIN LOCATION_DATA T0 ON T.\"SENSOR1\"=T0.\"_id\"");
+            builder.append(" LEFT JOIN ACCEL_DATA T1 ON T.\"SENSOR2\"=T1.\"_id\"");
+            builder.append(" LEFT JOIN BATTERY_DATA T2 ON T.\"SENSOR3\"=T2.\"_id\"");
+            builder.append(" LEFT JOIN BEACON_DATA T3 ON T.\"SENSOR4\"=T3.\"_id\"");
+            builder.append(" LEFT JOIN CONNECTIVITY_DATA T4 ON T.\"SENSOR5\"=T4.\"_id\"");
+            builder.append(" LEFT JOIN GYRO_DATA T5 ON T.\"SENSOR6\"=T5.\"_id\"");
+            builder.append(" LEFT JOIN HUMIDITY_DATA T6 ON T.\"SENSOR7\"=T6.\"_id\"");
+            builder.append(" LEFT JOIN LIGHT_DATA T7 ON T.\"SENSOR8\"=T7.\"_id\"");
+            builder.append(" LEFT JOIN MAGNETIC_DATA T8 ON T.\"SENSOR9\"=T8.\"_id\"");
+            builder.append(" LEFT JOIN NOISE_DATA T9 ON T.\"SENSOR10\"=T9.\"_id\"");
+            builder.append(" LEFT JOIN PRESSURE_DATA T10 ON T.\"SENSOR11\"=T10.\"_id\"");
+            builder.append(" LEFT JOIN PROXIMITY_DATA T11 ON T.\"SENSOR12\"=T11.\"_id\"");
+            builder.append(" LEFT JOIN TEMPERATURE_DATA T12 ON T.\"SENSOR13\"=T12.\"_id\"");
             builder.append(' ');
             selectDeep = builder.toString();
         }

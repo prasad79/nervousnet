@@ -9,7 +9,8 @@ package ch.ethz.coss.nervousnet.vm.model;
  */
 public class LocationData implements SensorDataImpl {
 
-    private long TimeStamp;
+    private Long id;
+    private Long TimeStamp;
     private Double Latitude;
     private Double Longitude;
     private Double Altitude;
@@ -17,16 +18,18 @@ public class LocationData implements SensorDataImpl {
     private Boolean ShareFlag;
 
     // KEEP FIELDS - put your custom fields here
+    private int type;
     // KEEP FIELDS END
 
     public LocationData() {
     }
 
-    public LocationData(long TimeStamp) {
-        this.TimeStamp = TimeStamp;
+    public LocationData(Long id) {
+        this.id = id;
     }
 
-    public LocationData(long TimeStamp, Double Latitude, Double Longitude, Double Altitude, long Volatility, Boolean ShareFlag) {
+    public LocationData(Long id, Long TimeStamp, Double Latitude, Double Longitude, Double Altitude, long Volatility, Boolean ShareFlag) {
+        this.id = id;
         this.TimeStamp = TimeStamp;
         this.Latitude = Latitude;
         this.Longitude = Longitude;
@@ -35,11 +38,19 @@ public class LocationData implements SensorDataImpl {
         this.ShareFlag = ShareFlag;
     }
 
-    public long getTimeStamp() {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getTimeStamp() {
         return TimeStamp;
     }
 
-    public void setTimeStamp(long TimeStamp) {
+    public void setTimeStamp(Long TimeStamp) {
         this.TimeStamp = TimeStamp;
     }
 
@@ -85,14 +96,16 @@ public class LocationData implements SensorDataImpl {
 
     // KEEP METHODS - put your custom methods here
 	@Override
-	  public Integer getType() {
-      return Type;
-  }
-	
+	public Integer getType() {
+		// TODO Auto-generated method stub
+		return type;
+	}
+
 	@Override
-  public void setType(Integer Type) {
-      this.Type = Type;
-  }
+	public void setType(Integer type) {
+		// TODO Auto-generated method stub
+		this.type = type;
+	}
     // KEEP METHODS END
 
 }

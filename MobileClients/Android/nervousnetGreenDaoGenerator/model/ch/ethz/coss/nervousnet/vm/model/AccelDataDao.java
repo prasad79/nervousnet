@@ -23,12 +23,13 @@ public class AccelDataDao extends AbstractDao<AccelData, Long> {
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property TimeStamp = new Property(0, long.class, "TimeStamp", true, "TIME_STAMP");
-        public final static Property X = new Property(1, Float.class, "X", false, "X");
-        public final static Property Y = new Property(2, Float.class, "Y", false, "Y");
-        public final static Property Z = new Property(3, Float.class, "Z", false, "Z");
-        public final static Property Volatility = new Property(4, long.class, "Volatility", false, "VOLATILITY");
-        public final static Property ShareFlag = new Property(5, Boolean.class, "ShareFlag", false, "SHARE_FLAG");
+        public final static Property Id = new Property(0, Long.class, "id", true, "_id");
+        public final static Property TimeStamp = new Property(1, Long.class, "TimeStamp", false, "TIME_STAMP");
+        public final static Property X = new Property(2, Float.class, "X", false, "X");
+        public final static Property Y = new Property(3, Float.class, "Y", false, "Y");
+        public final static Property Z = new Property(4, Float.class, "Z", false, "Z");
+        public final static Property Volatility = new Property(5, long.class, "Volatility", false, "VOLATILITY");
+        public final static Property ShareFlag = new Property(6, Boolean.class, "ShareFlag", false, "SHARE_FLAG");
     };
 
 
@@ -44,12 +45,13 @@ public class AccelDataDao extends AbstractDao<AccelData, Long> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"ACCEL_DATA\" (" + //
-                "\"TIME_STAMP\" INTEGER PRIMARY KEY NOT NULL ," + // 0: TimeStamp
-                "\"X\" REAL," + // 1: X
-                "\"Y\" REAL," + // 2: Y
-                "\"Z\" REAL," + // 3: Z
-                "\"VOLATILITY\" INTEGER NOT NULL ," + // 4: Volatility
-                "\"SHARE_FLAG\" INTEGER);"); // 5: ShareFlag
+                "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
+                "\"TIME_STAMP\" INTEGER," + // 1: TimeStamp
+                "\"X\" REAL," + // 2: X
+                "\"Y\" REAL," + // 3: Y
+                "\"Z\" REAL," + // 4: Z
+                "\"VOLATILITY\" INTEGER NOT NULL ," + // 5: Volatility
+                "\"SHARE_FLAG\" INTEGER);"); // 6: ShareFlag
     }
 
     /** Drops the underlying database table. */
@@ -62,46 +64,56 @@ public class AccelDataDao extends AbstractDao<AccelData, Long> {
     @Override
     protected void bindValues(SQLiteStatement stmt, AccelData entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getTimeStamp());
+ 
+        Long id = entity.getId();
+        if (id != null) {
+            stmt.bindLong(1, id);
+        }
+ 
+        Long TimeStamp = entity.getTimeStamp();
+        if (TimeStamp != null) {
+            stmt.bindLong(2, TimeStamp);
+        }
  
         Float X = entity.getX();
         if (X != null) {
-            stmt.bindDouble(2, X);
+            stmt.bindDouble(3, X);
         }
  
         Float Y = entity.getY();
         if (Y != null) {
-            stmt.bindDouble(3, Y);
+            stmt.bindDouble(4, Y);
         }
  
         Float Z = entity.getZ();
         if (Z != null) {
-            stmt.bindDouble(4, Z);
+            stmt.bindDouble(5, Z);
         }
-        stmt.bindLong(5, entity.getVolatility());
+        stmt.bindLong(6, entity.getVolatility());
  
         Boolean ShareFlag = entity.getShareFlag();
         if (ShareFlag != null) {
-            stmt.bindLong(6, ShareFlag ? 1L: 0L);
+            stmt.bindLong(7, ShareFlag ? 1L: 0L);
         }
     }
 
     /** @inheritdoc */
     @Override
     public Long readKey(Cursor cursor, int offset) {
-        return cursor.getLong(offset + 0);
+        return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
     }    
 
     /** @inheritdoc */
     @Override
     public AccelData readEntity(Cursor cursor, int offset) {
         AccelData entity = new AccelData( //
-            cursor.getLong(offset + 0), // TimeStamp
-            cursor.isNull(offset + 1) ? null : cursor.getFloat(offset + 1), // X
-            cursor.isNull(offset + 2) ? null : cursor.getFloat(offset + 2), // Y
-            cursor.isNull(offset + 3) ? null : cursor.getFloat(offset + 3), // Z
-            cursor.getLong(offset + 4), // Volatility
-            cursor.isNull(offset + 5) ? null : cursor.getShort(offset + 5) != 0 // ShareFlag
+            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
+            cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // TimeStamp
+            cursor.isNull(offset + 2) ? null : cursor.getFloat(offset + 2), // X
+            cursor.isNull(offset + 3) ? null : cursor.getFloat(offset + 3), // Y
+            cursor.isNull(offset + 4) ? null : cursor.getFloat(offset + 4), // Z
+            cursor.getLong(offset + 5), // Volatility
+            cursor.isNull(offset + 6) ? null : cursor.getShort(offset + 6) != 0 // ShareFlag
         );
         return entity;
     }
@@ -109,18 +121,19 @@ public class AccelDataDao extends AbstractDao<AccelData, Long> {
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, AccelData entity, int offset) {
-        entity.setTimeStamp(cursor.getLong(offset + 0));
-        entity.setX(cursor.isNull(offset + 1) ? null : cursor.getFloat(offset + 1));
-        entity.setY(cursor.isNull(offset + 2) ? null : cursor.getFloat(offset + 2));
-        entity.setZ(cursor.isNull(offset + 3) ? null : cursor.getFloat(offset + 3));
-        entity.setVolatility(cursor.getLong(offset + 4));
-        entity.setShareFlag(cursor.isNull(offset + 5) ? null : cursor.getShort(offset + 5) != 0);
+        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
+        entity.setTimeStamp(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
+        entity.setX(cursor.isNull(offset + 2) ? null : cursor.getFloat(offset + 2));
+        entity.setY(cursor.isNull(offset + 3) ? null : cursor.getFloat(offset + 3));
+        entity.setZ(cursor.isNull(offset + 4) ? null : cursor.getFloat(offset + 4));
+        entity.setVolatility(cursor.getLong(offset + 5));
+        entity.setShareFlag(cursor.isNull(offset + 6) ? null : cursor.getShort(offset + 6) != 0);
      }
     
     /** @inheritdoc */
     @Override
     protected Long updateKeyAfterInsert(AccelData entity, long rowId) {
-        entity.setTimeStamp(rowId);
+        entity.setId(rowId);
         return rowId;
     }
     
@@ -128,7 +141,7 @@ public class AccelDataDao extends AbstractDao<AccelData, Long> {
     @Override
     public Long getKey(AccelData entity) {
         if(entity != null) {
-            return entity.getTimeStamp();
+            return entity.getId();
         } else {
             return null;
         }

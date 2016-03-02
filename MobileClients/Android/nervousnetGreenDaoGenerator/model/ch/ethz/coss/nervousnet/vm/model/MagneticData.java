@@ -9,7 +9,8 @@ package ch.ethz.coss.nervousnet.vm.model;
  */
 public class MagneticData implements SensorDataImpl {
 
-    private long TimeStamp;
+    private Long id;
+    private Long TimeStamp;
     private Float MagX;
     private Float MagY;
     private Float MagZ;
@@ -17,16 +18,18 @@ public class MagneticData implements SensorDataImpl {
     private Boolean ShareFlag;
 
     // KEEP FIELDS - put your custom fields here
+    private int type;
     // KEEP FIELDS END
 
     public MagneticData() {
     }
 
-    public MagneticData(long TimeStamp) {
-        this.TimeStamp = TimeStamp;
+    public MagneticData(Long id) {
+        this.id = id;
     }
 
-    public MagneticData(long TimeStamp, Float MagX, Float MagY, Float MagZ, long Volatility, Boolean ShareFlag) {
+    public MagneticData(Long id, Long TimeStamp, Float MagX, Float MagY, Float MagZ, long Volatility, Boolean ShareFlag) {
+        this.id = id;
         this.TimeStamp = TimeStamp;
         this.MagX = MagX;
         this.MagY = MagY;
@@ -35,11 +38,19 @@ public class MagneticData implements SensorDataImpl {
         this.ShareFlag = ShareFlag;
     }
 
-    public long getTimeStamp() {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getTimeStamp() {
         return TimeStamp;
     }
 
-    public void setTimeStamp(long TimeStamp) {
+    public void setTimeStamp(Long TimeStamp) {
         this.TimeStamp = TimeStamp;
     }
 
@@ -85,14 +96,16 @@ public class MagneticData implements SensorDataImpl {
 
     // KEEP METHODS - put your custom methods here
 	@Override
-	  public Integer getType() {
-      return Type;
-  }
-	
+	public Integer getType() {
+		// TODO Auto-generated method stub
+		return type;
+	}
+
 	@Override
-  public void setType(Integer Type) {
-      this.Type = Type;
-  }
+	public void setType(Integer type) {
+		// TODO Auto-generated method stub
+		this.type = type;
+	}
     // KEEP METHODS END
 
 }
