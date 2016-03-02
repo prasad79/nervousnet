@@ -38,6 +38,8 @@ import android.os.AsyncTask;
 import ch.ethz.coss.nervousnet.utils.FFT;
 
 public class NoiseSensor {
+	
+	public static NoiseSensor _instance;
 
 	public static final int BANDCOUNT = 12;
 	public static final int SAMPPERSEC = 8000; // 8000Hz sampling rate, the
@@ -63,20 +65,35 @@ public class NoiseSensor {
 	private int buffersize;
 	private AudioRecord audioRecord;
 
-	private List<NoiseListener> listenerList = new ArrayList<NoiseListener>();
+	private List<NoiseSensorListener> listenerList = new ArrayList<NoiseSensorListener>();
 	private Lock listenerMutex = new ReentrantLock();
+	
+	
+	private NoiseSensor() {
+		
+	}
+	
+	
+	public static NoiseSensor getInstance() {
+		
+		if(_instance == null) {
+			_instance = new NoiseSensor();
+		}
+		
+		return _instance;
+	}
 
-	public interface NoiseListener {
+	public interface NoiseSensorListener {
 		public void noiseSensorDataReady(long recordTime, float rms, float spl, float[] bands);
 	}
 
-	public void addListener(NoiseListener listener) {
+	public void addListener(NoiseSensorListener listener) {
 		listenerMutex.lock();
 		listenerList.add(listener);
 		listenerMutex.unlock();
 	}
 
-	public void removeListener(NoiseListener listener) {
+	public void removeListener(NoiseSensorListener listener) {
 		listenerMutex.lock();
 		listenerList.remove(listener);
 		listenerMutex.unlock();
@@ -90,7 +107,7 @@ public class NoiseSensor {
 
 	public void dataReady(long recordTime, float rms, float spl, float[] bands) {
 		listenerMutex.lock();
-		for (NoiseListener listener : listenerList) {
+		for (NoiseSensorListener listener : listenerList) {
 			listener.noiseSensorDataReady(recordTime, rms, spl, bands);
 		}
 		listenerMutex.unlock();

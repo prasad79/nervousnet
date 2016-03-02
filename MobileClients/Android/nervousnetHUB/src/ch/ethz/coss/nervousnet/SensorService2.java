@@ -78,10 +78,10 @@ import ch.ethz.coss.nervousnet.sensors.ConnectivitySensor.ConnectivitySensorList
 import ch.ethz.coss.nervousnet.sensors.LocationSensor;
 import ch.ethz.coss.nervousnet.sensors.LocationSensor.LocationSensorListener;
 import ch.ethz.coss.nervousnet.sensors.NoiseSensor;
-import ch.ethz.coss.nervousnet.sensors.NoiseSensor.NoiseListener;
+import ch.ethz.coss.nervousnet.sensors.NoiseSensor.NoiseSensorListener;
 
 public class SensorService2 extends Service
-		implements SensorEventListener, NoiseListener, BatterySensorListener, ConnectivitySensorListener, LocationSensorListener {
+		implements SensorEventListener, NoiseSensorListener, BatterySensorListener, ConnectivitySensorListener, LocationSensorListener {
 
 	private static final String LOG_TAG = SensorService2.class.getSimpleName();
 
@@ -445,16 +445,7 @@ public class SensorService2 extends Service
 	public void connectivitySensorDataReady(ConnectivityReading reading) {
 		store(reading);
 	};
-	
-//	@Override
-//	public void connectivitySensorDataReady(long timestamp, boolean isConnected, int networkType, boolean isRoaming,
-//			String wifiHashId, int wifiStrength, String mobileHashId) {
-//		
-//		SensorReading connReading = new ConnectivityReading(timestamp, isConnected, networkType, isRoaming, wifiHashId, wifiStrength, mobileHashId);
-//		Log.d(LOG_TAG, "Connectivity data collected");
-//	
-//		store(connReading);
-//	}
+
 
 	@Override
 	public void noiseSensorDataReady(long timestamp, float rms, float spl, float[] bands) {
@@ -501,18 +492,18 @@ public class SensorService2 extends Service
 		
 		switch(reading.type) {
 		
-		case Constants.SENSOR_ACCELEROMETER:
-			AccelerometerReading areading = (AccelerometerReading) reading;
-			sensorData = new AccelData(reading.timestamp, areading.getX(),  areading.getY(), areading.getZ(), 0l, true);
-			sensorData.setType(Constants.SENSOR_ACCELEROMETER);
-			return sensorData;		
-			
-		case Constants.SENSOR_LOCATION:
-			LocationReading locReading = (LocationReading) reading;
-			sensorData = new LocationData(reading.timestamp, locReading.getLatnLong()[0], locReading.getLatnLong()[1], locReading.getAltitude(), 0l, true);
-			sensorData.setType(Constants.SENSOR_LOCATION);
-			return sensorData;
-		
+////		case Constants.SENSOR_ACCELEROMETER:
+//			AccelerometerReading areading = (AccelerometerReading) reading;
+//			sensorData = new AccelData(reading.timestamp, areading.getX(),  areading.getY(), areading.getZ(), 0l, true);
+//			sensorData.setType(Constants.SENSOR_ACCELEROMETER);
+//			return sensorData;		
+//			
+//		case Constants.SENSOR_LOCATION:
+//			LocationReading locReading = (LocationReading) reading;
+//			sensorData = new LocationData(reading.timestamp, locReading.getLatnLong()[0], locReading.getLatnLong()[1], locReading.getAltitude(), 0l, true);
+//			sensorData.setType(Constants.SENSOR_LOCATION);
+//			return sensorData;
+//		
 			
 		default:
 			return null;

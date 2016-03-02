@@ -25,21 +25,125 @@
 package ch.ethz.coss.nervousnet;
 
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.location.LocationManager;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.os.RemoteException;
 import android.util.Log;
 import android.widget.Toast;
 import ch.ethz.coss.nervousnet.lib.AccelerometerReading;
 import ch.ethz.coss.nervousnet.lib.BatteryReading;
+import ch.ethz.coss.nervousnet.lib.ConnectivityReading;
+import ch.ethz.coss.nervousnet.lib.GyroReading;
+import ch.ethz.coss.nervousnet.lib.LibConstants;
+import ch.ethz.coss.nervousnet.lib.LightReading;
 import ch.ethz.coss.nervousnet.lib.LocationReading;
 import ch.ethz.coss.nervousnet.lib.NervousnetRemote;
+import ch.ethz.coss.nervousnet.lib.NoiseReading;
+import ch.ethz.coss.nervousnet.lib.SensorReading;
+import ch.ethz.coss.nervousnet.sensors.BatterySensor;
+import ch.ethz.coss.nervousnet.sensors.BatterySensor.BatterySensorListener;
+import ch.ethz.coss.nervousnet.sensors.ConnectivitySensor;
+import ch.ethz.coss.nervousnet.sensors.ConnectivitySensor.ConnectivitySensorListener;
+import ch.ethz.coss.nervousnet.sensors.LocationSensor.LocationSensorListener;
+import ch.ethz.coss.nervousnet.sensors.NoiseSensor.NoiseSensorListener;
+import ch.ethz.coss.nervousnet.sensors.LocationSensor;
+import ch.ethz.coss.nervousnet.sensors.NoiseSensor;
+import ch.ethz.coss.nervousnet.vm.model.AccelData;
+import ch.ethz.coss.nervousnet.vm.model.ConnectivityData;
+import ch.ethz.coss.nervousnet.vm.model.GyroData;
+import ch.ethz.coss.nervousnet.vm.model.LocationData;
+import ch.ethz.coss.nervousnet.vm.model.SensorDataImpl;
 
-public class SensorService extends Service {
+public class SensorService extends Service implements SensorEventListener, BatterySensorListener, ConnectivitySensorListener, LocationSensorListener, NoiseSensorListener{
 	
 	private static final String LOG_TAG = SensorService.class.getSimpleName();
+
+	private SensorManager sensorManager = null;
+
+	private PowerManager.WakeLock wakeLock;
+	private HandlerThread hthread;
+	private Handler handler;
+	private Lock storeMutex;
+	
+	// Only initialize these once
+	private Sensor sensorAccelerometer = null;
+	private BatterySensor sensorBattery = null;
+	private ConnectivitySensor sensorConnectivity = null;
+	private Sensor sensorLight = null;
+	private Sensor sensorMagnet = null;
+	private Sensor sensorProximity = null;
+	private Sensor sensorGyroscope = null;
+	private Sensor sensorTemperature = null;
+	private Sensor sensorHumidity = null;
+	private Sensor sensorPressure = null;
+	private NoiseSensor sensorNoise = null;
+//	private BLESensor sensorBLEBeacon = null;
+	private LocationSensor sensorLocation = null;
+	
+	//latest Sensor Reading objects
+	private LocationReading locReading = null;
+	private AccelerometerReading accReading = null;
+	private BatteryReading batteryReading = null;
+	private ConnectivityReading connReading = null;
+	private GyroReading gyroReading = null;
+	private NoiseReading noiseReading = null;
+	private LightReading lightReading = null;
+	
+	// Those need to be reset on every collect call
+	private SensorCollectStatus scAccelerometer = null;
+	private SensorCollectStatus scBattery = null;
+	private SensorCollectStatus scLight = null;
+	private SensorCollectStatus scMagnet = null;
+	private SensorCollectStatus scProximity = null;
+	private SensorCollectStatus scGyroscope = null;
+	private SensorCollectStatus scTemperature = null;
+	private SensorCollectStatus scHumidity = null;
+	private SensorCollectStatus scPressure = null;
+	private SensorCollectStatus scNoise = null;
+	private SensorCollectStatus scBLEBeacon = null;
+	private SensorCollectStatus scConnectivity = null;
+	private SensorCollectStatus scLocation = null;
+
+	// Threadsafe because handling can get called from different threads
+	private ConcurrentHashMap<Long, SensorCollectStatus> sensorCollected;
+	
+	@Override
+	public void onCreate() {
+		// Prepare the wakelock
+		PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+		wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, LOG_TAG);
+		hthread = new HandlerThread("HandlerThread");
+		hthread.start();
+		// Acquire wakelock, some sensors on some phones need this
+		if (!wakeLock.isHeld()) {
+			wakeLock.acquire();
+		}
+	}
+
+	@Override
+	public void onDestroy() {
+		// Release the wakelock here, just to be safe, in order something went
+		// wrong
+		if (wakeLock.isHeld()) {
+			wakeLock.release();
+		}
+		sensorManager.unregisterListener(this);
+		hthread.quit();
+	}
 	
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -52,21 +156,21 @@ public class SensorService extends Service {
 		public BatteryReading getBatteryReading() throws RemoteException {
 			Log.d(LOG_TAG, "Battery reading requested ");
 			
-			return null;
+			return batteryReading;
 		}
 
 		@Override
 		public LocationReading getLocationReading() throws RemoteException {
 			Log.d(LOG_TAG, "Location reading requested ");
 			
-			return null;
+			return locReading;
 		}
 
 		@Override
 		public AccelerometerReading getAccelerometerReading() throws RemoteException {
 			Log.d(LOG_TAG, "Accelerometer reading requested ");
 			
-			return null;
+			return accReading;
 		}
 
 	};
@@ -76,6 +180,8 @@ public class SensorService extends Service {
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		Log.d(LOG_TAG, "Service execution started");
 		Toast.makeText(SensorService.this, "Service Started", Toast.LENGTH_SHORT).show();
+		
+		initSensors();
 		return START_STICKY;
 	}
 	
@@ -93,4 +199,330 @@ public class SensorService extends Service {
 		Intent sensorIntent = new Intent(context, SensorService.class);
 		context.stopService(sensorIntent);
 	}
+	
+	
+	SensorConfiguration sensorConfiguration;
+	private void initSensors() {
+		storeMutex = new ReentrantLock();
+		
+		sensorConfiguration = SensorConfiguration.getInstance(getApplicationContext());
+		
+		// Initialize sensor manager
+		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+		
+		// Hash map to register sensor collect status references
+		sensorCollected = new ConcurrentHashMap<Long, SensorCollectStatus>();
+
+		// Initialize sensor collect status from configuration
+		scAccelerometer = sensorConfiguration.getInitialSensorCollectStatus(LibConstants.SENSOR_ACCELEROMETER);
+		scBattery = sensorConfiguration.getInitialSensorCollectStatus(LibConstants.SENSOR_BATTERY);
+		scLight = sensorConfiguration.getInitialSensorCollectStatus(LibConstants.SENSOR_LIGHT);
+		scMagnet = sensorConfiguration.getInitialSensorCollectStatus(LibConstants.SENSOR_MAGNETIC);
+		scProximity = sensorConfiguration.getInitialSensorCollectStatus(LibConstants.SENSOR_PROXIMITY);
+		scGyroscope = sensorConfiguration.getInitialSensorCollectStatus(LibConstants.SENSOR_GYROSCOPE);
+		scTemperature = sensorConfiguration.getInitialSensorCollectStatus(LibConstants.SENSOR_TEMPERATURE);
+		scHumidity = sensorConfiguration.getInitialSensorCollectStatus(LibConstants.SENSOR_HUMIDITY);
+		scPressure = sensorConfiguration.getInitialSensorCollectStatus(LibConstants.SENSOR_PRESSURE);
+		scNoise = sensorConfiguration.getInitialSensorCollectStatus(LibConstants.SENSOR_NOISE);
+		scBLEBeacon = sensorConfiguration.getInitialSensorCollectStatus(LibConstants.SENSOR_BLEBEACON);
+		scConnectivity = sensorConfiguration.getInitialSensorCollectStatus(LibConstants.SENSOR_CONNECTIVITY);
+		scLocation = sensorConfiguration.getInitialSensorCollectStatus(LibConstants.SENSOR_LOCATION);
+		
+		// Get references to android default sensors
+		sensorAccelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+		sensorLight = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+		sensorMagnet = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+		sensorProximity = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+		sensorGyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+		sensorTemperature = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
+		sensorHumidity = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
+		sensorPressure = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
+		
+		// Custom sensors
+		sensorBattery =  BatterySensor.getInstance(getApplicationContext());
+		sensorConnectivity = ConnectivitySensor.getInstance(getApplicationContext());
+		sensorNoise = NoiseSensor.getInstance();
+		sensorLocation = LocationSensor.getInstance((LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE));
+
+		// Schedule all sensors (initially)
+		scheduleSensor(LibConstants.SENSOR_LOCATION);
+		scheduleSensor(LibConstants.SENSOR_ACCELEROMETER);
+		scheduleSensor(LibConstants.SENSOR_BATTERY);
+		scheduleSensor(LibConstants.SENSOR_MAGNETIC);
+		scheduleSensor(LibConstants.SENSOR_PROXIMITY);
+		scheduleSensor(LibConstants.SENSOR_GYROSCOPE);
+		scheduleSensor(LibConstants.SENSOR_TEMPERATURE);
+		scheduleSensor(LibConstants.SENSOR_HUMIDITY);
+		scheduleSensor(LibConstants.SENSOR_PRESSURE);
+		scheduleSensor(LibConstants.SENSOR_NOISE);
+		scheduleSensor(LibConstants.SENSOR_BLEBEACON);
+		scheduleSensor(LibConstants.SENSOR_CONNECTIVITY);
+	}
+	
+	
+	private void scheduleSensor(final long sensorId) {
+	Log.d(LOG_TAG, "scheduleSensor called.");
+	handler = new Handler(hthread.getLooper());
+	final Runnable run = new Runnable() {
+		@Override
+		public void run() {
+
+			boolean doCollect = false;
+			SensorCollectStatus sensorCollectStatus = null;
+			long startTime = System.currentTimeMillis();
+
+			if (sensorId == LibConstants.SENSOR_ACCELEROMETER) {
+				scAccelerometer.setMeasureStart(startTime);
+				doCollect = scAccelerometer.isCollect();
+				doCollect = doCollect ? sensorManager.registerListener(SensorService.this, sensorAccelerometer,
+						SensorManager.SENSOR_DELAY_NORMAL) : false;
+				sensorCollectStatus = scAccelerometer;
+			} else if (sensorId == LibConstants.SENSOR_PRESSURE) {
+				scPressure.setMeasureStart(startTime);
+				doCollect = scPressure.isCollect();
+				doCollect = doCollect ? sensorManager.registerListener(SensorService.this, sensorPressure,
+						SensorManager.SENSOR_DELAY_NORMAL) : false;
+				sensorCollectStatus = scPressure;
+			} else if (sensorId == LibConstants.SENSOR_GYROSCOPE) {
+				doCollect = scGyroscope.isCollect();
+				doCollect = doCollect ? sensorManager.registerListener(SensorService.this, sensorGyroscope,
+						SensorManager.SENSOR_DELAY_NORMAL) : false;
+				sensorCollectStatus = scGyroscope;
+			} else if (sensorId == LibConstants.SENSOR_HUMIDITY) {
+				scHumidity.setMeasureStart(startTime);
+				doCollect = scHumidity.isCollect();
+				doCollect = doCollect ? sensorManager.registerListener(SensorService.this, sensorHumidity,
+						SensorManager.SENSOR_DELAY_NORMAL) : false;
+				sensorCollectStatus = scHumidity;
+			} else if (sensorId == LibConstants.SENSOR_LIGHT) {
+				scLight.setMeasureStart(startTime);
+				doCollect = scLight.isCollect();
+				doCollect = doCollect ? sensorManager.registerListener(SensorService.this, sensorLight,
+						SensorManager.SENSOR_DELAY_NORMAL) : false;
+				sensorCollectStatus = scLight;
+			} else if (sensorId == LibConstants.SENSOR_MAGNETIC) {
+				scMagnet.setMeasureStart(startTime);
+				doCollect = scMagnet.isCollect();
+				doCollect = doCollect ? sensorManager.registerListener(SensorService.this, sensorMagnet,
+						SensorManager.SENSOR_DELAY_NORMAL) : false;
+				sensorCollectStatus = scMagnet;
+			} else if (sensorId == LibConstants.SENSOR_PROXIMITY) {
+				scProximity.setMeasureStart(startTime);
+				doCollect = scProximity.isCollect();
+				doCollect = doCollect ? sensorManager.registerListener(SensorService.this, sensorProximity,
+						SensorManager.SENSOR_DELAY_NORMAL) : false;
+				sensorCollectStatus = scProximity;
+			} else if (sensorId == LibConstants.SENSOR_TEMPERATURE) {
+				scTemperature.setMeasureStart(startTime);
+				doCollect = scTemperature.isCollect();
+				doCollect = doCollect ? sensorManager.registerListener(SensorService.this, sensorTemperature,
+						SensorManager.SENSOR_DELAY_NORMAL) : false;
+				sensorCollectStatus = scTemperature;
+			} else if (sensorId == LibConstants.SENSOR_BATTERY) {
+				scBattery.setMeasureStart(startTime);
+				doCollect = scBattery.isCollect();
+				if (doCollect) {
+					sensorBattery.clearListeners();
+					sensorBattery.addListener(SensorService.this);
+					sensorBattery.start();
+				}
+				sensorCollectStatus = scBattery;
+			} else if (sensorId == LibConstants.SENSOR_CONNECTIVITY) {
+				scConnectivity.setMeasureStart(startTime);
+				doCollect = scConnectivity.isCollect();
+				if (doCollect) {
+					sensorConnectivity.clearListeners();
+					sensorConnectivity.addListener(SensorService.this);
+					sensorConnectivity.start();
+				}
+				sensorCollectStatus = scConnectivity;
+			} else if (sensorId == LibConstants.SENSOR_BLEBEACON) {
+//				scBLEBeacon.setMeasureStart(startTime);
+//				doCollect = scBLEBeacon.isCollect();
+//				if (doCollect) {
+//					sensorBLEBeacon.clearListeners();
+//					sensorBLEBeacon.addListener(SensorService.this);
+//					// Update this variable if the BLE sensor is currently
+//					// unavailable
+//					doCollect = sensorBLEBeacon.startScanning(Math.max(scBLEBeacon.getMeasureDuration(), 2000));
+//				}
+//				sensorCollectStatus = scBLEBeacon;
+			} else if (sensorId == LibConstants.SENSOR_NOISE) {
+				scNoise.setMeasureStart(startTime);
+				doCollect = scNoise.isCollect();
+				if (doCollect) {
+					sensorNoise.clearListeners();
+					sensorNoise.addListener(SensorService.this);
+					sensorNoise.startRecording(Math.max(scNoise.getMeasureDuration(), 500));
+				}
+				sensorCollectStatus = scNoise;
+			} else if (sensorId == LibConstants.SENSOR_LOCATION) {
+				scLocation.setMeasureStart(startTime);
+				doCollect = scLocation.isCollect();
+				if (doCollect) {
+					sensorLocation.clearListeners();
+					sensorLocation.addListener(SensorService.this);
+					sensorLocation.startLocationCollection();
+				}
+				sensorCollectStatus = scLocation;
+				
+			}
+
+			if (doCollect && sensorCollectStatus != null) {
+				sensorCollected.put(sensorId, sensorCollectStatus);
+			}
+
+			if (sensorCollectStatus != null) {
+				long interval = sensorCollectStatus.getMeasureInterval();
+				Log.d(LOG_TAG, "Logging sensor " + String.valueOf(sensorId) + " started with interval "
+						+ String.valueOf(interval) + " ms");
+				handler.postDelayed(this, interval);
+			}
+
+		}
+	};
+	
+	// 10 seconds initial delay
+	handler.postDelayed(run, 10000);
+}
+
+	@Override
+	public void onSensorChanged(SensorEvent event) {
+
+		long timestamp = System.currentTimeMillis();
+		Sensor sensor = event.sensor;
+	
+
+		switch (sensor.getType()) {
+		case Sensor.TYPE_LIGHT:
+			lightReading = new LightReading(timestamp, event.values[0]);
+			store(lightReading);
+			Log.d(LOG_TAG, "Light data collected");
+			break;
+		case Sensor.TYPE_PROXIMITY:
+			Log.d(LOG_TAG, "Proximity data collected");
+			break;
+		case Sensor.TYPE_ACCELEROMETER:
+			accReading = new AccelerometerReading(timestamp, event.values);
+			store(accReading);
+			Log.d(LOG_TAG, "Accelerometer data collected");
+			break;
+		case Sensor.TYPE_MAGNETIC_FIELD:
+			Log.d(LOG_TAG, "Magnetic data collected");
+			break;
+		case Sensor.TYPE_GYROSCOPE:
+			gyroReading = new GyroReading(timestamp, event.values);
+			store(gyroReading);
+			Log.d(LOG_TAG, "Gyroscope data collected");
+			break;
+////		case Sensor.TYPE_AMBIENT_TEMPERATURE:
+////			sensorReading = new TemperatureReading(timestamp, event.values[0]);
+////			Log.d(LOG_TAG, "Temperature data collected");
+////			break;
+//		case Sensor.TYPE_RELATIVE_HUMIDITY:
+////			sensorReading = new HumidityData(timestamp, event.values[0]);
+//			Log.d(LOG_TAG, "Humidity data collected");
+//			break;
+//		case Sensor.TYPE_PRESSURE:
+////			sensorReading = new PressureData(timestamp, event.values[0]);
+//			Log.d(LOG_TAG, "Pressure data collected");
+//			break;
+		}
+		
+	}
+
+	@Override
+	public void onAccuracyChanged(Sensor sensor, int accuracy) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public void connectivitySensorDataReady(ConnectivityReading reading) {
+		Log.d(LOG_TAG, "Connectivity data collected");
+		store(reading);
+	};
+
+
+	@Override
+	public void noiseSensorDataReady(long timestamp, float rms, float spl, float[] bands) {
+//		SensorReading Reading = new NoiseRea(timestamp, rms, spl, bands);
+		Log.d(LOG_TAG, "Noise data collected");
+//		store(sensorDesc.getSensorId(), sensorDescs);
+	}
+
+
+
+	@Override
+	public void batterySensorDataReady(BatteryReading reading) {
+		Log.d(LOG_TAG, "Battery data collected");
+		store(reading);
+	}
+
+
+	
+	
+	@Override
+	public void locationSensorDataReady(LocationReading reading) {
+		Log.d(LOG_TAG, "Location Data Collected");
+		store(reading);
+	}
+	
+	
+	private synchronized void store(SensorReading sensorReading) {
+		if(sensorReading == null)
+			return;
+		storeMutex.lock();
+		
+		SensorDataImpl sensorData = convertSensorReadingToSensorData(sensorReading);
+		if(sensorData != null)
+			new StoreTask(getApplicationContext()).execute(sensorData);
+		else
+			Log.d(LOG_TAG, "sensorData is null");
+					
+		storeMutex.unlock();
+	}
+	
+
+	private synchronized SensorDataImpl convertSensorReadingToSensorData(SensorReading reading) {
+		Log.d(LOG_TAG, "convertSensorReadingToSensorData reading Type = "+reading.type);
+		SensorDataImpl sensorData;
+		
+		switch(reading.type) {
+		
+		case LibConstants.SENSOR_ACCELEROMETER:
+			AccelerometerReading areading = (AccelerometerReading) reading;
+			sensorData = new AccelData(null, reading.timestamp, areading.getX(),  areading.getY(), areading.getZ(), 0l, true);
+			sensorData.setType(LibConstants.SENSOR_ACCELEROMETER);
+			return sensorData;		
+			
+		case LibConstants.SENSOR_GYROSCOPE:
+			GyroReading greading = (GyroReading) reading;
+			sensorData = new GyroData(null, reading.timestamp, greading.getGyroX(),  greading.getGyroY(),greading.getGyroZ(), 0l, true);
+			sensorData.setType(LibConstants.SENSOR_GYROSCOPE);
+			return sensorData;		
+			
+			
+	    case LibConstants.SENSOR_CONNECTIVITY:
+				ConnectivityReading connReading = (ConnectivityReading) reading;
+				sensorData = new ConnectivityData(null, connReading.timestamp, connReading.isConnected(), connReading.getNetworkType(), connReading.isRoaming(), connReading.getWifiHashId(), connReading.getWifiStrength(), connReading.getMobileHashId(), connReading.volatility, connReading.isShare);
+				sensorData.setType(LibConstants.SENSOR_CONNECTIVITY);
+				return sensorData;
+			
+			
+		case LibConstants.SENSOR_LOCATION:
+			LocationReading locReading = (LocationReading) reading;
+			sensorData = new LocationData(null, reading.timestamp, locReading.getLatnLong()[0], locReading.getLatnLong()[1], locReading.getAltitude(), 0l, true);
+			sensorData.setType(LibConstants.SENSOR_LOCATION);
+			return sensorData;
+		
+		default:
+			return null;
+			
+		}
+	}
+
+
+	
+	
+	
 }

@@ -44,12 +44,12 @@ import android.location.LocationListener;
 
 public class LocationSensor implements SensorStatusImplementation, LocationListener {
 
+	private static String LOG_TAG = "LocationSensor";
+	
 	public static LocationSensor _instance = null;
-	public static final long SENSOR_ID = 0x0000000000000002L;
 	private static final float MIN_DISTANCE_CHANGE_FOR_UPDATES = 1;
 	private static final long MIN_TIME_BW_UPDATES = 1;
 
-	private Context context;
 	private boolean isGPSEnabled = false;
 
 	// flag for network status
@@ -59,15 +59,15 @@ public class LocationSensor implements SensorStatusImplementation, LocationListe
 
 	private LocationReading reading;
 	private Location location;
+	private static LocationManager locationManager;
 
-	private LocationSensor(Context context) {
-		this.context = context;
+	private LocationSensor(LocationManager locationmanager) {
+		this.locationManager = locationmanager;
 	}
 
-	public static LocationSensor getInstance(Context context) {
-
+	public static LocationSensor getInstance(LocationManager locationmanager) {
 		if (_instance == null)
-			_instance = new LocationSensor(context);
+			_instance = new LocationSensor(locationManager);
 
 		return _instance;
 	}
@@ -100,11 +100,11 @@ public class LocationSensor implements SensorStatusImplementation, LocationListe
 		listenerMutex.unlock();
 	}
 
-	LocationManager locationManager;
 
-	public void start() {
-
-		locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+	public void startLocationCollection() {
+		
+		if(locationManager == null)
+			return;
 
 		// getting GPS status
 		isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -113,15 +113,16 @@ public class LocationSensor implements SensorStatusImplementation, LocationListe
 		isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
 		if (!isGPSEnabled && !isNetworkEnabled) {
+			Log.d(LOG_TAG, "Location settings disabled");
 			// no network provider is enabled
-			Toast.makeText(context, "Location settings disabled", Toast.LENGTH_LONG).show();
+//			Toast.makeText(context, "Location settings disabled", Toast.LENGTH_LONG).show();
 		} else {
 			this.canGetLocation = true;
 			// First get location from Network Provider
 			if (isNetworkEnabled) {
 				locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_BW_UPDATES,
 						MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-				Log.d("Network", "Network");
+				Log.d(LOG_TAG, "Network");
 				if (locationManager != null) {
 					location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 					if (location != null) {
@@ -131,7 +132,7 @@ public class LocationSensor implements SensorStatusImplementation, LocationListe
 								location.getAltitude());
 					}
 				}
-			}
+			} 
 			// if GPS Enabled get lat/long using GPS Services
 			if (isGPSEnabled) {
 				if (location == null) {
