@@ -63,8 +63,6 @@ public class LightFragment extends BaseFragment {
 		if(reading.isCollect){
 			TextView lux = (TextView) getActivity().findViewById(R.id.lux);
 			 lux.setText("" + ((LightReading)reading).getLuxValue());
-		     
-
 			
 		} else {
 			TextView status = (TextView) getActivity().findViewById(R.id.sensor_status);

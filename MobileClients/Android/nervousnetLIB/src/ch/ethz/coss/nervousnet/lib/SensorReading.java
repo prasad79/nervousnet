@@ -29,6 +29,7 @@
  */
 package ch.ethz.coss.nervousnet.lib;
 
+import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
@@ -52,10 +53,22 @@ public abstract class SensorReading implements Parcelable {
 
 	public boolean isCollect;
 	public boolean isShare;
+	
+	/*
+	 * This variable contains the errorcode, if any.
+	 * 0 - no error;
+	 * 1 - Sensor Collection turned OFF at Global Settings level;
+	 * 2 - Sensor Collection turned OFF at Sensors Settings Level;
+	 * 
+	 */
+	public short errorCode = 0;
+
 
 	public SensorReading() {
 	}
 
 	public SensorReading(boolean isCollect) {
 	}
+	
+	
 }

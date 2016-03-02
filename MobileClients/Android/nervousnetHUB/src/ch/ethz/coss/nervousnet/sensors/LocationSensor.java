@@ -184,6 +184,13 @@ public class LocationSensor implements SensorStatusImplementation, LocationListe
 		// TODO Auto-generated method stub
 
 	}
+	
+
+	@Override
+	public void doShare() {
+		// TODO Auto-generated method stub
+		
+	}
 
 	/*
 	 * (non-Javadoc)
