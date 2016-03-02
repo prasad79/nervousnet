@@ -12,7 +12,8 @@ import de.greenrobot.dao.DaoException;
  */
 public class Packet {
 
-    private long TimeStamp;
+    private Long id;
+    private Long TimeStamp;
     private Byte SynceStatus;
     private Long sensor1;
     private Long sensor2;
@@ -80,11 +81,12 @@ public class Packet {
     public Packet() {
     }
 
-    public Packet(long TimeStamp) {
-        this.TimeStamp = TimeStamp;
+    public Packet(Long id) {
+        this.id = id;
     }
 
-    public Packet(long TimeStamp, Byte SynceStatus, Long sensor1, Long sensor2, Long sensor3, Long sensor4, Long sensor5, Long sensor6, Long sensor7, Long sensor8, Long sensor9, Long sensor10, Long sensor11, Long sensor12, Long sensor13) {
+    public Packet(Long id, Long TimeStamp, Byte SynceStatus, Long sensor1, Long sensor2, Long sensor3, Long sensor4, Long sensor5, Long sensor6, Long sensor7, Long sensor8, Long sensor9, Long sensor10, Long sensor11, Long sensor12, Long sensor13) {
+        this.id = id;
         this.TimeStamp = TimeStamp;
         this.SynceStatus = SynceStatus;
         this.sensor1 = sensor1;
@@ -108,11 +110,19 @@ public class Packet {
         myDao = daoSession != null ? daoSession.getPacketDao() : null;
     }
 
-    public long getTimeStamp() {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getTimeStamp() {
         return TimeStamp;
     }
 
-    public void setTimeStamp(long TimeStamp) {
+    public void setTimeStamp(Long TimeStamp) {
         this.TimeStamp = TimeStamp;
     }
 
@@ -248,7 +258,7 @@ public class Packet {
     public void setLocationData(LocationData locationData) {
         synchronized (this) {
             this.locationData = locationData;
-            sensor1 = locationData == null ? null : locationData.getTimeStamp();
+            sensor1 = locationData == null ? null : locationData.getId();
             locationData__resolvedKey = sensor1;
         }
     }
@@ -273,7 +283,7 @@ public class Packet {
     public void setAccelData(AccelData accelData) {
         synchronized (this) {
             this.accelData = accelData;
-            sensor2 = accelData == null ? null : accelData.getTimeStamp();
+            sensor2 = accelData == null ? null : accelData.getId();
             accelData__resolvedKey = sensor2;
         }
     }
@@ -298,7 +308,7 @@ public class Packet {
     public void setBatteryData(BatteryData batteryData) {
         synchronized (this) {
             this.batteryData = batteryData;
-            sensor3 = batteryData == null ? null : batteryData.getTimeStamp();
+            sensor3 = batteryData == null ? null : batteryData.getId();
             batteryData__resolvedKey = sensor3;
         }
     }
@@ -323,7 +333,7 @@ public class Packet {
     public void setBeaconData(BeaconData beaconData) {
         synchronized (this) {
             this.beaconData = beaconData;
-            sensor4 = beaconData == null ? null : beaconData.getTimeStamp();
+            sensor4 = beaconData == null ? null : beaconData.getId();
             beaconData__resolvedKey = sensor4;
         }
     }
@@ -348,7 +358,7 @@ public class Packet {
     public void setConnectivityData(ConnectivityData connectivityData) {
         synchronized (this) {
             this.connectivityData = connectivityData;
-            sensor5 = connectivityData == null ? null : connectivityData.getTimeStamp();
+            sensor5 = connectivityData == null ? null : connectivityData.getId();
             connectivityData__resolvedKey = sensor5;
         }
     }
@@ -373,7 +383,7 @@ public class Packet {
     public void setGyroData(GyroData gyroData) {
         synchronized (this) {
             this.gyroData = gyroData;
-            sensor6 = gyroData == null ? null : gyroData.getTimeStamp();
+            sensor6 = gyroData == null ? null : gyroData.getId();
             gyroData__resolvedKey = sensor6;
         }
     }
@@ -398,7 +408,7 @@ public class Packet {
     public void setHumidityData(HumidityData humidityData) {
         synchronized (this) {
             this.humidityData = humidityData;
-            sensor7 = humidityData == null ? null : humidityData.getTimeStamp();
+            sensor7 = humidityData == null ? null : humidityData.getId();
             humidityData__resolvedKey = sensor7;
         }
     }
@@ -423,7 +433,7 @@ public class Packet {
     public void setLightData(LightData lightData) {
         synchronized (this) {
             this.lightData = lightData;
-            sensor8 = lightData == null ? null : lightData.getTimeStamp();
+            sensor8 = lightData == null ? null : lightData.getId();
             lightData__resolvedKey = sensor8;
         }
     }
@@ -448,7 +458,7 @@ public class Packet {
     public void setMagneticData(MagneticData magneticData) {
         synchronized (this) {
             this.magneticData = magneticData;
-            sensor9 = magneticData == null ? null : magneticData.getTimeStamp();
+            sensor9 = magneticData == null ? null : magneticData.getId();
             magneticData__resolvedKey = sensor9;
         }
     }
@@ -473,7 +483,7 @@ public class Packet {
     public void setNoiseData(NoiseData noiseData) {
         synchronized (this) {
             this.noiseData = noiseData;
-            sensor10 = noiseData == null ? null : noiseData.getTimeStamp();
+            sensor10 = noiseData == null ? null : noiseData.getId();
             noiseData__resolvedKey = sensor10;
         }
     }
@@ -498,7 +508,7 @@ public class Packet {
     public void setPressureData(PressureData pressureData) {
         synchronized (this) {
             this.pressureData = pressureData;
-            sensor11 = pressureData == null ? null : pressureData.getTimeStamp();
+            sensor11 = pressureData == null ? null : pressureData.getId();
             pressureData__resolvedKey = sensor11;
         }
     }
@@ -523,7 +533,7 @@ public class Packet {
     public void setProximityData(ProximityData proximityData) {
         synchronized (this) {
             this.proximityData = proximityData;
-            sensor12 = proximityData == null ? null : proximityData.getTimeStamp();
+            sensor12 = proximityData == null ? null : proximityData.getId();
             proximityData__resolvedKey = sensor12;
         }
     }
@@ -548,7 +558,7 @@ public class Packet {
     public void setTemperatureData(TemperatureData temperatureData) {
         synchronized (this) {
             this.temperatureData = temperatureData;
-            sensor13 = temperatureData == null ? null : temperatureData.getTimeStamp();
+            sensor13 = temperatureData == null ? null : temperatureData.getId();
             temperatureData__resolvedKey = sensor13;
         }
     }

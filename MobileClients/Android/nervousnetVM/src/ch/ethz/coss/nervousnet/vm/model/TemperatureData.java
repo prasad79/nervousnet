@@ -8,34 +8,45 @@ package ch.ethz.coss.nervousnet.vm.model;
  * Entity mapped to table "TEMPERATURE_DATA".
  */
 public class TemperatureData implements SensorDataImpl {
-	private Integer Type = 0;
-    private long TimeStamp;
+
+    private Long id;
+    private Long TimeStamp;
     private Float Temperature;
     private long Volatility;
     private Boolean ShareFlag;
 
     // KEEP FIELDS - put your custom fields here
+    private int type;
     // KEEP FIELDS END
 
     public TemperatureData() {
     }
 
-    public TemperatureData(long TimeStamp) {
-        this.TimeStamp = TimeStamp;
+    public TemperatureData(Long id) {
+        this.id = id;
     }
 
-    public TemperatureData(long TimeStamp, Float Temperature, long Volatility, Boolean ShareFlag) {
+    public TemperatureData(Long id, Long TimeStamp, Float Temperature, long Volatility, Boolean ShareFlag) {
+        this.id = id;
         this.TimeStamp = TimeStamp;
         this.Temperature = Temperature;
         this.Volatility = Volatility;
         this.ShareFlag = ShareFlag;
     }
 
-    public long getTimeStamp() {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getTimeStamp() {
         return TimeStamp;
     }
 
-    public void setTimeStamp(long TimeStamp) {
+    public void setTimeStamp(Long TimeStamp) {
         this.TimeStamp = TimeStamp;
     }
 
@@ -65,14 +76,16 @@ public class TemperatureData implements SensorDataImpl {
 
     // KEEP METHODS - put your custom methods here
 	@Override
-	  public Integer getType() {
-      return Type;
-  }
-	
+	public Integer getType() {
+		// TODO Auto-generated method stub
+		return type;
+	}
+
 	@Override
-  public void setType(Integer Type) {
-      this.Type = Type;
-  }
+	public void setType(Integer type) {
+		// TODO Auto-generated method stub
+		this.type = type;
+	}
     // KEEP METHODS END
 
 }

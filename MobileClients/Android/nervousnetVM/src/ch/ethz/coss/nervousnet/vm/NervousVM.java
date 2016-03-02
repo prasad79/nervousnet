@@ -7,14 +7,20 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.util.Log;
-import ch.ethz.coss.nervousnet.lib.Constants;
+import ch.ethz.coss.nervousnet.lib.LibConstants;
 import ch.ethz.coss.nervousnet.vm.model.AccelData;
 import ch.ethz.coss.nervousnet.vm.model.AccelDataDao;
+import ch.ethz.coss.nervousnet.vm.model.BatteryData;
+import ch.ethz.coss.nervousnet.vm.model.BatteryDataDao;
 import ch.ethz.coss.nervousnet.vm.model.Config;
 import ch.ethz.coss.nervousnet.vm.model.ConfigDao;
+import ch.ethz.coss.nervousnet.vm.model.ConnectivityData;
+import ch.ethz.coss.nervousnet.vm.model.ConnectivityDataDao;
 import ch.ethz.coss.nervousnet.vm.model.DaoMaster;
 import ch.ethz.coss.nervousnet.vm.model.DaoMaster.DevOpenHelper;
 import ch.ethz.coss.nervousnet.vm.model.DaoSession;
+import ch.ethz.coss.nervousnet.vm.model.GyroData;
+import ch.ethz.coss.nervousnet.vm.model.GyroDataDao;
 import ch.ethz.coss.nervousnet.vm.model.LocationData;
 import ch.ethz.coss.nervousnet.vm.model.LocationDataDao;
 import ch.ethz.coss.nervousnet.vm.model.SensorDataImpl;
@@ -33,7 +39,10 @@ public class NervousVM {
 	SQLiteDatabase sqlDB;
 	ConfigDao configDao;
 	AccelDataDao accDao;
+	BatteryDataDao battDao;
 	LocationDataDao locDao;
+	ConnectivityDataDao connDao;
+	GyroDataDao gyroDao;
 	
 	public static synchronized  NervousVM getInstance(Context context) {
 		if (nervousVM == null) {
@@ -62,6 +71,10 @@ public class NervousVM {
 		 accDao = daoSession.getAccelDataDao();
 		 
 		 locDao = daoSession.getLocationDataDao();
+		 
+		 connDao = daoSession.getConnectivityDataDao();
+		 
+		 gyroDao = daoSession.getGyroDataDao();
 		 
 	    boolean hasVMConfig = loadVMConfig();
 		if (!hasVMConfig) {
@@ -185,7 +198,7 @@ public class NervousVM {
 		
 		
 		switch(sensorData.getType()) {
-		case Constants.SENSOR_ACCELEROMETER:
+		case LibConstants.SENSOR_ACCELEROMETER:
 			
 			AccelData accelData = (AccelData) sensorData;
 			Log.d(TAG, "ACCEL_DATA table count = "+accDao.count());
@@ -195,13 +208,18 @@ public class NervousVM {
 			accDao.insert(accelData);
 			return true;
 			
-		case Constants.SENSOR_BATTERY:
+		case LibConstants.SENSOR_BATTERY:
+			BatteryData battData = (BatteryData) sensorData;
+			Log.d(TAG, "BATTERY_DATA table count = "+battDao.count());
+			Log.d(TAG, "Inside Switch, BatteryData Type = (Type = "+battData.getType()+", Timestamp = "+battData.getTimeStamp()+", Volatility = "+battData.getVolatility());
+			Log.d(TAG, "Inside Switch, BatteryData Type = (Percent = "+battData.getPercent()+"%, Health = "+battData.getHealth());
+			battDao.insert(battData);
 			return true;
 			
-		case Constants.SENSOR_DEVICE:
+		case LibConstants.SENSOR_DEVICE:
 			return true;
 			
-		case Constants.SENSOR_LOCATION:
+		case LibConstants.SENSOR_LOCATION:
 			LocationData locData = (LocationData) sensorData;
 			Log.d(TAG, "LOCATION_DATA table count = "+locDao.count());
 			Log.d(TAG, "Inside Switch, LocationData Type = (Type = "+locData.getType()+", Timestamp = "+locData.getTimeStamp()+", Volatility = "+locData.getVolatility());
@@ -210,27 +228,36 @@ public class NervousVM {
 			locDao.insert(locData);
 			return true;
 			
-		case Constants.SENSOR_BLEBEACON:
+		case LibConstants.SENSOR_BLEBEACON:
 			return true;
 			
-		case Constants.SENSOR_CONNECTIVITY:
+		case LibConstants.SENSOR_CONNECTIVITY:
+			ConnectivityData connData = (ConnectivityData) sensorData;
+			Log.d(TAG, "Connectivity_DATA table count = "+connDao.count());
+			Log.d(TAG, "Inside Switch, ConnectivityData Type = (Type = "+connData.getType()+", Timestamp = "+connData.getTimeStamp()+", Volatility = "+connData.getVolatility());
+			
+			connDao.insert(connData);
 			return true;
-		case Constants.SENSOR_GYROSCOPE:
+		case LibConstants.SENSOR_GYROSCOPE:
+			GyroData gyroData = (GyroData) sensorData;
+			Log.d(TAG, "GYRO_DATA table count = "+gyroDao.count());
+			Log.d(TAG, "Inside Switch, GyroData Type = (Type = "+gyroData.getType()+", Timestamp = "+gyroData.getTimeStamp()+", Volatility = "+gyroData.getVolatility());
+			gyroDao.insert(gyroData);
 			return true;
-		case Constants.SENSOR_HUMIDITY:
+		case LibConstants.SENSOR_HUMIDITY:
 			return true;
-		case Constants.SENSOR_LIGHT:
+		case LibConstants.SENSOR_LIGHT:
 			return true;
 			
-		case Constants.SENSOR_MAGNETIC:
+		case LibConstants.SENSOR_MAGNETIC:
 			return true;
-		case Constants.SENSOR_NOISE:
+		case LibConstants.SENSOR_NOISE:
 			return true;
-		case Constants.SENSOR_PRESSURE:
+		case LibConstants.SENSOR_PRESSURE:
 			return true;
-		case Constants.SENSOR_PROXIMITY:
+		case LibConstants.SENSOR_PROXIMITY:
 			return true;
-		case Constants.SENSOR_TEMPERATURE:
+		case LibConstants.SENSOR_TEMPERATURE:
 			return true;
 			
 		}

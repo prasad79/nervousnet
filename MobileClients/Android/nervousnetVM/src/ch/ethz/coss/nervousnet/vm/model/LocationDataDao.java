@@ -23,12 +23,13 @@ public class LocationDataDao extends AbstractDao<LocationData, Long> {
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property TimeStamp = new Property(0, long.class, "TimeStamp", true, "TIME_STAMP");
-        public final static Property Latitude = new Property(1, Double.class, "Latitude", false, "LATITUDE");
-        public final static Property Longitude = new Property(2, Double.class, "Longitude", false, "LONGITUDE");
-        public final static Property Altitude = new Property(3, Double.class, "Altitude", false, "ALTITUDE");
-        public final static Property Volatility = new Property(4, long.class, "Volatility", false, "VOLATILITY");
-        public final static Property ShareFlag = new Property(5, Boolean.class, "ShareFlag", false, "SHARE_FLAG");
+        public final static Property Id = new Property(0, Long.class, "id", true, "_id");
+        public final static Property TimeStamp = new Property(1, Long.class, "TimeStamp", false, "TIME_STAMP");
+        public final static Property Latitude = new Property(2, Double.class, "Latitude", false, "LATITUDE");
+        public final static Property Longitude = new Property(3, Double.class, "Longitude", false, "LONGITUDE");
+        public final static Property Altitude = new Property(4, Double.class, "Altitude", false, "ALTITUDE");
+        public final static Property Volatility = new Property(5, long.class, "Volatility", false, "VOLATILITY");
+        public final static Property ShareFlag = new Property(6, Boolean.class, "ShareFlag", false, "SHARE_FLAG");
     };
 
 
@@ -44,12 +45,13 @@ public class LocationDataDao extends AbstractDao<LocationData, Long> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"LOCATION_DATA\" (" + //
-                "\"TIME_STAMP\" INTEGER PRIMARY KEY NOT NULL ," + // 0: TimeStamp
-                "\"LATITUDE\" REAL," + // 1: Latitude
-                "\"LONGITUDE\" REAL," + // 2: Longitude
-                "\"ALTITUDE\" REAL," + // 3: Altitude
-                "\"VOLATILITY\" INTEGER NOT NULL ," + // 4: Volatility
-                "\"SHARE_FLAG\" INTEGER);"); // 5: ShareFlag
+                "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
+                "\"TIME_STAMP\" INTEGER," + // 1: TimeStamp
+                "\"LATITUDE\" REAL," + // 2: Latitude
+                "\"LONGITUDE\" REAL," + // 3: Longitude
+                "\"ALTITUDE\" REAL," + // 4: Altitude
+                "\"VOLATILITY\" INTEGER NOT NULL ," + // 5: Volatility
+                "\"SHARE_FLAG\" INTEGER);"); // 6: ShareFlag
     }
 
     /** Drops the underlying database table. */
@@ -62,46 +64,56 @@ public class LocationDataDao extends AbstractDao<LocationData, Long> {
     @Override
     protected void bindValues(SQLiteStatement stmt, LocationData entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getTimeStamp());
+ 
+        Long id = entity.getId();
+        if (id != null) {
+            stmt.bindLong(1, id);
+        }
+ 
+        Long TimeStamp = entity.getTimeStamp();
+        if (TimeStamp != null) {
+            stmt.bindLong(2, TimeStamp);
+        }
  
         Double Latitude = entity.getLatitude();
         if (Latitude != null) {
-            stmt.bindDouble(2, Latitude);
+            stmt.bindDouble(3, Latitude);
         }
  
         Double Longitude = entity.getLongitude();
         if (Longitude != null) {
-            stmt.bindDouble(3, Longitude);
+            stmt.bindDouble(4, Longitude);
         }
  
         Double Altitude = entity.getAltitude();
         if (Altitude != null) {
-            stmt.bindDouble(4, Altitude);
+            stmt.bindDouble(5, Altitude);
         }
-        stmt.bindLong(5, entity.getVolatility());
+        stmt.bindLong(6, entity.getVolatility());
  
         Boolean ShareFlag = entity.getShareFlag();
         if (ShareFlag != null) {
-            stmt.bindLong(6, ShareFlag ? 1L: 0L);
+            stmt.bindLong(7, ShareFlag ? 1L: 0L);
         }
     }
 
     /** @inheritdoc */
     @Override
     public Long readKey(Cursor cursor, int offset) {
-        return cursor.getLong(offset + 0);
+        return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
     }    
 
     /** @inheritdoc */
     @Override
     public LocationData readEntity(Cursor cursor, int offset) {
         LocationData entity = new LocationData( //
-            cursor.getLong(offset + 0), // TimeStamp
-            cursor.isNull(offset + 1) ? null : cursor.getDouble(offset + 1), // Latitude
-            cursor.isNull(offset + 2) ? null : cursor.getDouble(offset + 2), // Longitude
-            cursor.isNull(offset + 3) ? null : cursor.getDouble(offset + 3), // Altitude
-            cursor.getLong(offset + 4), // Volatility
-            cursor.isNull(offset + 5) ? null : cursor.getShort(offset + 5) != 0 // ShareFlag
+            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
+            cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // TimeStamp
+            cursor.isNull(offset + 2) ? null : cursor.getDouble(offset + 2), // Latitude
+            cursor.isNull(offset + 3) ? null : cursor.getDouble(offset + 3), // Longitude
+            cursor.isNull(offset + 4) ? null : cursor.getDouble(offset + 4), // Altitude
+            cursor.getLong(offset + 5), // Volatility
+            cursor.isNull(offset + 6) ? null : cursor.getShort(offset + 6) != 0 // ShareFlag
         );
         return entity;
     }
@@ -109,18 +121,19 @@ public class LocationDataDao extends AbstractDao<LocationData, Long> {
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, LocationData entity, int offset) {
-        entity.setTimeStamp(cursor.getLong(offset + 0));
-        entity.setLatitude(cursor.isNull(offset + 1) ? null : cursor.getDouble(offset + 1));
-        entity.setLongitude(cursor.isNull(offset + 2) ? null : cursor.getDouble(offset + 2));
-        entity.setAltitude(cursor.isNull(offset + 3) ? null : cursor.getDouble(offset + 3));
-        entity.setVolatility(cursor.getLong(offset + 4));
-        entity.setShareFlag(cursor.isNull(offset + 5) ? null : cursor.getShort(offset + 5) != 0);
+        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
+        entity.setTimeStamp(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
+        entity.setLatitude(cursor.isNull(offset + 2) ? null : cursor.getDouble(offset + 2));
+        entity.setLongitude(cursor.isNull(offset + 3) ? null : cursor.getDouble(offset + 3));
+        entity.setAltitude(cursor.isNull(offset + 4) ? null : cursor.getDouble(offset + 4));
+        entity.setVolatility(cursor.getLong(offset + 5));
+        entity.setShareFlag(cursor.isNull(offset + 6) ? null : cursor.getShort(offset + 6) != 0);
      }
     
     /** @inheritdoc */
     @Override
     protected Long updateKeyAfterInsert(LocationData entity, long rowId) {
-        entity.setTimeStamp(rowId);
+        entity.setId(rowId);
         return rowId;
     }
     
@@ -128,7 +141,7 @@ public class LocationDataDao extends AbstractDao<LocationData, Long> {
     @Override
     public Long getKey(LocationData entity) {
         if(entity != null) {
-            return entity.getTimeStamp();
+            return entity.getId();
         } else {
             return null;
         }

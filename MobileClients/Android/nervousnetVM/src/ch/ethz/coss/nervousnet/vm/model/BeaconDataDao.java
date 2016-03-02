@@ -23,18 +23,19 @@ public class BeaconDataDao extends AbstractDao<BeaconData, Long> {
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property TimeStamp = new Property(0, long.class, "TimeStamp", true, "TIME_STAMP");
-        public final static Property Rssi = new Property(1, Integer.class, "rssi", false, "RSSI");
-        public final static Property Mac = new Property(2, Long.class, "mac", false, "MAC");
-        public final static Property AdvertisementMSB = new Property(3, Long.class, "advertisementMSB", false, "ADVERTISEMENT_MSB");
-        public final static Property AdvertisementLSB = new Property(4, Long.class, "advertisementLSB", false, "ADVERTISEMENT_LSB");
-        public final static Property BleuuidMSB = new Property(5, Long.class, "bleuuidMSB", false, "BLEUUID_MSB");
-        public final static Property BleuuidLSB = new Property(6, Long.class, "bleuuidLSB", false, "BLEUUID_LSB");
-        public final static Property Major = new Property(7, Integer.class, "major", false, "MAJOR");
-        public final static Property Minor = new Property(8, Integer.class, "minor", false, "MINOR");
-        public final static Property Txpower = new Property(9, Integer.class, "txpower", false, "TXPOWER");
-        public final static Property Volatility = new Property(10, long.class, "Volatility", false, "VOLATILITY");
-        public final static Property ShareFlag = new Property(11, Boolean.class, "ShareFlag", false, "SHARE_FLAG");
+        public final static Property Id = new Property(0, Long.class, "id", true, "_id");
+        public final static Property TimeStamp = new Property(1, Long.class, "TimeStamp", false, "TIME_STAMP");
+        public final static Property Rssi = new Property(2, Integer.class, "rssi", false, "RSSI");
+        public final static Property Mac = new Property(3, Long.class, "mac", false, "MAC");
+        public final static Property AdvertisementMSB = new Property(4, Long.class, "advertisementMSB", false, "ADVERTISEMENT_MSB");
+        public final static Property AdvertisementLSB = new Property(5, Long.class, "advertisementLSB", false, "ADVERTISEMENT_LSB");
+        public final static Property BleuuidMSB = new Property(6, Long.class, "bleuuidMSB", false, "BLEUUID_MSB");
+        public final static Property BleuuidLSB = new Property(7, Long.class, "bleuuidLSB", false, "BLEUUID_LSB");
+        public final static Property Major = new Property(8, Integer.class, "major", false, "MAJOR");
+        public final static Property Minor = new Property(9, Integer.class, "minor", false, "MINOR");
+        public final static Property Txpower = new Property(10, Integer.class, "txpower", false, "TXPOWER");
+        public final static Property Volatility = new Property(11, long.class, "Volatility", false, "VOLATILITY");
+        public final static Property ShareFlag = new Property(12, Boolean.class, "ShareFlag", false, "SHARE_FLAG");
     };
 
 
@@ -50,18 +51,19 @@ public class BeaconDataDao extends AbstractDao<BeaconData, Long> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"BEACON_DATA\" (" + //
-                "\"TIME_STAMP\" INTEGER PRIMARY KEY NOT NULL ," + // 0: TimeStamp
-                "\"RSSI\" INTEGER," + // 1: rssi
-                "\"MAC\" INTEGER," + // 2: mac
-                "\"ADVERTISEMENT_MSB\" INTEGER," + // 3: advertisementMSB
-                "\"ADVERTISEMENT_LSB\" INTEGER," + // 4: advertisementLSB
-                "\"BLEUUID_MSB\" INTEGER," + // 5: bleuuidMSB
-                "\"BLEUUID_LSB\" INTEGER," + // 6: bleuuidLSB
-                "\"MAJOR\" INTEGER," + // 7: major
-                "\"MINOR\" INTEGER," + // 8: minor
-                "\"TXPOWER\" INTEGER," + // 9: txpower
-                "\"VOLATILITY\" INTEGER NOT NULL ," + // 10: Volatility
-                "\"SHARE_FLAG\" INTEGER);"); // 11: ShareFlag
+                "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
+                "\"TIME_STAMP\" INTEGER," + // 1: TimeStamp
+                "\"RSSI\" INTEGER," + // 2: rssi
+                "\"MAC\" INTEGER," + // 3: mac
+                "\"ADVERTISEMENT_MSB\" INTEGER," + // 4: advertisementMSB
+                "\"ADVERTISEMENT_LSB\" INTEGER," + // 5: advertisementLSB
+                "\"BLEUUID_MSB\" INTEGER," + // 6: bleuuidMSB
+                "\"BLEUUID_LSB\" INTEGER," + // 7: bleuuidLSB
+                "\"MAJOR\" INTEGER," + // 8: major
+                "\"MINOR\" INTEGER," + // 9: minor
+                "\"TXPOWER\" INTEGER," + // 10: txpower
+                "\"VOLATILITY\" INTEGER NOT NULL ," + // 11: Volatility
+                "\"SHARE_FLAG\" INTEGER);"); // 12: ShareFlag
     }
 
     /** Drops the underlying database table. */
@@ -74,82 +76,92 @@ public class BeaconDataDao extends AbstractDao<BeaconData, Long> {
     @Override
     protected void bindValues(SQLiteStatement stmt, BeaconData entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getTimeStamp());
+ 
+        Long id = entity.getId();
+        if (id != null) {
+            stmt.bindLong(1, id);
+        }
+ 
+        Long TimeStamp = entity.getTimeStamp();
+        if (TimeStamp != null) {
+            stmt.bindLong(2, TimeStamp);
+        }
  
         Integer rssi = entity.getRssi();
         if (rssi != null) {
-            stmt.bindLong(2, rssi);
+            stmt.bindLong(3, rssi);
         }
  
         Long mac = entity.getMac();
         if (mac != null) {
-            stmt.bindLong(3, mac);
+            stmt.bindLong(4, mac);
         }
  
         Long advertisementMSB = entity.getAdvertisementMSB();
         if (advertisementMSB != null) {
-            stmt.bindLong(4, advertisementMSB);
+            stmt.bindLong(5, advertisementMSB);
         }
  
         Long advertisementLSB = entity.getAdvertisementLSB();
         if (advertisementLSB != null) {
-            stmt.bindLong(5, advertisementLSB);
+            stmt.bindLong(6, advertisementLSB);
         }
  
         Long bleuuidMSB = entity.getBleuuidMSB();
         if (bleuuidMSB != null) {
-            stmt.bindLong(6, bleuuidMSB);
+            stmt.bindLong(7, bleuuidMSB);
         }
  
         Long bleuuidLSB = entity.getBleuuidLSB();
         if (bleuuidLSB != null) {
-            stmt.bindLong(7, bleuuidLSB);
+            stmt.bindLong(8, bleuuidLSB);
         }
  
         Integer major = entity.getMajor();
         if (major != null) {
-            stmt.bindLong(8, major);
+            stmt.bindLong(9, major);
         }
  
         Integer minor = entity.getMinor();
         if (minor != null) {
-            stmt.bindLong(9, minor);
+            stmt.bindLong(10, minor);
         }
  
         Integer txpower = entity.getTxpower();
         if (txpower != null) {
-            stmt.bindLong(10, txpower);
+            stmt.bindLong(11, txpower);
         }
-        stmt.bindLong(11, entity.getVolatility());
+        stmt.bindLong(12, entity.getVolatility());
  
         Boolean ShareFlag = entity.getShareFlag();
         if (ShareFlag != null) {
-            stmt.bindLong(12, ShareFlag ? 1L: 0L);
+            stmt.bindLong(13, ShareFlag ? 1L: 0L);
         }
     }
 
     /** @inheritdoc */
     @Override
     public Long readKey(Cursor cursor, int offset) {
-        return cursor.getLong(offset + 0);
+        return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
     }    
 
     /** @inheritdoc */
     @Override
     public BeaconData readEntity(Cursor cursor, int offset) {
         BeaconData entity = new BeaconData( //
-            cursor.getLong(offset + 0), // TimeStamp
-            cursor.isNull(offset + 1) ? null : cursor.getInt(offset + 1), // rssi
-            cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2), // mac
-            cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3), // advertisementMSB
-            cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4), // advertisementLSB
-            cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5), // bleuuidMSB
-            cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6), // bleuuidLSB
-            cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7), // major
-            cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8), // minor
-            cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9), // txpower
-            cursor.getLong(offset + 10), // Volatility
-            cursor.isNull(offset + 11) ? null : cursor.getShort(offset + 11) != 0 // ShareFlag
+            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
+            cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // TimeStamp
+            cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2), // rssi
+            cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3), // mac
+            cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4), // advertisementMSB
+            cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5), // advertisementLSB
+            cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6), // bleuuidMSB
+            cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7), // bleuuidLSB
+            cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8), // major
+            cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9), // minor
+            cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10), // txpower
+            cursor.getLong(offset + 11), // Volatility
+            cursor.isNull(offset + 12) ? null : cursor.getShort(offset + 12) != 0 // ShareFlag
         );
         return entity;
     }
@@ -157,24 +169,25 @@ public class BeaconDataDao extends AbstractDao<BeaconData, Long> {
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, BeaconData entity, int offset) {
-        entity.setTimeStamp(cursor.getLong(offset + 0));
-        entity.setRssi(cursor.isNull(offset + 1) ? null : cursor.getInt(offset + 1));
-        entity.setMac(cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2));
-        entity.setAdvertisementMSB(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
-        entity.setAdvertisementLSB(cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4));
-        entity.setBleuuidMSB(cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5));
-        entity.setBleuuidLSB(cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6));
-        entity.setMajor(cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7));
-        entity.setMinor(cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8));
-        entity.setTxpower(cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9));
-        entity.setVolatility(cursor.getLong(offset + 10));
-        entity.setShareFlag(cursor.isNull(offset + 11) ? null : cursor.getShort(offset + 11) != 0);
+        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
+        entity.setTimeStamp(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
+        entity.setRssi(cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2));
+        entity.setMac(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
+        entity.setAdvertisementMSB(cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4));
+        entity.setAdvertisementLSB(cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5));
+        entity.setBleuuidMSB(cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6));
+        entity.setBleuuidLSB(cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7));
+        entity.setMajor(cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8));
+        entity.setMinor(cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9));
+        entity.setTxpower(cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10));
+        entity.setVolatility(cursor.getLong(offset + 11));
+        entity.setShareFlag(cursor.isNull(offset + 12) ? null : cursor.getShort(offset + 12) != 0);
      }
     
     /** @inheritdoc */
     @Override
     protected Long updateKeyAfterInsert(BeaconData entity, long rowId) {
-        entity.setTimeStamp(rowId);
+        entity.setId(rowId);
         return rowId;
     }
     
@@ -182,7 +195,7 @@ public class BeaconDataDao extends AbstractDao<BeaconData, Long> {
     @Override
     public Long getKey(BeaconData entity) {
         if(entity != null) {
-            return entity.getTimeStamp();
+            return entity.getId();
         } else {
             return null;
         }

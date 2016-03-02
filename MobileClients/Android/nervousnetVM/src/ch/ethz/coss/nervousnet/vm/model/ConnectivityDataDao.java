@@ -23,15 +23,16 @@ public class ConnectivityDataDao extends AbstractDao<ConnectivityData, Long> {
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property TimeStamp = new Property(0, long.class, "TimeStamp", true, "TIME_STAMP");
-        public final static Property IsConnected = new Property(1, Boolean.class, "isConnected", false, "IS_CONNECTED");
-        public final static Property NetworkType = new Property(2, Integer.class, "networkType", false, "NETWORK_TYPE");
-        public final static Property IsRoaming = new Property(3, Boolean.class, "isRoaming", false, "IS_ROAMING");
-        public final static Property WifiHashId = new Property(4, String.class, "wifiHashId", false, "WIFI_HASH_ID");
-        public final static Property WifiStrength = new Property(5, Integer.class, "wifiStrength", false, "WIFI_STRENGTH");
-        public final static Property MobileHashId = new Property(6, String.class, "mobileHashId", false, "MOBILE_HASH_ID");
-        public final static Property Volatility = new Property(7, long.class, "Volatility", false, "VOLATILITY");
-        public final static Property ShareFlag = new Property(8, Boolean.class, "ShareFlag", false, "SHARE_FLAG");
+        public final static Property Id = new Property(0, Long.class, "id", true, "_id");
+        public final static Property TimeStamp = new Property(1, Long.class, "TimeStamp", false, "TIME_STAMP");
+        public final static Property IsConnected = new Property(2, Boolean.class, "isConnected", false, "IS_CONNECTED");
+        public final static Property NetworkType = new Property(3, Integer.class, "networkType", false, "NETWORK_TYPE");
+        public final static Property IsRoaming = new Property(4, Boolean.class, "isRoaming", false, "IS_ROAMING");
+        public final static Property WifiHashId = new Property(5, String.class, "wifiHashId", false, "WIFI_HASH_ID");
+        public final static Property WifiStrength = new Property(6, Integer.class, "wifiStrength", false, "WIFI_STRENGTH");
+        public final static Property MobileHashId = new Property(7, String.class, "mobileHashId", false, "MOBILE_HASH_ID");
+        public final static Property Volatility = new Property(8, long.class, "Volatility", false, "VOLATILITY");
+        public final static Property ShareFlag = new Property(9, Boolean.class, "ShareFlag", false, "SHARE_FLAG");
     };
 
 
@@ -47,15 +48,16 @@ public class ConnectivityDataDao extends AbstractDao<ConnectivityData, Long> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"CONNECTIVITY_DATA\" (" + //
-                "\"TIME_STAMP\" INTEGER PRIMARY KEY NOT NULL ," + // 0: TimeStamp
-                "\"IS_CONNECTED\" INTEGER," + // 1: isConnected
-                "\"NETWORK_TYPE\" INTEGER," + // 2: networkType
-                "\"IS_ROAMING\" INTEGER," + // 3: isRoaming
-                "\"WIFI_HASH_ID\" TEXT," + // 4: wifiHashId
-                "\"WIFI_STRENGTH\" INTEGER," + // 5: wifiStrength
-                "\"MOBILE_HASH_ID\" TEXT," + // 6: mobileHashId
-                "\"VOLATILITY\" INTEGER NOT NULL ," + // 7: Volatility
-                "\"SHARE_FLAG\" INTEGER);"); // 8: ShareFlag
+                "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
+                "\"TIME_STAMP\" INTEGER," + // 1: TimeStamp
+                "\"IS_CONNECTED\" INTEGER," + // 2: isConnected
+                "\"NETWORK_TYPE\" INTEGER," + // 3: networkType
+                "\"IS_ROAMING\" INTEGER," + // 4: isRoaming
+                "\"WIFI_HASH_ID\" TEXT," + // 5: wifiHashId
+                "\"WIFI_STRENGTH\" INTEGER," + // 6: wifiStrength
+                "\"MOBILE_HASH_ID\" TEXT," + // 7: mobileHashId
+                "\"VOLATILITY\" INTEGER NOT NULL ," + // 8: Volatility
+                "\"SHARE_FLAG\" INTEGER);"); // 9: ShareFlag
     }
 
     /** Drops the underlying database table. */
@@ -68,64 +70,74 @@ public class ConnectivityDataDao extends AbstractDao<ConnectivityData, Long> {
     @Override
     protected void bindValues(SQLiteStatement stmt, ConnectivityData entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getTimeStamp());
+ 
+        Long id = entity.getId();
+        if (id != null) {
+            stmt.bindLong(1, id);
+        }
+ 
+        Long TimeStamp = entity.getTimeStamp();
+        if (TimeStamp != null) {
+            stmt.bindLong(2, TimeStamp);
+        }
  
         Boolean isConnected = entity.getIsConnected();
         if (isConnected != null) {
-            stmt.bindLong(2, isConnected ? 1L: 0L);
+            stmt.bindLong(3, isConnected ? 1L: 0L);
         }
  
         Integer networkType = entity.getNetworkType();
         if (networkType != null) {
-            stmt.bindLong(3, networkType);
+            stmt.bindLong(4, networkType);
         }
  
         Boolean isRoaming = entity.getIsRoaming();
         if (isRoaming != null) {
-            stmt.bindLong(4, isRoaming ? 1L: 0L);
+            stmt.bindLong(5, isRoaming ? 1L: 0L);
         }
  
         String wifiHashId = entity.getWifiHashId();
         if (wifiHashId != null) {
-            stmt.bindString(5, wifiHashId);
+            stmt.bindString(6, wifiHashId);
         }
  
         Integer wifiStrength = entity.getWifiStrength();
         if (wifiStrength != null) {
-            stmt.bindLong(6, wifiStrength);
+            stmt.bindLong(7, wifiStrength);
         }
  
         String mobileHashId = entity.getMobileHashId();
         if (mobileHashId != null) {
-            stmt.bindString(7, mobileHashId);
+            stmt.bindString(8, mobileHashId);
         }
-        stmt.bindLong(8, entity.getVolatility());
+        stmt.bindLong(9, entity.getVolatility());
  
         Boolean ShareFlag = entity.getShareFlag();
         if (ShareFlag != null) {
-            stmt.bindLong(9, ShareFlag ? 1L: 0L);
+            stmt.bindLong(10, ShareFlag ? 1L: 0L);
         }
     }
 
     /** @inheritdoc */
     @Override
     public Long readKey(Cursor cursor, int offset) {
-        return cursor.getLong(offset + 0);
+        return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
     }    
 
     /** @inheritdoc */
     @Override
     public ConnectivityData readEntity(Cursor cursor, int offset) {
         ConnectivityData entity = new ConnectivityData( //
-            cursor.getLong(offset + 0), // TimeStamp
-            cursor.isNull(offset + 1) ? null : cursor.getShort(offset + 1) != 0, // isConnected
-            cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2), // networkType
-            cursor.isNull(offset + 3) ? null : cursor.getShort(offset + 3) != 0, // isRoaming
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // wifiHashId
-            cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5), // wifiStrength
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // mobileHashId
-            cursor.getLong(offset + 7), // Volatility
-            cursor.isNull(offset + 8) ? null : cursor.getShort(offset + 8) != 0 // ShareFlag
+            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
+            cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // TimeStamp
+            cursor.isNull(offset + 2) ? null : cursor.getShort(offset + 2) != 0, // isConnected
+            cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3), // networkType
+            cursor.isNull(offset + 4) ? null : cursor.getShort(offset + 4) != 0, // isRoaming
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // wifiHashId
+            cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6), // wifiStrength
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // mobileHashId
+            cursor.getLong(offset + 8), // Volatility
+            cursor.isNull(offset + 9) ? null : cursor.getShort(offset + 9) != 0 // ShareFlag
         );
         return entity;
     }
@@ -133,21 +145,22 @@ public class ConnectivityDataDao extends AbstractDao<ConnectivityData, Long> {
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, ConnectivityData entity, int offset) {
-        entity.setTimeStamp(cursor.getLong(offset + 0));
-        entity.setIsConnected(cursor.isNull(offset + 1) ? null : cursor.getShort(offset + 1) != 0);
-        entity.setNetworkType(cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2));
-        entity.setIsRoaming(cursor.isNull(offset + 3) ? null : cursor.getShort(offset + 3) != 0);
-        entity.setWifiHashId(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setWifiStrength(cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5));
-        entity.setMobileHashId(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setVolatility(cursor.getLong(offset + 7));
-        entity.setShareFlag(cursor.isNull(offset + 8) ? null : cursor.getShort(offset + 8) != 0);
+        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
+        entity.setTimeStamp(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
+        entity.setIsConnected(cursor.isNull(offset + 2) ? null : cursor.getShort(offset + 2) != 0);
+        entity.setNetworkType(cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3));
+        entity.setIsRoaming(cursor.isNull(offset + 4) ? null : cursor.getShort(offset + 4) != 0);
+        entity.setWifiHashId(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setWifiStrength(cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6));
+        entity.setMobileHashId(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setVolatility(cursor.getLong(offset + 8));
+        entity.setShareFlag(cursor.isNull(offset + 9) ? null : cursor.getShort(offset + 9) != 0);
      }
     
     /** @inheritdoc */
     @Override
     protected Long updateKeyAfterInsert(ConnectivityData entity, long rowId) {
-        entity.setTimeStamp(rowId);
+        entity.setId(rowId);
         return rowId;
     }
     
@@ -155,7 +168,7 @@ public class ConnectivityDataDao extends AbstractDao<ConnectivityData, Long> {
     @Override
     public Long getKey(ConnectivityData entity) {
         if(entity != null) {
-            return entity.getTimeStamp();
+            return entity.getId();
         } else {
             return null;
         }
