@@ -29,6 +29,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -60,6 +63,7 @@ import ch.ethz.coss.nervousnet.sensors.ConnectivitySensor;
 import ch.ethz.coss.nervousnet.sensors.ConnectivitySensor.ConnectivitySensorListener;
 import ch.ethz.coss.nervousnet.sensors.LocationSensor.LocationSensorListener;
 import ch.ethz.coss.nervousnet.sensors.NoiseSensor.NoiseSensorListener;
+import ch.ethz.coss.nervousnet.ui.StartUpActivity;
 import ch.ethz.coss.nervousnet.sensors.LocationSensor;
 import ch.ethz.coss.nervousnet.sensors.NoiseSensor;
 import ch.ethz.coss.nervousnet.vm.model.AccelData;
@@ -73,6 +77,10 @@ public class SensorService extends Service implements SensorEventListener, Batte
 	private static final String LOG_TAG = SensorService.class.getSimpleName();
 
 	private SensorManager sensorManager = null;
+
+	
+	private static NotificationManager mNM;
+    private static int NOTIFICATION = R.string.local_service_started;
 
 	private PowerManager.WakeLock wakeLock;
 	private HandlerThread hthread;
@@ -132,10 +140,49 @@ public class SensorService extends Service implements SensorEventListener, Batte
 		if (!wakeLock.isHeld()) {
 			wakeLock.acquire();
 		}
+		
+		 mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+
+	        // Display a notification about us starting.  We put an icon in the status bar.
+	     showNotification();
 	}
 
+	 /**
+     * Show a notification while this service is running.
+     */
+    private void showNotification() {
+        // In this sample, we'll use the same text for the ticker and the expanded notification
+        CharSequence text = getText(R.string.local_service_started);
+
+        // The PendingIntent to launch our activity if the user selects this notification
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+                new Intent(this, StartUpActivity.class), 0);
+
+        // Set the info for the views that show in the notification panel.
+        Notification notification = new Notification.Builder(this)
+                .setSmallIcon(getNotificationIcon() )  // the status icon
+                .setTicker(text)  // the status text
+                .setWhen(System.currentTimeMillis())  // the time stamp
+                .setContentTitle(getText(R.string.local_service_label))  // the label of the entry
+                .setContentText(text)  // the contents of the entry
+                .setContentIntent(contentIntent)  // The intent to send when the entry is clicked
+                .build();
+
+        // Send the notification.
+        mNM.notify(NOTIFICATION, notification);
+    }
+    
+    private int getNotificationIcon() {
+        boolean useWhiteIcon = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP);
+        return useWhiteIcon ? R.drawable.ic_logo_white : R.drawable.ic_logo;
+    }
+    
+    
 	@Override
 	public void onDestroy() {
+		Log.d(LOG_TAG, "********SERVICE Destroyed ");
+	
+		mNM.cancel(NOTIFICATION);
 		// Release the wakelock here, just to be safe, in order something went
 		// wrong
 		if (wakeLock.isHeld()) {
@@ -172,6 +219,20 @@ public class SensorService extends Service implements SensorEventListener, Batte
 			
 			return accReading;
 		}
+		
+		@Override
+		public GyroReading getGyroReading() throws RemoteException {
+			Log.d(LOG_TAG, "Gyroscope reading requested ");
+			
+			return gyroReading;
+		}
+		
+		@Override
+		public ConnectivityReading getConnectivityReading() throws RemoteException {
+			Log.d(LOG_TAG, "Connectivity reading requested ");
+			
+			return connReading;
+		}
 
 	};
 	
@@ -180,7 +241,6 @@ public class SensorService extends Service implements SensorEventListener, Batte
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		Log.d(LOG_TAG, "Service execution started");
 		Toast.makeText(SensorService.this, "Service Started", Toast.LENGTH_SHORT).show();
-		
 		initSensors();
 		return START_STICKY;
 	}
@@ -198,6 +258,7 @@ public class SensorService extends Service implements SensorEventListener, Batte
 		Toast.makeText(context, "Service Stopped", Toast.LENGTH_SHORT).show();
 		Intent sensorIntent = new Intent(context, SensorService.class);
 		context.stopService(sensorIntent);
+		 mNM.cancel(NOTIFICATION);
 	}
 	
 	
@@ -242,26 +303,27 @@ public class SensorService extends Service implements SensorEventListener, Batte
 		sensorBattery =  BatterySensor.getInstance(getApplicationContext());
 		sensorConnectivity = ConnectivitySensor.getInstance(getApplicationContext());
 		sensorNoise = NoiseSensor.getInstance();
-		sensorLocation = LocationSensor.getInstance((LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE));
+		LocationManager locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		sensorLocation = LocationSensor.getInstance(locManager);
 
 		// Schedule all sensors (initially)
 		scheduleSensor(LibConstants.SENSOR_LOCATION);
 		scheduleSensor(LibConstants.SENSOR_ACCELEROMETER);
-		scheduleSensor(LibConstants.SENSOR_BATTERY);
-		scheduleSensor(LibConstants.SENSOR_MAGNETIC);
-		scheduleSensor(LibConstants.SENSOR_PROXIMITY);
-		scheduleSensor(LibConstants.SENSOR_GYROSCOPE);
-		scheduleSensor(LibConstants.SENSOR_TEMPERATURE);
-		scheduleSensor(LibConstants.SENSOR_HUMIDITY);
-		scheduleSensor(LibConstants.SENSOR_PRESSURE);
-		scheduleSensor(LibConstants.SENSOR_NOISE);
-		scheduleSensor(LibConstants.SENSOR_BLEBEACON);
-		scheduleSensor(LibConstants.SENSOR_CONNECTIVITY);
+//		scheduleSensor(LibConstants.SENSOR_BATTERY);
+//		scheduleSensor(LibConstants.SENSOR_MAGNETIC);
+//		scheduleSensor(LibConstants.SENSOR_PROXIMITY);
+//		scheduleSensor(LibConstants.SENSOR_GYROSCOPE);
+//		scheduleSensor(LibConstants.SENSOR_TEMPERATURE);
+//		scheduleSensor(LibConstants.SENSOR_HUMIDITY);
+//		scheduleSensor(LibConstants.SENSOR_PRESSURE);
+//		scheduleSensor(LibConstants.SENSOR_NOISE);
+//		scheduleSensor(LibConstants.SENSOR_BLEBEACON);
+////		scheduleSensor(LibConstants.SENSOR_CONNECTIVITY);
 	}
 	
 	
 	private void scheduleSensor(final long sensorId) {
-	Log.d(LOG_TAG, "scheduleSensor called.");
+	Log.d(LOG_TAG, "scheduleSensor called with id = "+sensorId);
 	handler = new Handler(hthread.getLooper());
 	final Runnable run = new Runnable() {
 		@Override
@@ -358,8 +420,11 @@ public class SensorService extends Service implements SensorEventListener, Batte
 				sensorCollectStatus = scNoise;
 			} else if (sensorId == LibConstants.SENSOR_LOCATION) {
 				scLocation.setMeasureStart(startTime);
+				Log.d(LOG_TAG, "SENSOR_LOCATION 1");
 				doCollect = scLocation.isCollect();
+				Log.d(LOG_TAG, "SENSOR_LOCATION 2 " +doCollect);
 				if (doCollect) {
+					Log.d(LOG_TAG, "Inside doCollect ");
 					sensorLocation.clearListeners();
 					sensorLocation.addListener(SensorService.this);
 					sensorLocation.startLocationCollection();
@@ -401,6 +466,7 @@ public class SensorService extends Service implements SensorEventListener, Batte
 			break;
 		case Sensor.TYPE_PROXIMITY:
 			Log.d(LOG_TAG, "Proximity data collected");
+			
 			break;
 		case Sensor.TYPE_ACCELEROMETER:
 			accReading = new AccelerometerReading(timestamp, event.values);
@@ -409,6 +475,7 @@ public class SensorService extends Service implements SensorEventListener, Batte
 			break;
 		case Sensor.TYPE_MAGNETIC_FIELD:
 			Log.d(LOG_TAG, "Magnetic data collected");
+			
 			break;
 		case Sensor.TYPE_GYROSCOPE:
 			gyroReading = new GyroReading(timestamp, event.values);
@@ -439,6 +506,7 @@ public class SensorService extends Service implements SensorEventListener, Batte
 	
 	public void connectivitySensorDataReady(ConnectivityReading reading) {
 		Log.d(LOG_TAG, "Connectivity data collected");
+		connReading = reading;
 		store(reading);
 	};
 
@@ -446,6 +514,7 @@ public class SensorService extends Service implements SensorEventListener, Batte
 	@Override
 	public void noiseSensorDataReady(long timestamp, float rms, float spl, float[] bands) {
 //		SensorReading Reading = new NoiseRea(timestamp, rms, spl, bands);
+		
 		Log.d(LOG_TAG, "Noise data collected");
 //		store(sensorDesc.getSensorId(), sensorDescs);
 	}
@@ -455,6 +524,7 @@ public class SensorService extends Service implements SensorEventListener, Batte
 	@Override
 	public void batterySensorDataReady(BatteryReading reading) {
 		Log.d(LOG_TAG, "Battery data collected");
+		batteryReading = reading;
 		store(reading);
 	}
 
@@ -464,6 +534,7 @@ public class SensorService extends Service implements SensorEventListener, Batte
 	@Override
 	public void locationSensorDataReady(LocationReading reading) {
 		Log.d(LOG_TAG, "Location Data Collected");
+		locReading = reading;
 		store(reading);
 	}
 	

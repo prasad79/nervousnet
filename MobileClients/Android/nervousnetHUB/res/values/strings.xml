@@ -20,6 +20,10 @@ Clausiusstrasse 50,\n 8092 Zürich,\n Switzerland\n</string>
 
     <string name="app_name">nervousnet HUB</string>
     <string name="button_accept_label">Accept</string>
+    <string name="local_service_started">Nervousnet Service Running</string>
+    <string name="local_service_label">Nervousnet HUB</string>
+    
+    
 
     <string-array name="main_grid">
         <item>Sensors</item>

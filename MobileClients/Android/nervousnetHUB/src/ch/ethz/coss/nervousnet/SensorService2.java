@@ -157,6 +157,18 @@ public class SensorService2 extends Service
 			return null;
 		}
 
+		@Override
+		public ConnectivityReading getConnectivityReading() throws RemoteException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public GyroReading getGyroReading() throws RemoteException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
 	};
 
 	@Override

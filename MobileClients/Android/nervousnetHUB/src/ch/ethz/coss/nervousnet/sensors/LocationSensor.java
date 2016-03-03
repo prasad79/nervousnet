@@ -102,9 +102,10 @@ public class LocationSensor implements SensorStatusImplementation, LocationListe
 
 
 	public void startLocationCollection() {
-		
+		Log.d(LOG_TAG, "startLocationCollection ");
 		if(locationManager == null)
 			return;
+		Log.d(LOG_TAG, "startLocationCollection2");
 
 		// getting GPS status
 		isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -138,7 +139,9 @@ public class LocationSensor implements SensorStatusImplementation, LocationListe
 				if (location == null) {
 					locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES,
 							MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-					Log.d("GPS Enabled", "GPS Enabled");
+					
+					Log.d(LOG_TAG, "GPS Enabled");
+					
 					if (locationManager != null) {
 						location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 						if (location != null) {
@@ -165,7 +168,7 @@ public class LocationSensor implements SensorStatusImplementation, LocationListe
 		if (reading != null) {
 			listenerMutex.lock();
 			for (LocationSensorListener listener : listenerList) {
-				System.out.println("Sending Location Reading");
+				Log.d(LOG_TAG, "Sending Location Data");
 
 				listener.locationSensorDataReady(reading);
 			}
