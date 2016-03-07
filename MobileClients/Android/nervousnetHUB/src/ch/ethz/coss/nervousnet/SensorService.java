@@ -202,35 +202,30 @@ public class SensorService extends Service implements SensorEventListener, Batte
 		@Override
 		public BatteryReading getBatteryReading() throws RemoteException {
 			Log.d(LOG_TAG, "Battery reading requested ");
-			
 			return batteryReading;
 		}
 
 		@Override
 		public LocationReading getLocationReading() throws RemoteException {
 			Log.d(LOG_TAG, "Location reading requested ");
-			
 			return locReading;
 		}
 
 		@Override
 		public AccelerometerReading getAccelerometerReading() throws RemoteException {
 			Log.d(LOG_TAG, "Accelerometer reading requested ");
-			
 			return accReading;
 		}
 		
 		@Override
 		public GyroReading getGyroReading() throws RemoteException {
-			Log.d(LOG_TAG, "Gyroscope reading requested ");
-			
+			Log.d(LOG_TAG, "Gyroscope reading requested ");	
 			return gyroReading;
 		}
 		
 		@Override
 		public ConnectivityReading getConnectivityReading() throws RemoteException {
-			Log.d(LOG_TAG, "Connectivity reading requested ");
-			
+			Log.d(LOG_TAG, "Connectivity reading requested ");		
 			return connReading;
 		}
 
