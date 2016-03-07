@@ -47,7 +47,7 @@ public class NervousNetDaoGenerator {
 	
     private static void addConfig(Schema schema) {
         Entity config = schema.addEntity("Config");
-        config.addIdProperty();
+        config.addByteProperty("State");
         config.addStringProperty("UUID");
         config.addStringProperty("DeviceBrand");
         config.addStringProperty("DeviceModel");
