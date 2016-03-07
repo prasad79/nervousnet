@@ -9,7 +9,7 @@ package ch.ethz.coss.nervousnet.vm.model;
  */
 public class Config {
 
-    private Long id;
+    private Byte State;
     private String UUID;
     private String DeviceBrand;
     private String DeviceModel;
@@ -23,12 +23,8 @@ public class Config {
     public Config() {
     }
 
-    public Config(Long id) {
-        this.id = id;
-    }
-
-    public Config(Long id, String UUID, String DeviceBrand, String DeviceModel, String DeviceOS, String DeviceOSversion, Long LastSyncTime) {
-        this.id = id;
+    public Config(Byte State, String UUID, String DeviceBrand, String DeviceModel, String DeviceOS, String DeviceOSversion, Long LastSyncTime) {
+        this.State = State;
         this.UUID = UUID;
         this.DeviceBrand = DeviceBrand;
         this.DeviceModel = DeviceModel;
@@ -37,12 +33,12 @@ public class Config {
         this.LastSyncTime = LastSyncTime;
     }
 
-    public Long getId() {
-        return id;
+    public Byte getState() {
+        return State;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setState(Byte State) {
+        this.State = State;
     }
 
     public String getUUID() {

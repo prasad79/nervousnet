@@ -14,7 +14,7 @@ import ch.ethz.coss.nervousnet.vm.model.Config;
 /** 
  * DAO for table "CONFIG".
 */
-public class ConfigDao extends AbstractDao<Config, Long> {
+public class ConfigDao extends AbstractDao<Config, Void> {
 
     public static final String TABLENAME = "CONFIG";
 
@@ -23,7 +23,7 @@ public class ConfigDao extends AbstractDao<Config, Long> {
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property Id = new Property(0, Long.class, "id", true, "_id");
+        public final static Property State = new Property(0, Byte.class, "State", false, "STATE");
         public final static Property UUID = new Property(1, String.class, "UUID", false, "UUID");
         public final static Property DeviceBrand = new Property(2, String.class, "DeviceBrand", false, "DEVICE_BRAND");
         public final static Property DeviceModel = new Property(3, String.class, "DeviceModel", false, "DEVICE_MODEL");
@@ -45,7 +45,7 @@ public class ConfigDao extends AbstractDao<Config, Long> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"CONFIG\" (" + //
-                "\"_id\" INTEGER PRIMARY KEY ," + // 0: id
+                "\"STATE\" INTEGER," + // 0: State
                 "\"UUID\" TEXT," + // 1: UUID
                 "\"DEVICE_BRAND\" TEXT," + // 2: DeviceBrand
                 "\"DEVICE_MODEL\" TEXT," + // 3: DeviceModel
@@ -65,9 +65,9 @@ public class ConfigDao extends AbstractDao<Config, Long> {
     protected void bindValues(SQLiteStatement stmt, Config entity) {
         stmt.clearBindings();
  
-        Long id = entity.getId();
-        if (id != null) {
-            stmt.bindLong(1, id);
+        Byte State = entity.getState();
+        if (State != null) {
+            stmt.bindLong(1, State);
         }
  
         String UUID = entity.getUUID();
@@ -103,15 +103,15 @@ public class ConfigDao extends AbstractDao<Config, Long> {
 
     /** @inheritdoc */
     @Override
-    public Long readKey(Cursor cursor, int offset) {
-        return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
+    public Void readKey(Cursor cursor, int offset) {
+        return null;
     }    
 
     /** @inheritdoc */
     @Override
     public Config readEntity(Cursor cursor, int offset) {
         Config entity = new Config( //
-            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
+            cursor.isNull(offset + 0) ? null : (byte) cursor.getShort(offset + 0), // State
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // UUID
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // DeviceBrand
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // DeviceModel
@@ -125,7 +125,7 @@ public class ConfigDao extends AbstractDao<Config, Long> {
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, Config entity, int offset) {
-        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
+        entity.setState(cursor.isNull(offset + 0) ? null : (byte) cursor.getShort(offset + 0));
         entity.setUUID(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setDeviceBrand(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setDeviceModel(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
@@ -136,19 +136,15 @@ public class ConfigDao extends AbstractDao<Config, Long> {
     
     /** @inheritdoc */
     @Override
-    protected Long updateKeyAfterInsert(Config entity, long rowId) {
-        entity.setId(rowId);
-        return rowId;
+    protected Void updateKeyAfterInsert(Config entity, long rowId) {
+        // Unsupported or missing PK type
+        return null;
     }
     
     /** @inheritdoc */
     @Override
-    public Long getKey(Config entity) {
-        if(entity != null) {
-            return entity.getId();
-        } else {
-            return null;
-        }
+    public Void getKey(Config entity) {
+        return null;
     }
 
     /** @inheritdoc */

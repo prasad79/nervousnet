@@ -32,6 +32,7 @@ public class NervousVM {
 	private static String TAG = "NERVOUS_VM";
 	private static String DB_NAME = "NN-DB";
 	
+	private byte state = NervousConstants.STATE_PAUSED;
 	private UUID uuid;
 	private Context context;
 	DaoMaster daoMaster;
@@ -163,6 +164,7 @@ public class NervousVM {
 		Log.d(TAG, "Config - count = "+configDao.queryBuilder().count());
 		if(configDao.queryBuilder().count() != 0){
 			config = configDao.queryBuilder().unique();
+			state = config.getState();
 			uuid = UUID.fromString(config.getUUID());
 			Log.d(TAG, "Config - UUID = "+uuid);
 		}else 
@@ -176,13 +178,32 @@ public class NervousVM {
 		Config config = null;
 		
 		if(configDao.queryBuilder().count() == 0){
-			config = new Config(0L, uuid.toString(), Build.MANUFACTURER, Build.MODEL, "Android", Build.VERSION.RELEASE, System.currentTimeMillis()); 
+			config = new Config(state, uuid.toString(), Build.MANUFACTURER, Build.MODEL, "Android", Build.VERSION.RELEASE, System.currentTimeMillis()); 
 			configDao.insert(config);
 			Log.d(TAG, "Config DB created");
-		} else {
+		} else if(configDao.queryBuilder().count() == 1){ 
+			config = configDao.queryBuilder().unique();
+			config.setState(state);
+		    configDao.insertOrReplace(config);
 			Log.d(TAG, "Config DB exists");
+		} else
+			Log.e(TAG, "Config DB count is more than 1. There is something wrong.");
+		
+	}
+	
+	public synchronized void storeNervousnetState(byte state){
+		this.state = state;
+		
+		try {
+			storeVMConfig();
+		} catch (Exception e) {
+			Log.d(TAG, "Config database is state");
 		}
 		
+	}
+	
+	public byte getState(){
+		return state;
 	}
 
 
