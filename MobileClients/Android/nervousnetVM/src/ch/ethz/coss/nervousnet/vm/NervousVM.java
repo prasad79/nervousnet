@@ -1,6 +1,5 @@
 package ch.ethz.coss.nervousnet.vm;
 
-import java.util.Date;
 import java.util.UUID;
 
 import android.content.Context;
@@ -167,6 +166,7 @@ public class NervousVM {
 			state = config.getState();
 			uuid = UUID.fromString(config.getUUID());
 			Log.d(TAG, "Config - UUID = "+uuid);
+			Log.d(TAG, "Config - state = "+state);
 		}else 
 			success = false;
 		
@@ -178,14 +178,18 @@ public class NervousVM {
 		Config config = null;
 		
 		if(configDao.queryBuilder().count() == 0){
+
+			Log.d(TAG, "Config DB Is empty.");
 			config = new Config(state, uuid.toString(), Build.MANUFACTURER, Build.MODEL, "Android", Build.VERSION.RELEASE, System.currentTimeMillis()); 
 			configDao.insert(config);
-			Log.d(TAG, "Config DB created");
 		} else if(configDao.queryBuilder().count() == 1){ 
+			Log.d(TAG, "Config DB exists.");
 			config = configDao.queryBuilder().unique();
+			configDao.deleteAll();
 			config.setState(state);
-		    configDao.insertOrReplace(config);
-			Log.d(TAG, "Config DB exists");
+		    configDao.insert(config);
+			config = configDao.queryBuilder().unique();
+			Log.d(TAG, "state = "+config.getState());
 		} else
 			Log.e(TAG, "Config DB count is more than 1. There is something wrong.");
 		
@@ -197,7 +201,8 @@ public class NervousVM {
 		try {
 			storeVMConfig();
 		} catch (Exception e) {
-			Log.d(TAG, "Config database is state");
+			Log.d(TAG, "Exception while calling storeVMConfig ");
+			e.printStackTrace();
 		}
 		
 	}
@@ -205,6 +210,7 @@ public class NervousVM {
 	public byte getState(){
 		return state;
 	}
+	
 
 
 	public synchronized boolean storeSensor(SensorDataImpl sensorData) {
