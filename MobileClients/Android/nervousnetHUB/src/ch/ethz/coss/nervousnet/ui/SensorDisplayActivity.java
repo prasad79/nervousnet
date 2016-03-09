@@ -55,7 +55,7 @@ import ch.ethz.coss.nervousnet.ui.fragments.DummyFragment;
 import ch.ethz.coss.nervousnet.ui.fragments.GyroFragment;
 import ch.ethz.coss.nervousnet.ui.fragments.HumidFragment;
 
-public class SensorDisplayActivity extends FragmentActivity {
+public class SensorDisplayActivity extends FragmentActivity implements ActionBarImplementation {
 
 	private SensorDisplayPagerAdapter sapAdapter;
 	private ViewPager viewPager;
@@ -78,14 +78,14 @@ public class SensorDisplayActivity extends FragmentActivity {
 		return false;
 	}
 
-	ActionBar actionBar;
-	protected static Switch mainSwitch;
-
-	protected void updateActionBar() {
+	
+	@Override
+	public void updateActionBar() {
 		LayoutInflater inflator = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View v = inflator.inflate(R.layout.ab_nn, null);
-
-		if (actionBar == null) {
+		 ActionBar actionBar;
+		 Switch mainSwitch;
+		
 			actionBar = getActionBar();
 			actionBar.setDisplayHomeAsUpEnabled(false);
 			actionBar.setDisplayShowHomeEnabled(false);
@@ -93,7 +93,7 @@ public class SensorDisplayActivity extends FragmentActivity {
 			actionBar.setDisplayShowTitleEnabled(false);
 			actionBar.setCustomView(v);
 			mainSwitch = (Switch) findViewById(R.id.mainSwitch);
-		}
+		
 
 		byte state = NervousnetManager.getInstance().getState(this);
 		Log.d("BaseActivity", "state = " + state);
@@ -105,7 +105,6 @@ public class SensorDisplayActivity extends FragmentActivity {
 				startStopSensorService(isChecked);
 			}
 		});
-		// });
 
 	}
 

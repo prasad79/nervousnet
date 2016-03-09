@@ -175,7 +175,7 @@ public class SensorService extends Service implements SensorEventListener, Batte
 													// entry is clicked
 				.build();
 
-		// Send the notification.
+		if(mNM != null)
 		mNM.notify(NOTIFICATION, notification);
 	}
 
@@ -187,8 +187,7 @@ public class SensorService extends Service implements SensorEventListener, Batte
 	@Override
 	public void onDestroy() {
 		Log.d(LOG_TAG, "********SERVICE Destroyed ");
-
-		mNM.cancel(NOTIFICATION);
+		removeNotification();
 		// Release the wakelock here, just to be safe, in order something went
 		// wrong
 		if (wakeLock.isHeld()) {
@@ -257,6 +256,12 @@ public class SensorService extends Service implements SensorEventListener, Batte
 		Toast.makeText(context, "Service Stopped", Toast.LENGTH_SHORT).show();
 		Intent sensorIntent = new Intent(context, SensorService.class);
 		context.stopService(sensorIntent);
+		removeNotification();
+		
+	}
+
+	private static void removeNotification() {
+		if(mNM != null)
 		mNM.cancel(NOTIFICATION);
 	}
 

@@ -91,15 +91,7 @@ public class MainActivity extends BaseActivity {
 		}
 	}
 
-	@Override
-	protected void onResume() {
-
-		Log.d("MainActivity", "onResumeCalled");
-
-		super.onResume();
-		updateActionBar();
-
-	}
+	
 
 	public void toastToScreen(String msg, boolean lengthLong) {
 		int toastLength = lengthLong ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT;

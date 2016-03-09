@@ -48,12 +48,10 @@ import ch.ethz.coss.nervousnet.SensorService;
  * @author prasad
  *
  */
-public abstract class BaseActivity extends Activity {
+public abstract class BaseActivity extends Activity implements ActionBarImplementation {
 
-	protected static Switch mainSwitch;
 
 	protected View parentView;
-	protected ActionBar actionBar = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -61,13 +59,19 @@ public abstract class BaseActivity extends Activity {
 		updateActionBar();
 
 	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		updateActionBar();
+	}
 
-	protected void updateActionBar() {
+	public void updateActionBar() {
 		LayoutInflater inflator = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View v = inflator.inflate(R.layout.ab_nn, null);
 
-		// if (actionBar == null) {
-
+		ActionBar actionBar = null;
+		Switch mainSwitch;
 		actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(false);
 		actionBar.setDisplayShowHomeEnabled(false);
@@ -75,7 +79,6 @@ public abstract class BaseActivity extends Activity {
 		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.setCustomView(v);
 		mainSwitch = (Switch) findViewById(R.id.mainSwitch);
-		// }
 
 		byte state = NervousnetManager.getInstance().getState(this);
 		Log.d("BaseActivity", "state = " + state);
