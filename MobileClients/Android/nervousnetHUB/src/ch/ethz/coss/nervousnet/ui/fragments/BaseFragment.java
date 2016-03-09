@@ -35,7 +35,7 @@ import ch.ethz.coss.nervousnet.lib.SensorReading;
  *
  */
 public abstract class BaseFragment extends Fragment {
-	
+
 	int type = 0;
 
 	/**
@@ -43,11 +43,10 @@ public abstract class BaseFragment extends Fragment {
 	 */
 	public BaseFragment(int type) {
 		// TODO Auto-generated constructor stub
-		
+
 		this.type = type;
 	}
-	
-	
+
 	public abstract void updateReadings(SensorReading reading);
 
 }

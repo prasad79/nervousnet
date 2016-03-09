@@ -175,12 +175,11 @@ public class BatterySensor implements SensorStatusImplementation {
 		// TODO Auto-generated method stub
 
 	}
-	
 
 	@Override
 	public void doShare() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -189,6 +188,5 @@ public class BatterySensor implements SensorStatusImplementation {
 		return reading;
 
 	}
-
 
 }

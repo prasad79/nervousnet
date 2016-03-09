@@ -26,7 +26,6 @@
  *******************************************************************************/
 package ch.ethz.coss.nervousnet.ui;
 
-
 import android.app.ActionBar;
 import android.content.Context;
 import android.os.Bundle;
@@ -40,8 +39,12 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import ch.ethz.coss.nervousnet.Constants;
+import ch.ethz.coss.nervousnet.NervousnetManager;
 import ch.ethz.coss.nervousnet.R;
+import ch.ethz.coss.nervousnet.SensorService;
 import ch.ethz.coss.nervousnet.lib.SensorReading;
 import ch.ethz.coss.nervousnet.ui.fragments.AccelFragment;
 import ch.ethz.coss.nervousnet.ui.fragments.BaseFragment;
@@ -53,7 +56,7 @@ import ch.ethz.coss.nervousnet.ui.fragments.GyroFragment;
 import ch.ethz.coss.nervousnet.ui.fragments.HumidFragment;
 
 public class SensorDisplayActivity extends FragmentActivity {
-	
+
 	private SensorDisplayPagerAdapter sapAdapter;
 	private ViewPager viewPager;
 	private static BaseFragment fragment;
@@ -61,52 +64,78 @@ public class SensorDisplayActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_sensor_display);
 		updateActionBar();
+		setContentView(R.layout.activity_sensor_display);
+
 		sapAdapter = new SensorDisplayPagerAdapter(getSupportFragmentManager());
 
-	        final ActionBar actionBar = getActionBar();
-	        
-	        actionBar.setDisplayHomeAsUpEnabled(true);
-
-	        viewPager = (ViewPager) findViewById(R.id.pager);
-	        viewPager.setAdapter(sapAdapter);
+		viewPager = (ViewPager) findViewById(R.id.pager);
+		viewPager.setAdapter(sapAdapter);
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		return false;
 	}
-	
-	
+
+	ActionBar actionBar;
+	protected static Switch mainSwitch;
+
 	protected void updateActionBar() {
 		LayoutInflater inflator = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View v = inflator.inflate(R.layout.ab_nn, null);
 
-		ActionBar actionBar = getActionBar();
+		if (actionBar == null) {
+			actionBar = getActionBar();
+			actionBar.setDisplayHomeAsUpEnabled(false);
+			actionBar.setDisplayShowHomeEnabled(false);
+			actionBar.setDisplayShowCustomEnabled(true);
+			actionBar.setDisplayShowTitleEnabled(false);
+			actionBar.setCustomView(v);
+			mainSwitch = (Switch) findViewById(R.id.mainSwitch);
+		}
 
-		actionBar.setDisplayHomeAsUpEnabled(false);
-		actionBar.setDisplayShowHomeEnabled(false);
-		actionBar.setDisplayShowCustomEnabled(true);
-		actionBar.setDisplayShowTitleEnabled(false);
-		actionBar.setCustomView(v);
+		byte state = NervousnetManager.getInstance().getState(this);
+		Log.d("BaseActivity", "state = " + state);
+		mainSwitch.setChecked(state == 0 ? false : true);
 
-		// mainSwitch = (Switch) findViewById(R.id.mainSwitch);
-		// if
-		// (NervousnetVMServiceHandler.getInstance().isNervousNetVMServiceRunning(BaseActivity.this,
-		// NervousnetVMService.class))
-		// mainSwitch.setChecked(true);
-		//
-		// mainSwitch.setOnCheckedChangeListener(new
-		// CompoundButton.OnCheckedChangeListener() {
-		// @Override
-		// public void onCheckedChanged(CompoundButton buttonView, boolean
-		// isChecked) {
-		// NervousnetVMServiceHandler.getInstance().startStopSensorService(isChecked,
-		// BaseActivity.this);
-		// }
+		mainSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				startStopSensorService(isChecked);
+			}
+		});
 		// });
 
+	}
+
+	public void startStopSensorService(boolean on) {
+		if (on) {
+			SensorService.startService(this);
+
+			// UploadService.startService(this);
+			// serviceRunning = true;
+			//
+			// // If the user wants to collect BT/BLE data, ask to enable
+			// bluetooth
+			// // if disabled
+			// SensorConfiguration sc =
+			// SensorConfiguration.getInstance(getApplicationContext());
+			// SensorCollectStatus scs =
+			// sc.getInitialSensorCollectStatus(Constants.SENSOR_BLEBEACON);
+			// if (scs.isCollect()) {
+			// // This will only work on API level 18 or higher
+			// initializeBluetooth();
+			// }
+
+		} else {
+			SensorService.stopService(this);
+			// UploadService.stopService(this);
+			// serviceRunning = false;
+		}
+
+		NervousnetManager.getInstance().setState(this, on ? (byte) 1 : (byte) 0);
+		// updateServiceInfo();
 	}
 
 	@Override
@@ -121,64 +150,58 @@ public class SensorDisplayActivity extends FragmentActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	
-	
-    public static class SensorDisplayPagerAdapter extends FragmentStatePagerAdapter {
+	public static class SensorDisplayPagerAdapter extends FragmentStatePagerAdapter {
 
-        public SensorDisplayPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
+		public SensorDisplayPagerAdapter(FragmentManager fm) {
+			super(fm);
+		}
 
-        @Override
-        public Fragment getItem(int i) {
-            
-            switch(i){
-            case 0:
-            	fragment = new AccelFragment(0);
-            	break;
-            case 1:
-            	fragment = new BatteryFragment(1);
-            	break;     	
-            case 2:
-            	fragment = new BeaconsFragment(2);
-            	break;
-            case 3:
-            	fragment = new ConnectivityFragment(3);
-            	break;
-            case 4:
-            	fragment = new GyroFragment(4);
-            	break;
-            case 5:
-            	fragment = new HumidFragment(5);
-            	break;
-            	
-            default:
-            	fragment = new DummyFragment(-1);
-            	break;	
-            }
-            return fragment;
-        }
+		@Override
+		public Fragment getItem(int i) {
 
-        @Override
-        public int getCount() {
-            return Constants.sensor_labels.length;
-        }
+			switch (i) {
+			case 0:
+				fragment = new AccelFragment(0);
+				break;
+			case 1:
+				fragment = new BatteryFragment(1);
+				break;
+			case 2:
+				fragment = new BeaconsFragment(2);
+				break;
+			case 3:
+				fragment = new ConnectivityFragment(3);
+				break;
+			case 4:
+				fragment = new GyroFragment(4);
+				break;
+			case 5:
+				fragment = new HumidFragment(5);
+				break;
 
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return Constants.sensor_labels[position];
-        }
-    }
+			default:
+				fragment = new DummyFragment(-1);
+				break;
+			}
+			return fragment;
+		}
 
+		@Override
+		public int getCount() {
+			return Constants.sensor_labels.length;
+		}
 
+		@Override
+		public CharSequence getPageTitle(int position) {
+			return Constants.sensor_labels[position];
+		}
+	}
 
 	protected void updateStatus(SensorReading reading) {
-		 Log.d("SensorDisplayActivity", "Inside updateStatus");
+		Log.d("SensorDisplayActivity", "Inside updateStatus");
 		fragment.updateReadings(reading);
 	}
-	
-	
-	
+
 	@Override
 	public void onBackPressed() {
 		finish();

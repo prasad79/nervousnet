@@ -29,7 +29,6 @@ import android.content.Context;
 import ch.ethz.coss.nervousnet.vm.NervousVM;
 import ch.ethz.coss.nervousnet.vm.model.SensorDataImpl;
 
-
 public class StoreTask extends AsyncTask<SensorDataImpl, Void, Void> {
 
 	private Context context;
@@ -44,7 +43,7 @@ public class StoreTask extends AsyncTask<SensorDataImpl, Void, Void> {
 		if (params != null && params.length > 0) {
 			NervousVM nervousVM = NervousVM.getInstance(context);
 			for (int i = 0; i < params.length; i++) {
-				//TODO: PP
+				// TODO: PP
 				nervousVM.storeSensor(params[i]);
 			}
 		}

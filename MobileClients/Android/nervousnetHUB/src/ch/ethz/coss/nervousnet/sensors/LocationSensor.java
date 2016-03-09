@@ -45,7 +45,7 @@ import android.location.LocationListener;
 public class LocationSensor implements SensorStatusImplementation, LocationListener {
 
 	private static String LOG_TAG = "LocationSensor";
-	
+
 	public static LocationSensor _instance = null;
 	private static final float MIN_DISTANCE_CHANGE_FOR_UPDATES = 1;
 	private static final long MIN_TIME_BW_UPDATES = 1;
@@ -100,10 +100,9 @@ public class LocationSensor implements SensorStatusImplementation, LocationListe
 		listenerMutex.unlock();
 	}
 
-
 	public void startLocationCollection() {
 		Log.d(LOG_TAG, "startLocationCollection ");
-		if(locationManager == null)
+		if (locationManager == null)
 			return;
 		Log.d(LOG_TAG, "startLocationCollection2");
 
@@ -116,7 +115,8 @@ public class LocationSensor implements SensorStatusImplementation, LocationListe
 		if (!isGPSEnabled && !isNetworkEnabled) {
 			Log.d(LOG_TAG, "Location settings disabled");
 			// no network provider is enabled
-//			Toast.makeText(context, "Location settings disabled", Toast.LENGTH_LONG).show();
+			// Toast.makeText(context, "Location settings disabled",
+			// Toast.LENGTH_LONG).show();
 		} else {
 			this.canGetLocation = true;
 			// First get location from Network Provider
@@ -133,15 +133,15 @@ public class LocationSensor implements SensorStatusImplementation, LocationListe
 								location.getAltitude());
 					}
 				}
-			} 
+			}
 			// if GPS Enabled get lat/long using GPS Services
 			if (isGPSEnabled) {
 				if (location == null) {
 					locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES,
 							MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-					
+
 					Log.d(LOG_TAG, "GPS Enabled");
-					
+
 					if (locationManager != null) {
 						location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 						if (location != null) {
@@ -188,12 +188,11 @@ public class LocationSensor implements SensorStatusImplementation, LocationListe
 		// TODO Auto-generated method stub
 
 	}
-	
 
 	@Override
 	public void doShare() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	/*

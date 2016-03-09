@@ -34,6 +34,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -52,7 +53,7 @@ public abstract class BaseActivity extends Activity {
 	protected static Switch mainSwitch;
 
 	protected View parentView;
-	protected static ActionBar actionBar = null;
+	protected ActionBar actionBar = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,19 +66,21 @@ public abstract class BaseActivity extends Activity {
 		LayoutInflater inflator = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View v = inflator.inflate(R.layout.ab_nn, null);
 
-		if (actionBar == null) {
+		// if (actionBar == null) {
 
-			actionBar = getActionBar();
-			actionBar.setDisplayHomeAsUpEnabled(false);
-			actionBar.setDisplayShowHomeEnabled(false);
-			actionBar.setDisplayShowCustomEnabled(true);
-			actionBar.setDisplayShowTitleEnabled(false);
-			actionBar.setCustomView(v);
-			mainSwitch = (Switch) findViewById(R.id.mainSwitch);
+		actionBar = getActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(false);
+		actionBar.setDisplayShowHomeEnabled(false);
+		actionBar.setDisplayShowCustomEnabled(true);
+		actionBar.setDisplayShowTitleEnabled(false);
+		actionBar.setCustomView(v);
+		mainSwitch = (Switch) findViewById(R.id.mainSwitch);
+		// }
 
-		}
 		byte state = NervousnetManager.getInstance().getState(this);
-		mainSwitch.setChecked(state == 0? false: true);
+		Log.d("BaseActivity", "state = " + state);
+		mainSwitch.setChecked(state == 0 ? false : true);
+
 		mainSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -90,7 +93,7 @@ public abstract class BaseActivity extends Activity {
 	public void startStopSensorService(boolean on) {
 		if (on) {
 			SensorService.startService(this);
-			
+
 			// UploadService.startService(this);
 			// serviceRunning = true;
 			//
@@ -111,8 +114,8 @@ public abstract class BaseActivity extends Activity {
 			// UploadService.stopService(this);
 			// serviceRunning = false;
 		}
-		
-		NervousnetManager.getInstance().setState(this, on? (byte) 1: (byte) 0);
+
+		NervousnetManager.getInstance().setState(this, on ? (byte) 1 : (byte) 0);
 		// updateServiceInfo();
 	}
 

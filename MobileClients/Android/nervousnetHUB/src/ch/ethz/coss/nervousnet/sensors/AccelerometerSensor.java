@@ -128,12 +128,11 @@ public class AccelerometerSensor implements SensorStatusImplementation {
 		// TODO Auto-generated method stub
 
 	}
-	
 
 	@Override
 	public void doShare() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	/*

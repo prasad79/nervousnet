@@ -8,11 +8,13 @@
             android:title="Store shared data on the server." />
 
         <ListPreference
+            android:defaultValue="-1"
             android:dependency="data_rentention"
             android:entries="@array/time_limit"
             android:entryValues="@array/time_limit_secs"
             android:key="time_limit_data_retention"
-            android:title="Store shared data for:" android:summary="*** days" android:defaultValue="-1"/>
+            android:summary="*** days"
+            android:title="Store shared data for:" />
     </PreferenceCategory>
 
 </PreferenceScreen>

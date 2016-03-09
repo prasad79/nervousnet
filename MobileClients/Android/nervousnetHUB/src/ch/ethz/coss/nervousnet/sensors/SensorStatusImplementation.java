@@ -28,11 +28,12 @@ package ch.ethz.coss.nervousnet.sensors;
 
 import ch.ethz.coss.nervousnet.lib.SensorReading;
 
-
 public interface SensorStatusImplementation {
 
 	public void doCollect();
+
 	public void doShare();
+
 	public SensorReading getReading();
 
 }

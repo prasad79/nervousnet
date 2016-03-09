@@ -38,7 +38,7 @@ import android.os.AsyncTask;
 import ch.ethz.coss.nervousnet.utils.FFT;
 
 public class NoiseSensor {
-	
+
 	public static NoiseSensor _instance;
 
 	public static final int BANDCOUNT = 12;
@@ -67,19 +67,17 @@ public class NoiseSensor {
 
 	private List<NoiseSensorListener> listenerList = new ArrayList<NoiseSensorListener>();
 	private Lock listenerMutex = new ReentrantLock();
-	
-	
+
 	private NoiseSensor() {
-		
+
 	}
-	
-	
+
 	public static NoiseSensor getInstance() {
-		
-		if(_instance == null) {
+
+		if (_instance == null) {
 			_instance = new NoiseSensor();
 		}
-		
+
 		return _instance;
 	}
 

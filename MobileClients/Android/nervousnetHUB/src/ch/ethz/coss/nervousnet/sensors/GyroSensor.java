@@ -125,12 +125,11 @@ public class GyroSensor implements SensorStatusImplementation {
 		// TODO Auto-generated method stub
 
 	}
-	
 
 	@Override
 	public void doShare() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	/*

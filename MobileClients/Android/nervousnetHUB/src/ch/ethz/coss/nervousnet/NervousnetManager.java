@@ -30,29 +30,26 @@ import android.content.Context;
 import ch.ethz.coss.nervousnet.vm.NervousVM;
 
 public class NervousnetManager {
-	
+
 	private static NervousnetManager _instance = null;
-	
-	
-	private NervousnetManager(){
+
+	private NervousnetManager() {
 	}
-	
-	public static NervousnetManager getInstance(){
-		if(_instance == null) {
+
+	public static NervousnetManager getInstance() {
+		if (_instance == null) {
 			_instance = new NervousnetManager();
 		}
-		
+
 		return _instance;
 	}
-	
+
 	public byte getState(Context context) {
 		return NervousVM.getInstance(context).getState();
 	}
-	
+
 	public void setState(Context context, byte state) {
-		 NervousVM.getInstance(context).storeNervousnetState(state);
+		NervousVM.getInstance(context).storeNervousnetState(state);
 	}
-	
-	
 
 }

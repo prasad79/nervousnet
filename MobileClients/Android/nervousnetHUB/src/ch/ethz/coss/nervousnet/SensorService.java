@@ -24,7 +24,6 @@
  *******************************************************************************/
 package ch.ethz.coss.nervousnet;
 
-
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -72,21 +71,21 @@ import ch.ethz.coss.nervousnet.vm.model.GyroData;
 import ch.ethz.coss.nervousnet.vm.model.LocationData;
 import ch.ethz.coss.nervousnet.vm.model.SensorDataImpl;
 
-public class SensorService extends Service implements SensorEventListener, BatterySensorListener, ConnectivitySensorListener, LocationSensorListener, NoiseSensorListener{
-	
+public class SensorService extends Service implements SensorEventListener, BatterySensorListener,
+		ConnectivitySensorListener, LocationSensorListener, NoiseSensorListener {
+
 	private static final String LOG_TAG = SensorService.class.getSimpleName();
 
 	private SensorManager sensorManager = null;
 
-	
 	private static NotificationManager mNM;
-    private static int NOTIFICATION = R.string.local_service_started;
+	private static int NOTIFICATION = R.string.local_service_started;
 
 	private PowerManager.WakeLock wakeLock;
 	private HandlerThread hthread;
 	private Handler handler;
 	private Lock storeMutex;
-	
+
 	// Only initialize these once
 	private Sensor sensorAccelerometer = null;
 	private BatterySensor sensorBattery = null;
@@ -99,10 +98,10 @@ public class SensorService extends Service implements SensorEventListener, Batte
 	private Sensor sensorHumidity = null;
 	private Sensor sensorPressure = null;
 	private NoiseSensor sensorNoise = null;
-//	private BLESensor sensorBLEBeacon = null;
+	// private BLESensor sensorBLEBeacon = null;
 	private LocationSensor sensorLocation = null;
-	
-	//latest Sensor Reading objects
+
+	// latest Sensor Reading objects
 	private LocationReading locReading = null;
 	private AccelerometerReading accReading = null;
 	private BatteryReading batteryReading = null;
@@ -110,7 +109,7 @@ public class SensorService extends Service implements SensorEventListener, Batte
 	private GyroReading gyroReading = null;
 	private NoiseReading noiseReading = null;
 	private LightReading lightReading = null;
-	
+
 	// Those need to be reset on every collect call
 	private SensorCollectStatus scAccelerometer = null;
 	private SensorCollectStatus scBattery = null;
@@ -128,7 +127,7 @@ public class SensorService extends Service implements SensorEventListener, Batte
 
 	// Threadsafe because handling can get called from different threads
 	private ConcurrentHashMap<Long, SensorCollectStatus> sensorCollected;
-	
+
 	@Override
 	public void onCreate() {
 		// Prepare the wakelock
@@ -140,48 +139,55 @@ public class SensorService extends Service implements SensorEventListener, Batte
 		if (!wakeLock.isHeld()) {
 			wakeLock.acquire();
 		}
-		
-		 mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 
-	        // Display a notification about us starting.  We put an icon in the status bar.
-	     showNotification();
+		mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+		// Display a notification about us starting. We put an icon in the
+		// status bar.
+		showNotification();
 	}
 
-	 /**
-     * Show a notification while this service is running.
-     */
-    private void showNotification() {
-        // In this sample, we'll use the same text for the ticker and the expanded notification
-        CharSequence text = getText(R.string.local_service_started);
+	/**
+	 * Show a notification while this service is running.
+	 */
+	private void showNotification() {
+		// In this sample, we'll use the same text for the ticker and the
+		// expanded notification
+		CharSequence text = getText(R.string.local_service_started);
 
-        // The PendingIntent to launch our activity if the user selects this notification
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, StartUpActivity.class), 0);
+		// The PendingIntent to launch our activity if the user selects this
+		// notification
+		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, StartUpActivity.class), 0);
 
-        // Set the info for the views that show in the notification panel.
-        Notification notification = new Notification.Builder(this)
-                .setSmallIcon(getNotificationIcon() )  // the status icon
-                .setTicker(text)  // the status text
-                .setWhen(System.currentTimeMillis())  // the time stamp
-                .setContentTitle(getText(R.string.local_service_label))  // the label of the entry
-                .setContentText(text)  // the contents of the entry
-                .setContentIntent(contentIntent)  // The intent to send when the entry is clicked
-                .build();
+		// Set the info for the views that show in the notification panel.
+		Notification notification = new Notification.Builder(this).setSmallIcon(getNotificationIcon()) // the
+																										// status
+																										// icon
+				.setTicker(text) // the status text
+				.setWhen(System.currentTimeMillis()) // the time stamp
+				.setContentTitle(getText(R.string.local_service_label)) // the
+																		// label
+																		// of
+																		// the
+																		// entry
+				.setContentText(text) // the contents of the entry
+				.setContentIntent(contentIntent) // The intent to send when the
+													// entry is clicked
+				.build();
 
-        // Send the notification.
-        mNM.notify(NOTIFICATION, notification);
-    }
-    
-    private int getNotificationIcon() {
-        boolean useWhiteIcon = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP);
-        return useWhiteIcon ? R.drawable.ic_logo_white : R.drawable.ic_logo;
-    }
-    
-    
+		// Send the notification.
+		mNM.notify(NOTIFICATION, notification);
+	}
+
+	private int getNotificationIcon() {
+		boolean useWhiteIcon = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP);
+		return useWhiteIcon ? R.drawable.ic_logo_white : R.drawable.ic_logo;
+	}
+
 	@Override
 	public void onDestroy() {
 		Log.d(LOG_TAG, "********SERVICE Destroyed ");
-	
+
 		mNM.cancel(NOTIFICATION);
 		// Release the wakelock here, just to be safe, in order something went
 		// wrong
@@ -191,7 +197,7 @@ public class SensorService extends Service implements SensorEventListener, Batte
 		sensorManager.unregisterListener(this);
 		hthread.quit();
 	}
-	
+
 	@Override
 	public IBinder onBind(Intent intent) {
 		return mBinder;
@@ -216,22 +222,21 @@ public class SensorService extends Service implements SensorEventListener, Batte
 			Log.d(LOG_TAG, "Accelerometer reading requested ");
 			return accReading;
 		}
-		
+
 		@Override
 		public GyroReading getGyroReading() throws RemoteException {
-			Log.d(LOG_TAG, "Gyroscope reading requested ");	
+			Log.d(LOG_TAG, "Gyroscope reading requested ");
 			return gyroReading;
 		}
-		
+
 		@Override
 		public ConnectivityReading getConnectivityReading() throws RemoteException {
-			Log.d(LOG_TAG, "Connectivity reading requested ");		
+			Log.d(LOG_TAG, "Connectivity reading requested ");
 			return connReading;
 		}
 
 	};
-	
-	
+
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		Log.d(LOG_TAG, "Service execution started");
@@ -239,8 +244,7 @@ public class SensorService extends Service implements SensorEventListener, Batte
 		initSensors();
 		return START_STICKY;
 	}
-	
-	
+
 	public static void startService(Context context) {
 		Log.d(LOG_TAG, "inside startService");
 		Toast.makeText(context, "Service Started", Toast.LENGTH_SHORT).show();
@@ -253,19 +257,19 @@ public class SensorService extends Service implements SensorEventListener, Batte
 		Toast.makeText(context, "Service Stopped", Toast.LENGTH_SHORT).show();
 		Intent sensorIntent = new Intent(context, SensorService.class);
 		context.stopService(sensorIntent);
-		 mNM.cancel(NOTIFICATION);
+		mNM.cancel(NOTIFICATION);
 	}
-	
-	
+
 	SensorConfiguration sensorConfiguration;
+
 	private void initSensors() {
 		storeMutex = new ReentrantLock();
-		
+
 		sensorConfiguration = SensorConfiguration.getInstance(getApplicationContext());
-		
+
 		// Initialize sensor manager
 		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-		
+
 		// Hash map to register sensor collect status references
 		sensorCollected = new ConcurrentHashMap<Long, SensorCollectStatus>();
 
@@ -283,7 +287,7 @@ public class SensorService extends Service implements SensorEventListener, Batte
 		scBLEBeacon = sensorConfiguration.getInitialSensorCollectStatus(LibConstants.SENSOR_BLEBEACON);
 		scConnectivity = sensorConfiguration.getInitialSensorCollectStatus(LibConstants.SENSOR_CONNECTIVITY);
 		scLocation = sensorConfiguration.getInitialSensorCollectStatus(LibConstants.SENSOR_LOCATION);
-		
+
 		// Get references to android default sensors
 		sensorAccelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		sensorLight = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
@@ -293,9 +297,9 @@ public class SensorService extends Service implements SensorEventListener, Batte
 		sensorTemperature = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
 		sensorHumidity = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
 		sensorPressure = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
-		
+
 		// Custom sensors
-		sensorBattery =  BatterySensor.getInstance(getApplicationContext());
+		sensorBattery = BatterySensor.getInstance(getApplicationContext());
 		sensorConnectivity = ConnectivitySensor.getInstance(getApplicationContext());
 		sensorNoise = NoiseSensor.getInstance();
 		LocationManager locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -304,154 +308,154 @@ public class SensorService extends Service implements SensorEventListener, Batte
 		// Schedule all sensors (initially)
 		scheduleSensor(LibConstants.SENSOR_LOCATION);
 		scheduleSensor(LibConstants.SENSOR_ACCELEROMETER);
-//		scheduleSensor(LibConstants.SENSOR_BATTERY);
-//		scheduleSensor(LibConstants.SENSOR_MAGNETIC);
-//		scheduleSensor(LibConstants.SENSOR_PROXIMITY);
-//		scheduleSensor(LibConstants.SENSOR_GYROSCOPE);
-//		scheduleSensor(LibConstants.SENSOR_TEMPERATURE);
-//		scheduleSensor(LibConstants.SENSOR_HUMIDITY);
-//		scheduleSensor(LibConstants.SENSOR_PRESSURE);
-//		scheduleSensor(LibConstants.SENSOR_NOISE);
-//		scheduleSensor(LibConstants.SENSOR_BLEBEACON);
-////		scheduleSensor(LibConstants.SENSOR_CONNECTIVITY);
+		// scheduleSensor(LibConstants.SENSOR_BATTERY);
+		// scheduleSensor(LibConstants.SENSOR_MAGNETIC);
+		// scheduleSensor(LibConstants.SENSOR_PROXIMITY);
+		// scheduleSensor(LibConstants.SENSOR_GYROSCOPE);
+		// scheduleSensor(LibConstants.SENSOR_TEMPERATURE);
+		// scheduleSensor(LibConstants.SENSOR_HUMIDITY);
+		// scheduleSensor(LibConstants.SENSOR_PRESSURE);
+		// scheduleSensor(LibConstants.SENSOR_NOISE);
+		// scheduleSensor(LibConstants.SENSOR_BLEBEACON);
+		//// scheduleSensor(LibConstants.SENSOR_CONNECTIVITY);
 	}
-	
-	
+
 	private void scheduleSensor(final long sensorId) {
-	Log.d(LOG_TAG, "scheduleSensor called with id = "+sensorId);
-	handler = new Handler(hthread.getLooper());
-	final Runnable run = new Runnable() {
-		@Override
-		public void run() {
+		Log.d(LOG_TAG, "scheduleSensor called with id = " + sensorId);
+		handler = new Handler(hthread.getLooper());
+		final Runnable run = new Runnable() {
+			@Override
+			public void run() {
 
-			boolean doCollect = false;
-			SensorCollectStatus sensorCollectStatus = null;
-			long startTime = System.currentTimeMillis();
+				boolean doCollect = false;
+				SensorCollectStatus sensorCollectStatus = null;
+				long startTime = System.currentTimeMillis();
 
-			if (sensorId == LibConstants.SENSOR_ACCELEROMETER) {
-				scAccelerometer.setMeasureStart(startTime);
-				doCollect = scAccelerometer.isCollect();
-				doCollect = doCollect ? sensorManager.registerListener(SensorService.this, sensorAccelerometer,
-						SensorManager.SENSOR_DELAY_NORMAL) : false;
-				sensorCollectStatus = scAccelerometer;
-			} else if (sensorId == LibConstants.SENSOR_PRESSURE) {
-				scPressure.setMeasureStart(startTime);
-				doCollect = scPressure.isCollect();
-				doCollect = doCollect ? sensorManager.registerListener(SensorService.this, sensorPressure,
-						SensorManager.SENSOR_DELAY_NORMAL) : false;
-				sensorCollectStatus = scPressure;
-			} else if (sensorId == LibConstants.SENSOR_GYROSCOPE) {
-				doCollect = scGyroscope.isCollect();
-				doCollect = doCollect ? sensorManager.registerListener(SensorService.this, sensorGyroscope,
-						SensorManager.SENSOR_DELAY_NORMAL) : false;
-				sensorCollectStatus = scGyroscope;
-			} else if (sensorId == LibConstants.SENSOR_HUMIDITY) {
-				scHumidity.setMeasureStart(startTime);
-				doCollect = scHumidity.isCollect();
-				doCollect = doCollect ? sensorManager.registerListener(SensorService.this, sensorHumidity,
-						SensorManager.SENSOR_DELAY_NORMAL) : false;
-				sensorCollectStatus = scHumidity;
-			} else if (sensorId == LibConstants.SENSOR_LIGHT) {
-				scLight.setMeasureStart(startTime);
-				doCollect = scLight.isCollect();
-				doCollect = doCollect ? sensorManager.registerListener(SensorService.this, sensorLight,
-						SensorManager.SENSOR_DELAY_NORMAL) : false;
-				sensorCollectStatus = scLight;
-			} else if (sensorId == LibConstants.SENSOR_MAGNETIC) {
-				scMagnet.setMeasureStart(startTime);
-				doCollect = scMagnet.isCollect();
-				doCollect = doCollect ? sensorManager.registerListener(SensorService.this, sensorMagnet,
-						SensorManager.SENSOR_DELAY_NORMAL) : false;
-				sensorCollectStatus = scMagnet;
-			} else if (sensorId == LibConstants.SENSOR_PROXIMITY) {
-				scProximity.setMeasureStart(startTime);
-				doCollect = scProximity.isCollect();
-				doCollect = doCollect ? sensorManager.registerListener(SensorService.this, sensorProximity,
-						SensorManager.SENSOR_DELAY_NORMAL) : false;
-				sensorCollectStatus = scProximity;
-			} else if (sensorId == LibConstants.SENSOR_TEMPERATURE) {
-				scTemperature.setMeasureStart(startTime);
-				doCollect = scTemperature.isCollect();
-				doCollect = doCollect ? sensorManager.registerListener(SensorService.this, sensorTemperature,
-						SensorManager.SENSOR_DELAY_NORMAL) : false;
-				sensorCollectStatus = scTemperature;
-			} else if (sensorId == LibConstants.SENSOR_BATTERY) {
-				scBattery.setMeasureStart(startTime);
-				doCollect = scBattery.isCollect();
-				if (doCollect) {
-					sensorBattery.clearListeners();
-					sensorBattery.addListener(SensorService.this);
-					sensorBattery.start();
+				if (sensorId == LibConstants.SENSOR_ACCELEROMETER) {
+					scAccelerometer.setMeasureStart(startTime);
+					doCollect = scAccelerometer.isCollect();
+					doCollect = doCollect ? sensorManager.registerListener(SensorService.this, sensorAccelerometer,
+							SensorManager.SENSOR_DELAY_NORMAL) : false;
+					sensorCollectStatus = scAccelerometer;
+				} else if (sensorId == LibConstants.SENSOR_PRESSURE) {
+					scPressure.setMeasureStart(startTime);
+					doCollect = scPressure.isCollect();
+					doCollect = doCollect ? sensorManager.registerListener(SensorService.this, sensorPressure,
+							SensorManager.SENSOR_DELAY_NORMAL) : false;
+					sensorCollectStatus = scPressure;
+				} else if (sensorId == LibConstants.SENSOR_GYROSCOPE) {
+					doCollect = scGyroscope.isCollect();
+					doCollect = doCollect ? sensorManager.registerListener(SensorService.this, sensorGyroscope,
+							SensorManager.SENSOR_DELAY_NORMAL) : false;
+					sensorCollectStatus = scGyroscope;
+				} else if (sensorId == LibConstants.SENSOR_HUMIDITY) {
+					scHumidity.setMeasureStart(startTime);
+					doCollect = scHumidity.isCollect();
+					doCollect = doCollect ? sensorManager.registerListener(SensorService.this, sensorHumidity,
+							SensorManager.SENSOR_DELAY_NORMAL) : false;
+					sensorCollectStatus = scHumidity;
+				} else if (sensorId == LibConstants.SENSOR_LIGHT) {
+					scLight.setMeasureStart(startTime);
+					doCollect = scLight.isCollect();
+					doCollect = doCollect ? sensorManager.registerListener(SensorService.this, sensorLight,
+							SensorManager.SENSOR_DELAY_NORMAL) : false;
+					sensorCollectStatus = scLight;
+				} else if (sensorId == LibConstants.SENSOR_MAGNETIC) {
+					scMagnet.setMeasureStart(startTime);
+					doCollect = scMagnet.isCollect();
+					doCollect = doCollect ? sensorManager.registerListener(SensorService.this, sensorMagnet,
+							SensorManager.SENSOR_DELAY_NORMAL) : false;
+					sensorCollectStatus = scMagnet;
+				} else if (sensorId == LibConstants.SENSOR_PROXIMITY) {
+					scProximity.setMeasureStart(startTime);
+					doCollect = scProximity.isCollect();
+					doCollect = doCollect ? sensorManager.registerListener(SensorService.this, sensorProximity,
+							SensorManager.SENSOR_DELAY_NORMAL) : false;
+					sensorCollectStatus = scProximity;
+				} else if (sensorId == LibConstants.SENSOR_TEMPERATURE) {
+					scTemperature.setMeasureStart(startTime);
+					doCollect = scTemperature.isCollect();
+					doCollect = doCollect ? sensorManager.registerListener(SensorService.this, sensorTemperature,
+							SensorManager.SENSOR_DELAY_NORMAL) : false;
+					sensorCollectStatus = scTemperature;
+				} else if (sensorId == LibConstants.SENSOR_BATTERY) {
+					scBattery.setMeasureStart(startTime);
+					doCollect = scBattery.isCollect();
+					if (doCollect) {
+						sensorBattery.clearListeners();
+						sensorBattery.addListener(SensorService.this);
+						sensorBattery.start();
+					}
+					sensorCollectStatus = scBattery;
+				} else if (sensorId == LibConstants.SENSOR_CONNECTIVITY) {
+					scConnectivity.setMeasureStart(startTime);
+					doCollect = scConnectivity.isCollect();
+					if (doCollect) {
+						sensorConnectivity.clearListeners();
+						sensorConnectivity.addListener(SensorService.this);
+						sensorConnectivity.start();
+					}
+					sensorCollectStatus = scConnectivity;
+				} else if (sensorId == LibConstants.SENSOR_BLEBEACON) {
+					// scBLEBeacon.setMeasureStart(startTime);
+					// doCollect = scBLEBeacon.isCollect();
+					// if (doCollect) {
+					// sensorBLEBeacon.clearListeners();
+					// sensorBLEBeacon.addListener(SensorService.this);
+					// // Update this variable if the BLE sensor is currently
+					// // unavailable
+					// doCollect =
+					// sensorBLEBeacon.startScanning(Math.max(scBLEBeacon.getMeasureDuration(),
+					// 2000));
+					// }
+					// sensorCollectStatus = scBLEBeacon;
+				} else if (sensorId == LibConstants.SENSOR_NOISE) {
+					scNoise.setMeasureStart(startTime);
+					doCollect = scNoise.isCollect();
+					if (doCollect) {
+						sensorNoise.clearListeners();
+						sensorNoise.addListener(SensorService.this);
+						sensorNoise.startRecording(Math.max(scNoise.getMeasureDuration(), 500));
+					}
+					sensorCollectStatus = scNoise;
+				} else if (sensorId == LibConstants.SENSOR_LOCATION) {
+					scLocation.setMeasureStart(startTime);
+					Log.d(LOG_TAG, "SENSOR_LOCATION 1");
+					doCollect = scLocation.isCollect();
+					Log.d(LOG_TAG, "SENSOR_LOCATION 2 " + doCollect);
+					if (doCollect) {
+						Log.d(LOG_TAG, "Inside doCollect ");
+						sensorLocation.clearListeners();
+						sensorLocation.addListener(SensorService.this);
+						sensorLocation.startLocationCollection();
+					}
+					sensorCollectStatus = scLocation;
+
 				}
-				sensorCollectStatus = scBattery;
-			} else if (sensorId == LibConstants.SENSOR_CONNECTIVITY) {
-				scConnectivity.setMeasureStart(startTime);
-				doCollect = scConnectivity.isCollect();
-				if (doCollect) {
-					sensorConnectivity.clearListeners();
-					sensorConnectivity.addListener(SensorService.this);
-					sensorConnectivity.start();
+
+				if (doCollect && sensorCollectStatus != null) {
+					sensorCollected.put(sensorId, sensorCollectStatus);
 				}
-				sensorCollectStatus = scConnectivity;
-			} else if (sensorId == LibConstants.SENSOR_BLEBEACON) {
-//				scBLEBeacon.setMeasureStart(startTime);
-//				doCollect = scBLEBeacon.isCollect();
-//				if (doCollect) {
-//					sensorBLEBeacon.clearListeners();
-//					sensorBLEBeacon.addListener(SensorService.this);
-//					// Update this variable if the BLE sensor is currently
-//					// unavailable
-//					doCollect = sensorBLEBeacon.startScanning(Math.max(scBLEBeacon.getMeasureDuration(), 2000));
-//				}
-//				sensorCollectStatus = scBLEBeacon;
-			} else if (sensorId == LibConstants.SENSOR_NOISE) {
-				scNoise.setMeasureStart(startTime);
-				doCollect = scNoise.isCollect();
-				if (doCollect) {
-					sensorNoise.clearListeners();
-					sensorNoise.addListener(SensorService.this);
-					sensorNoise.startRecording(Math.max(scNoise.getMeasureDuration(), 500));
+
+				if (sensorCollectStatus != null) {
+					long interval = sensorCollectStatus.getMeasureInterval();
+					Log.d(LOG_TAG, "Logging sensor " + String.valueOf(sensorId) + " started with interval "
+							+ String.valueOf(interval) + " ms");
+					handler.postDelayed(this, interval);
 				}
-				sensorCollectStatus = scNoise;
-			} else if (sensorId == LibConstants.SENSOR_LOCATION) {
-				scLocation.setMeasureStart(startTime);
-				Log.d(LOG_TAG, "SENSOR_LOCATION 1");
-				doCollect = scLocation.isCollect();
-				Log.d(LOG_TAG, "SENSOR_LOCATION 2 " +doCollect);
-				if (doCollect) {
-					Log.d(LOG_TAG, "Inside doCollect ");
-					sensorLocation.clearListeners();
-					sensorLocation.addListener(SensorService.this);
-					sensorLocation.startLocationCollection();
-				}
-				sensorCollectStatus = scLocation;
-				
+
 			}
+		};
 
-			if (doCollect && sensorCollectStatus != null) {
-				sensorCollected.put(sensorId, sensorCollectStatus);
-			}
-
-			if (sensorCollectStatus != null) {
-				long interval = sensorCollectStatus.getMeasureInterval();
-				Log.d(LOG_TAG, "Logging sensor " + String.valueOf(sensorId) + " started with interval "
-						+ String.valueOf(interval) + " ms");
-				handler.postDelayed(this, interval);
-			}
-
-		}
-	};
-	
-	// 10 seconds initial delay
-	handler.postDelayed(run, 10000);
-}
+		// 10 seconds initial delay
+		handler.postDelayed(run, 10000);
+	}
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 
 		long timestamp = System.currentTimeMillis();
 		Sensor sensor = event.sensor;
-	
 
 		switch (sensor.getType()) {
 		case Sensor.TYPE_LIGHT:
@@ -461,7 +465,7 @@ public class SensorService extends Service implements SensorEventListener, Batte
 			break;
 		case Sensor.TYPE_PROXIMITY:
 			Log.d(LOG_TAG, "Proximity data collected");
-			
+
 			break;
 		case Sensor.TYPE_ACCELEROMETER:
 			accReading = new AccelerometerReading(timestamp, event.values);
@@ -470,51 +474,48 @@ public class SensorService extends Service implements SensorEventListener, Batte
 			break;
 		case Sensor.TYPE_MAGNETIC_FIELD:
 			Log.d(LOG_TAG, "Magnetic data collected");
-			
+
 			break;
 		case Sensor.TYPE_GYROSCOPE:
 			gyroReading = new GyroReading(timestamp, event.values);
 			store(gyroReading);
 			Log.d(LOG_TAG, "Gyroscope data collected");
 			break;
-////		case Sensor.TYPE_AMBIENT_TEMPERATURE:
-////			sensorReading = new TemperatureReading(timestamp, event.values[0]);
-////			Log.d(LOG_TAG, "Temperature data collected");
-////			break;
-//		case Sensor.TYPE_RELATIVE_HUMIDITY:
-////			sensorReading = new HumidityData(timestamp, event.values[0]);
-//			Log.d(LOG_TAG, "Humidity data collected");
-//			break;
-//		case Sensor.TYPE_PRESSURE:
-////			sensorReading = new PressureData(timestamp, event.values[0]);
-//			Log.d(LOG_TAG, "Pressure data collected");
-//			break;
+		//// case Sensor.TYPE_AMBIENT_TEMPERATURE:
+		//// sensorReading = new TemperatureReading(timestamp, event.values[0]);
+		//// Log.d(LOG_TAG, "Temperature data collected");
+		//// break;
+		// case Sensor.TYPE_RELATIVE_HUMIDITY:
+		//// sensorReading = new HumidityData(timestamp, event.values[0]);
+		// Log.d(LOG_TAG, "Humidity data collected");
+		// break;
+		// case Sensor.TYPE_PRESSURE:
+		//// sensorReading = new PressureData(timestamp, event.values[0]);
+		// Log.d(LOG_TAG, "Pressure data collected");
+		// break;
 		}
-		
+
 	}
 
 	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 	public void connectivitySensorDataReady(ConnectivityReading reading) {
 		Log.d(LOG_TAG, "Connectivity data collected");
 		connReading = reading;
 		store(reading);
 	};
 
-
 	@Override
 	public void noiseSensorDataReady(long timestamp, float rms, float spl, float[] bands) {
-//		SensorReading Reading = new NoiseRea(timestamp, rms, spl, bands);
-		
+		// SensorReading Reading = new NoiseRea(timestamp, rms, spl, bands);
+
 		Log.d(LOG_TAG, "Noise data collected");
-//		store(sensorDesc.getSensorId(), sensorDescs);
+		// store(sensorDesc.getSensorId(), sensorDescs);
 	}
-
-
 
 	@Override
 	public void batterySensorDataReady(BatteryReading reading) {
@@ -523,72 +524,67 @@ public class SensorService extends Service implements SensorEventListener, Batte
 		store(reading);
 	}
 
-
-	
-	
 	@Override
 	public void locationSensorDataReady(LocationReading reading) {
 		Log.d(LOG_TAG, "Location Data Collected");
 		locReading = reading;
 		store(reading);
 	}
-	
-	
+
 	private synchronized void store(SensorReading sensorReading) {
-		if(sensorReading == null)
+		if (sensorReading == null)
 			return;
 		storeMutex.lock();
-		
+
 		SensorDataImpl sensorData = convertSensorReadingToSensorData(sensorReading);
-		if(sensorData != null)
+		if (sensorData != null)
 			new StoreTask(getApplicationContext()).execute(sensorData);
 		else
 			Log.d(LOG_TAG, "sensorData is null");
-					
+
 		storeMutex.unlock();
 	}
-	
 
 	private synchronized SensorDataImpl convertSensorReadingToSensorData(SensorReading reading) {
-		Log.d(LOG_TAG, "convertSensorReadingToSensorData reading Type = "+reading.type);
+		Log.d(LOG_TAG, "convertSensorReadingToSensorData reading Type = " + reading.type);
 		SensorDataImpl sensorData;
-		
-		switch(reading.type) {
-		
+
+		switch (reading.type) {
+
 		case LibConstants.SENSOR_ACCELEROMETER:
 			AccelerometerReading areading = (AccelerometerReading) reading;
-			sensorData = new AccelData(null, reading.timestamp, areading.getX(),  areading.getY(), areading.getZ(), 0l, true);
+			sensorData = new AccelData(null, reading.timestamp, areading.getX(), areading.getY(), areading.getZ(), 0l,
+					true);
 			sensorData.setType(LibConstants.SENSOR_ACCELEROMETER);
-			return sensorData;		
-			
+			return sensorData;
+
 		case LibConstants.SENSOR_GYROSCOPE:
 			GyroReading greading = (GyroReading) reading;
-			sensorData = new GyroData(null, reading.timestamp, greading.getGyroX(),  greading.getGyroY(),greading.getGyroZ(), 0l, true);
+			sensorData = new GyroData(null, reading.timestamp, greading.getGyroX(), greading.getGyroY(),
+					greading.getGyroZ(), 0l, true);
 			sensorData.setType(LibConstants.SENSOR_GYROSCOPE);
-			return sensorData;		
-			
-			
-	    case LibConstants.SENSOR_CONNECTIVITY:
-				ConnectivityReading connReading = (ConnectivityReading) reading;
-				sensorData = new ConnectivityData(null, connReading.timestamp, connReading.isConnected(), connReading.getNetworkType(), connReading.isRoaming(), connReading.getWifiHashId(), connReading.getWifiStrength(), connReading.getMobileHashId(), connReading.volatility, connReading.isShare);
-				sensorData.setType(LibConstants.SENSOR_CONNECTIVITY);
-				return sensorData;
-			
-			
+			return sensorData;
+
+		case LibConstants.SENSOR_CONNECTIVITY:
+			ConnectivityReading connReading = (ConnectivityReading) reading;
+			sensorData = new ConnectivityData(null, connReading.timestamp, connReading.isConnected(),
+					connReading.getNetworkType(), connReading.isRoaming(), connReading.getWifiHashId(),
+					connReading.getWifiStrength(), connReading.getMobileHashId(), connReading.volatility,
+					connReading.isShare);
+			sensorData.setType(LibConstants.SENSOR_CONNECTIVITY);
+			return sensorData;
+
 		case LibConstants.SENSOR_LOCATION:
 			LocationReading locReading = (LocationReading) reading;
-			sensorData = new LocationData(null, reading.timestamp, locReading.getLatnLong()[0], locReading.getLatnLong()[1], locReading.getAltitude(), 0l, true);
+			sensorData = new LocationData(null, reading.timestamp, locReading.getLatnLong()[0],
+					locReading.getLatnLong()[1], locReading.getAltitude(), 0l, true);
 			sensorData.setType(LibConstants.SENSOR_LOCATION);
 			return sensorData;
-		
+
 		default:
 			return null;
-			
+
 		}
 	}
 
-
-	
-	
-	
 }

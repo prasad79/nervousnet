@@ -29,8 +29,8 @@ public class SensorConfiguration {
 
 		int measureInterval = (int) context.getSharedPreferences(NervousStatics.SENSOR_FREQ, 0)
 				.getInt(sensorType + "_freqValue", 2) * 2000;
-		
-		Log.d("SensorConfiguration", "MeasureInterval = "+measureInterval);
+
+		Log.d("SensorConfiguration", "MeasureInterval = " + measureInterval);
 		// int measureInterval = settings.getInt(Long.toHexString(sensorID) +
 		// "_measureInterval", 30 * 1000);
 
