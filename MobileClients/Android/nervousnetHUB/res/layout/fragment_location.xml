@@ -19,60 +19,71 @@
             android:layout_gravity="top"
             android:orientation="vertical" >
 
+              <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Status" />
+
+                <TextView
+                    android:id="@+id/sensor_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Sensor Status comes here" />
+            </LinearLayout>
+            
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Reading" />
+                android:text="Location Reading" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="X axis" />
-
-                <TextView
-                    android:id="@+id/accel_x"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="Accelerometer X value comes here" />
+                 <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Latitude : " />
+                  <TextView
+                android:id="@+id/lat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Latitude value comes here" />
             </LinearLayout>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="Y axis" />
-
-                <TextView
-                    android:id="@+id/accel_y"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="Accelerometer Y value comes here" />
-            </LinearLayout>
-
-            <LinearLayout
+                 <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Longitude : " />
+                  <TextView
+                android:id="@+id/longitude"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint=" Longitude value comes here" />
+            </LinearLayout><LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="Z axis" />
-
-                <TextView
-                    android:id="@+id/accel_z"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="Accelerometer Z value comes here" />
+                 <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Altitude : " />
+                  <TextView
+                android:id="@+id/alti"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Altitude value comes here" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

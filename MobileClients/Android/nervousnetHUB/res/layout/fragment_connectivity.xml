@@ -19,60 +19,72 @@
             android:layout_gravity="top"
             android:orientation="vertical" >
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Status" />
+
+                <TextView
+                    android:id="@+id/sensor_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Sensor Status comes here" />
+            </LinearLayout>
+            
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Reading" />
+                android:text="Information" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="X axis" />
-
-                <TextView
-                    android:id="@+id/accel_x"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="Accelerometer X value comes here" />
+                 <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="wifiHashId : " />
+                  <TextView
+                android:id="@+id/wifiHashId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint=" wifiHashId comes here" />
             </LinearLayout>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="Y axis" />
-
-                <TextView
-                    android:id="@+id/accel_y"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="Accelerometer Y value comes here" />
-            </LinearLayout>
-
-            <LinearLayout
+                 <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="WifiStrength : " />
+                  <TextView
+                android:id="@+id/wifiStrength"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint=" wifiStrength value comes here" />
+                  
+            </LinearLayout><LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="Z axis" />
-
-                <TextView
-                    android:id="@+id/accel_z"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="Accelerometer Z value comes here" />
+                 <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="mobileHashId" />
+                  <TextView
+                android:id="@+id/mobileHashId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint=" mobileHashIdvalue comes here" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

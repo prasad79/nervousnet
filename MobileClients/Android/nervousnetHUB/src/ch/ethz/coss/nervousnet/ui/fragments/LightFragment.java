@@ -30,44 +30,46 @@
 package ch.ethz.coss.nervousnet.ui.fragments;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import ch.ethz.coss.nervousnet.R;
+import ch.ethz.coss.nervousnet.lib.BatteryReading;
+import ch.ethz.coss.nervousnet.lib.LightReading;
 import ch.ethz.coss.nervousnet.lib.SensorReading;
 
-/**
- * @author prasad
- *
- */
-public class HumidFragment extends BaseFragment {
+public class LightFragment extends BaseFragment {
 
-	public HumidFragment() {
+	
+	public LightFragment() {
 	}
 	
-	
-	public HumidFragment(int type) {
+	public LightFragment(int type) {
 		super(type);
 	}
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_humid, container, false);
+		View rootView = inflater.inflate(R.layout.fragment_light, container, false);
 		
 		return rootView;
 	}
-
 
 	/* (non-Javadoc)
 	 * @see ch.ethz.coss.nervousnet.sample.BaseFragment#updateReadings(ch.ethz.coss.nervousnet.vm.SensorReading)
 	 */
 	@Override
 	public void updateReadings(SensorReading reading) {
-		// TODO Auto-generated method stub
-		
+		if(reading.isCollect){
+			TextView lux = (TextView) getActivity().findViewById(R.id.lux);
+			 lux.setText("" + ((LightReading)reading).getLuxValue());
+			
+		} else {
+			TextView status = (TextView) getActivity().findViewById(R.id.sensor_status);
+			 status.setText("Please enable the Light Sensor Log checkbox in Nervousnet HUB");
+		}
+		 
 	}
-	
 
 
 }

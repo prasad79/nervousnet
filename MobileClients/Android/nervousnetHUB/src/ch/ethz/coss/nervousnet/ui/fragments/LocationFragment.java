@@ -30,44 +30,55 @@
 package ch.ethz.coss.nervousnet.ui.fragments;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import ch.ethz.coss.nervousnet.R;
+import ch.ethz.coss.nervousnet.lib.BatteryReading;
+import ch.ethz.coss.nervousnet.lib.LocationReading;
 import ch.ethz.coss.nervousnet.lib.SensorReading;
 
-/**
- * @author prasad
- *
- */
-public class HumidFragment extends BaseFragment {
+public class LocationFragment extends BaseFragment {
 
-	public HumidFragment() {
+	
+	public LocationFragment() {
 	}
 	
-	
-	public HumidFragment(int type) {
+	public LocationFragment(int type) {
 		super(type);
 	}
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_humid, container, false);
+		View rootView = inflater.inflate(R.layout.fragment_location, container, false);
 		
 		return rootView;
 	}
-
 
 	/* (non-Javadoc)
 	 * @see ch.ethz.coss.nervousnet.sample.BaseFragment#updateReadings(ch.ethz.coss.nervousnet.vm.SensorReading)
 	 */
 	@Override
 	public void updateReadings(SensorReading reading) {
-		// TODO Auto-generated method stub
-		
+		if(reading.isCollect){
+			double[] location = ((LocationReading)reading).getLatnLong();
+			TextView latitude = (TextView) getActivity().findViewById(R.id.lat);
+			latitude.setText("" + location[0]);
+		     
+
+			 TextView longitude = (TextView) getActivity().findViewById(R.id.longitude);
+			 longitude.setText("" + location[1]);
+		     
+
+			 TextView altitude = (TextView) getActivity().findViewById(R.id.alti);
+			 altitude.setText("" + ((LocationReading)reading).getAltitude());
+			
+		} else {
+			TextView status = (TextView) getActivity().findViewById(R.id.sensor_status);
+			 status.setText("Please enable the Location Sensor Log checkbox in Nervousnet HUB");
+		}
+		 
 	}
-	
 
 
 }

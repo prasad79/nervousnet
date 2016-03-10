@@ -1,7 +1,7 @@
 /*******************************************************************************
  *
  *  *     Nervousnet - a distributed middleware software for social sensing. 
- *  *      It is responsible for collecting and managing data in a fully de-centralised fashion
+ *  *     It is responsible for collecting and managing data in a fully de-centralised fashion
  *  *
  *  *     Copyright (C) 2016 ETH Zürich, COSS
  *  *
@@ -24,7 +24,9 @@
  *  * 	Contributors:
  *  * 	Prasad Pulikal - prasad.pulikal@gess.ethz.ch  -  Initial API and implementation
  *******************************************************************************/
-
+/**
+ * 
+ */
 package ch.ethz.coss.nervousnet.ui.fragments;
 
 import android.os.Bundle;
@@ -37,42 +39,44 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-/**
- * @author prasad
- *
- */
-public class AccelFragment extends BaseFragment {
 
-	/**
-	 * 
-	 */
+public class AccelFragment extends BaseFragment{
+
+	
+	public AccelFragment() {
+	}
+	
+	
 	public AccelFragment(int type) {
 		super(type);
 	}
-
+	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_accel, container, false);
 
+		
+		
 		return rootView;
 	}
+	
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see ch.ethz.coss.nervousnet.sample.BaseFragment#updateReadings()
-	 */
+	
 	@Override
-	public void updateReadings(SensorReading reading) {
-		Log.d("AccelFragment", "Inside updateReadings");
-		TextView x_value = (TextView) getActivity().findViewById(R.id.accel_x);
-		x_value.setText("" + ((AccelerometerReading) reading).getX());
-
-		TextView y_value = (TextView) getActivity().findViewById(R.id.accel_y);
-		y_value.setText("" + ((AccelerometerReading) reading).getY());
-
-		TextView z_value = (TextView) getActivity().findViewById(R.id.accel_z);
-		z_value.setText("" + ((AccelerometerReading) reading).getZ());
-
+	public void updateReadings(SensorReading reading){
+		 Log.d("AccelFragment", "Inside updateReadings, X = "+((AccelerometerReading)reading).getX());
+		 
+		 TextView x_value = (TextView) getActivity().findViewById(R.id.accel_x);
+		 TextView y_value = (TextView) getActivity().findViewById(R.id.accel_y);
+		 TextView z_value = (TextView) getActivity().findViewById(R.id.accel_z);
+		 
+		 x_value.setText("" + ((AccelerometerReading)reading).getX());
+	     y_value.setText("" + ((AccelerometerReading)reading).getY());
+	     z_value.setText("" + ((AccelerometerReading)reading).getZ());
+		
 	}
+	
+
+	
+
 
 }

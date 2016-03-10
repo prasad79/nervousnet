@@ -24,7 +24,9 @@
  *  * 	Contributors:
  *  * 	Prasad Pulikal - prasad.pulikal@gess.ethz.ch  -  Initial API and implementation
  *******************************************************************************/
-
+/**
+ * 
+ */
 package ch.ethz.coss.nervousnet.ui.fragments;
 
 import android.os.Bundle;
@@ -32,7 +34,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import ch.ethz.coss.nervousnet.R;
+import ch.ethz.coss.nervousnet.lib.AccelerometerReading;
 import ch.ethz.coss.nervousnet.lib.SensorReading;
 
 /**
@@ -41,30 +45,40 @@ import ch.ethz.coss.nervousnet.lib.SensorReading;
  */
 public class ConnectivityFragment extends BaseFragment {
 
-	/**
-	 * 
-	 */
+	
+	public ConnectivityFragment() {
+	}
+	
 	public ConnectivityFragment(int type) {
 		super(type);
 	}
-
+	
+	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_connectivity, container, false);
-
+		
 		return rootView;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ch.ethz.coss.nervousnet.sample.BaseFragment#updateReadings(ch.ethz.coss.
-	 * nervousnet.vm.SensorReading)
+
+	/* (non-Javadoc)
+	 * @see ch.ethz.coss.nervousnet.sample.BaseFragment#updateReadings(ch.ethz.coss.nervousnet.vm.SensorReading)
 	 */
 	@Override
 	public void updateReadings(SensorReading reading) {
 		// TODO Auto-generated method stub
-
+		
+//		 TextView x_value = (TextView) getActivity().findViewById(R.id.accel_x);
+//		 x_value.setText("" + ((AccelerometerReading)reading).getX());
+//	     
+//
+//		 TextView y_value = (TextView) getActivity().findViewById(R.id.accel_y);
+//		 y_value.setText("" + ((AccelerometerReading)reading).getY());
+//	     
+//
+//		 TextView z_value = (TextView) getActivity().findViewById(R.id.accel_z);
+//		 z_value.setText("" + ((AccelerometerReading)reading).getZ());
+		
 	}
 
 }

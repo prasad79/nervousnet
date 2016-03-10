@@ -179,6 +179,34 @@ public class SensorService extends Service implements SensorEventListener, Batte
 		mNM.notify(NOTIFICATION, notification);
 	}
 
+	public LocationReading getLocReading() {
+		return locReading;
+	}
+
+	public AccelerometerReading getAccReading() {
+		return accReading;
+	}
+
+	public BatteryReading getBatteryReading() {
+		return batteryReading;
+	}
+
+	public ConnectivityReading getConnReading() {
+		return connReading;
+	}
+
+	public GyroReading getGyroReading() {
+		return gyroReading;
+	}
+
+	public NoiseReading getNoiseReading() {
+		return noiseReading;
+	}
+
+	public LightReading getLightReading() {
+		return lightReading;
+	}
+
 	private int getNotificationIcon() {
 		boolean useWhiteIcon = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP);
 		return useWhiteIcon ? R.drawable.ic_logo_white : R.drawable.ic_logo;
@@ -313,16 +341,16 @@ public class SensorService extends Service implements SensorEventListener, Batte
 		// Schedule all sensors (initially)
 		scheduleSensor(LibConstants.SENSOR_LOCATION);
 		scheduleSensor(LibConstants.SENSOR_ACCELEROMETER);
-		// scheduleSensor(LibConstants.SENSOR_BATTERY);
+		scheduleSensor(LibConstants.SENSOR_BATTERY);
 		// scheduleSensor(LibConstants.SENSOR_MAGNETIC);
 		// scheduleSensor(LibConstants.SENSOR_PROXIMITY);
-		// scheduleSensor(LibConstants.SENSOR_GYROSCOPE);
+		 scheduleSensor(LibConstants.SENSOR_GYROSCOPE);
 		// scheduleSensor(LibConstants.SENSOR_TEMPERATURE);
-		// scheduleSensor(LibConstants.SENSOR_HUMIDITY);
+		 scheduleSensor(LibConstants.SENSOR_HUMIDITY);
 		// scheduleSensor(LibConstants.SENSOR_PRESSURE);
 		// scheduleSensor(LibConstants.SENSOR_NOISE);
 		// scheduleSensor(LibConstants.SENSOR_BLEBEACON);
-		//// scheduleSensor(LibConstants.SENSOR_CONNECTIVITY);
+		 scheduleSensor(LibConstants.SENSOR_CONNECTIVITY);
 	}
 
 	private void scheduleSensor(final long sensorId) {
@@ -486,18 +514,6 @@ public class SensorService extends Service implements SensorEventListener, Batte
 			store(gyroReading);
 			Log.d(LOG_TAG, "Gyroscope data collected");
 			break;
-		//// case Sensor.TYPE_AMBIENT_TEMPERATURE:
-		//// sensorReading = new TemperatureReading(timestamp, event.values[0]);
-		//// Log.d(LOG_TAG, "Temperature data collected");
-		//// break;
-		// case Sensor.TYPE_RELATIVE_HUMIDITY:
-		//// sensorReading = new HumidityData(timestamp, event.values[0]);
-		// Log.d(LOG_TAG, "Humidity data collected");
-		// break;
-		// case Sensor.TYPE_PRESSURE:
-		//// sensorReading = new PressureData(timestamp, event.values[0]);
-		// Log.d(LOG_TAG, "Pressure data collected");
-		// break;
 		}
 
 	}
@@ -555,7 +571,6 @@ public class SensorService extends Service implements SensorEventListener, Batte
 		SensorDataImpl sensorData;
 
 		switch (reading.type) {
-
 		case LibConstants.SENSOR_ACCELEROMETER:
 			AccelerometerReading areading = (AccelerometerReading) reading;
 			sensorData = new AccelData(null, reading.timestamp, areading.getX(), areading.getY(), areading.getZ(), 0l,

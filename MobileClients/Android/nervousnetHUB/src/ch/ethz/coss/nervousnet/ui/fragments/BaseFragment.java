@@ -24,10 +24,15 @@
  *  * 	Contributors:
  *  * 	Prasad Pulikal - prasad.pulikal@gess.ethz.ch  -  Initial API and implementation
  *******************************************************************************/
-
+/**
+ * 
+ */
 package ch.ethz.coss.nervousnet.ui.fragments;
 
 import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.widget.TextView;
+import ch.ethz.coss.nervousnet.R;
 import ch.ethz.coss.nervousnet.lib.SensorReading;
 
 /**
@@ -35,18 +40,42 @@ import ch.ethz.coss.nervousnet.lib.SensorReading;
  *
  */
 public abstract class BaseFragment extends Fragment {
+	
+	public int type = 0;
 
-	int type = 0;
-
-	/**
-	 * 
-	 */
+	
+	
+	
+	public BaseFragment(){
+		
+	}
+	
 	public BaseFragment(int type) {
 		// TODO Auto-generated constructor stub
-
+		
 		this.type = type;
 	}
-
+	
+	
 	public abstract void updateReadings(SensorReading reading);
+	
+	
+	public void handleError(String message) {
+		TextView status = (TextView) getActivity().findViewById(R.id.sensor_status);
+		 status.setText(message);
+		
+	}
+	
+	 @Override
+	  public void onResume() {
+	     Log.d("BaseFragment", "onResume of BaseFragment");
+	     super.onResume();
+	  }
+
+	  @Override
+	  public void onPause() {
+	    Log.d("BaseFragment", "OnPause of BaseFragment");
+	    super.onPause();
+	  }
 
 }
