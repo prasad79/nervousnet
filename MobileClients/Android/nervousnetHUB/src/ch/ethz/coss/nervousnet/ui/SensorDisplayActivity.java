@@ -68,6 +68,9 @@ import ch.ethz.coss.nervousnet.ui.fragments.ConnectivityFragment;
 import ch.ethz.coss.nervousnet.ui.fragments.DummyFragment;
 import ch.ethz.coss.nervousnet.ui.fragments.GyroFragment;
 import ch.ethz.coss.nervousnet.ui.fragments.HumidFragment;
+import ch.ethz.coss.nervousnet.ui.fragments.LightFragment;
+import ch.ethz.coss.nervousnet.ui.fragments.LocationFragment;
+import ch.ethz.coss.nervousnet.ui.fragments.NoiseFragment;
 
 public class SensorDisplayActivity extends FragmentActivity implements ActionBarImplementation {
 	 protected NervousnetRemote mService;
@@ -316,7 +319,15 @@ public class SensorDisplayActivity extends FragmentActivity implements ActionBar
 			case 5:
 				fragment = new HumidFragment(5);
 				break;
-
+			case 6:
+				fragment = new LocationFragment(6);
+				break;
+			case 7:
+				fragment = new LightFragment(7);
+				break;
+			case 9:
+				fragment = new NoiseFragment(9);
+				break;
 			default:
 				fragment = new DummyFragment(-1);
 				break;
@@ -389,14 +400,30 @@ public class SensorDisplayActivity extends FragmentActivity implements ActionBar
 			 case 1:
 				 updateStatus((SensorReading)mService.getBatteryReading(), index);
 				 break;
+			 case 2:
+				//beacons
+				 break;
 			 case 3:
 				 updateStatus((SensorReading)mService.getConnectivityReading(), index);
 				 break;
 			 case 4:
 				 updateStatus((SensorReading)mService.getGyroReading(), index);
 				 break;
+			 case 5:
+				 //HUmidity
+				 break;
 			 case 6:
 				 updateStatus((SensorReading)mService.getLocationReading(), index);
+				 break;
+			 case 7:
+				 updateStatus((SensorReading)mService.getLightReading(), index);
+				 break;
+			 case 8:
+				//Magnetic
+				 break;
+				 
+			 case 9:
+				 updateStatus((SensorReading)mService.getNoiseReading(), index);
 				 break;
 					 
 			 }

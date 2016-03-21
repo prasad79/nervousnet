@@ -60,7 +60,6 @@ public class LocationFragment extends BaseFragment {
 	 */
 	@Override
 	public void updateReadings(SensorReading reading) {
-		if(reading.isCollect){
 			double[] location = ((LocationReading)reading).getLatnLong();
 			TextView latitude = (TextView) getActivity().findViewById(R.id.lat);
 			latitude.setText("" + location[0]);
@@ -73,10 +72,7 @@ public class LocationFragment extends BaseFragment {
 			 TextView altitude = (TextView) getActivity().findViewById(R.id.alti);
 			 altitude.setText("" + ((LocationReading)reading).getAltitude());
 			
-		} else {
-			TextView status = (TextView) getActivity().findViewById(R.id.sensor_status);
-			 status.setText("Please enable the Location Sensor Log checkbox in Nervousnet HUB");
-		}
+		
 		 
 	}
 

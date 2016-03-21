@@ -68,6 +68,7 @@ import ch.ethz.coss.nervousnet.sensors.NoiseSensor;
 import ch.ethz.coss.nervousnet.vm.model.AccelData;
 import ch.ethz.coss.nervousnet.vm.model.ConnectivityData;
 import ch.ethz.coss.nervousnet.vm.model.GyroData;
+import ch.ethz.coss.nervousnet.vm.model.LightData;
 import ch.ethz.coss.nervousnet.vm.model.LocationData;
 import ch.ethz.coss.nervousnet.vm.model.SensorDataImpl;
 
@@ -233,6 +234,13 @@ public class SensorService extends Service implements SensorEventListener, Batte
 	private final NervousnetRemote.Stub mBinder = new NervousnetRemote.Stub() {
 
 		@Override
+		public LightReading getLightReading() throws RemoteException {
+			Log.d(LOG_TAG, "Light reading requested ");
+			return lightReading;
+		}
+
+		
+		@Override
 		public BatteryReading getBatteryReading() throws RemoteException {
 			Log.d(LOG_TAG, "Battery reading requested ");
 			return batteryReading;
@@ -260,6 +268,12 @@ public class SensorService extends Service implements SensorEventListener, Batte
 		public ConnectivityReading getConnectivityReading() throws RemoteException {
 			Log.d(LOG_TAG, "Connectivity reading requested ");
 			return connReading;
+		}
+		
+		@Override
+		public NoiseReading getNoiseReading() throws RemoteException {
+			Log.d(LOG_TAG, "Noise reading requested ");
+			return noiseReading;
 		}
 
 	};
@@ -330,7 +344,6 @@ public class SensorService extends Service implements SensorEventListener, Batte
 		sensorTemperature = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
 		sensorHumidity = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
 		sensorPressure = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
-
 		// Custom sensors
 		sensorBattery = BatterySensor.getInstance(getApplicationContext());
 		sensorConnectivity = ConnectivitySensor.getInstance(getApplicationContext());
@@ -342,6 +355,7 @@ public class SensorService extends Service implements SensorEventListener, Batte
 		scheduleSensor(LibConstants.SENSOR_LOCATION);
 		scheduleSensor(LibConstants.SENSOR_ACCELEROMETER);
 		scheduleSensor(LibConstants.SENSOR_BATTERY);
+		scheduleSensor(LibConstants.SENSOR_LIGHT);
 		// scheduleSensor(LibConstants.SENSOR_MAGNETIC);
 		// scheduleSensor(LibConstants.SENSOR_PROXIMITY);
 		 scheduleSensor(LibConstants.SENSOR_GYROSCOPE);
@@ -594,6 +608,12 @@ public class SensorService extends Service implements SensorEventListener, Batte
 			sensorData.setType(LibConstants.SENSOR_CONNECTIVITY);
 			return sensorData;
 
+		case LibConstants.SENSOR_LIGHT:
+			LightReading lreading = (LightReading) reading;
+			sensorData = new LightData(null, lreading.timestamp, lreading.getLuxValue(), lreading.volatility, lreading.isShare);
+			sensorData.setType(LibConstants.SENSOR_LIGHT);
+			return sensorData;
+			
 		case LibConstants.SENSOR_LOCATION:
 			LocationReading locReading = (LocationReading) reading;
 			sensorData = new LocationData(null, reading.timestamp, locReading.getLatnLong()[0],
