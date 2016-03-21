@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.net.ConnectivityManager;
 
 public class Utils {
 
@@ -26,5 +27,21 @@ public class Utils {
 
 		// show it
 		alertDialog.show();
+	}
+	
+	
+	public static String getConnectivityTypeString(int networkType) {
+		
+		switch(networkType) {
+		case ConnectivityManager.TYPE_MOBILE :
+			return "Mobile";
+		case ConnectivityManager.TYPE_WIFI :
+			return "WiFi";
+		case ConnectivityManager.TYPE_BLUETOOTH :
+			return "Bluetooth";
+		 default :
+			return "Other";
+	}
+		
 	}
 }
