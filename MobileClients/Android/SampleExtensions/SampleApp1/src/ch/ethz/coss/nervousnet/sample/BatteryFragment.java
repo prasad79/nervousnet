@@ -18,7 +18,7 @@
  *  *     GNU General Public License for more details.
  *  *
  *  *     You should have received a copy of the GNU General Public License
- *  *     along with SwarmPulse. If not, see <http://www.gnu.org/licenses/>.
+ *  *     along with NervousNet. If not, see <http://www.gnu.org/licenses/>.
  *  *
  *  *
  *  * 	Contributors:
@@ -30,6 +30,7 @@
 package ch.ethz.coss.nervousnet.sample;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,7 +61,8 @@ public class BatteryFragment extends BaseFragment {
 	 */
 	@Override
 	public void updateReadings(SensorReading reading) {
-		if(reading.isCollect){
+		 Log.d("BatteryFragment", "Inside updateReadings");
+		 
 			TextView percent = (TextView) getActivity().findViewById(R.id.battery_percent);
 			 percent.setText("" + ((BatteryReading)reading).getPercent() * 100 +" %");
 		     
@@ -74,10 +76,7 @@ public class BatteryFragment extends BaseFragment {
 			
 			 TextView AC_charging = (TextView) getActivity().findViewById(R.id.battery_isAC);
 			 AC_charging.setText(((BatteryReading)reading).getCharging_type() == 0 ? "YES" : "NO");
-		} else {
-			TextView status = (TextView) getActivity().findViewById(R.id.sensor_status);
-			 status.setText("Please enable the Battery Sensor Log checkbox in Nervousnet HUB");
-		}
+		
 		 
 	}
 

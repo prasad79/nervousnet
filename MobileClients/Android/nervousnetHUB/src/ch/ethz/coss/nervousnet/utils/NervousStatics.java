@@ -18,7 +18,7 @@
  *  *     GNU General Public License for more details.
  *  *
  *  *     You should have received a copy of the GNU General Public License
- *  *     along with SwarmPulse. If not, see <http://www.gnu.org/licenses/>.
+ *  *     along with NervousNet. If not, see <http://www.gnu.org/licenses/>.
  *  *
  *******************************************************************************/
 package ch.ethz.coss.nervousnet.utils;

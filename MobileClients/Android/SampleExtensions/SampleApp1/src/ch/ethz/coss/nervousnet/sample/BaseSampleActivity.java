@@ -18,7 +18,7 @@
  *  *     GNU General Public License for more details.
  *  *
  *  *     You should have received a copy of the GNU General Public License
- *  *     along with SwarmPulse. If not, see <http://www.gnu.org/licenses/>.
+ *  *     along with NervousNet. If not, see <http://www.gnu.org/licenses/>.
  *  *
  *  *
  *  * 	Contributors:
@@ -43,20 +43,23 @@ import android.util.Log;
 import android.widget.Toast;
 import ch.ethz.coss.nervousnet.lib.AccelerometerReading;
 import ch.ethz.coss.nervousnet.lib.BatteryReading;
+import ch.ethz.coss.nervousnet.lib.ConnectivityReading;
+import ch.ethz.coss.nervousnet.lib.GyroReading;
 import ch.ethz.coss.nervousnet.lib.LocationReading;
 import ch.ethz.coss.nervousnet.lib.NervousnetRemote;
 import ch.ethz.coss.nervousnet.lib.SensorReading;
+import ch.ethz.coss.nervousnet.lib.Utils;
 
 public abstract class BaseSampleActivity extends FragmentActivity {
 
-	 private NervousnetRemote mService;
+	 protected NervousnetRemote mService;
 	 private ServiceConnection mServiceConnection;
 	 private Boolean bindFlag;
 	
-	 int m_interval = 2000; // 1 seconds by default, can be changed later
+	 int m_interval = 1000; // 1 seconds by default, can be changed later
 	 Handler m_handler = new Handler();
 
-	 protected static BaseFragment fragment;
+	
 	
 	public BaseSampleActivity() {
 		// TODO Auto-generated constructor stub
@@ -193,7 +196,6 @@ public abstract class BaseSampleActivity extends FragmentActivity {
 	};
 
 	void startRepeatingTask() {
-		
 		m_statusChecker.run();
 	}
 
@@ -201,71 +203,84 @@ public abstract class BaseSampleActivity extends FragmentActivity {
 		m_handler.removeCallbacks(m_statusChecker);
 	}
 	
-	protected abstract void updateStatus(SensorReading reading);
+	protected abstract void updateStatus(SensorReading reading, int index);
 	
 	BatteryReading breading;
 	LocationReading lreading;
 	AccelerometerReading aReading;
-	protected void update() {
-		try {
-     Log.d("BaseSampleActivity", "Inside update : fragment type = "+fragment.type);
-//			System.out.println("Get Battery Reading");
+	ConnectivityReading cReading;
+	GyroReading gReading;
+	
+	protected abstract void update();
+//	protected void update() {
+//		try {
+//			int index = mViewPager.getCurrentItem();
+//     Log.d("BaseSampleActivity", "Inside update : fragment type = "+fragment.type);
+////			System.out.println("Get Battery Reading");
+////
+////			count.setText(mService.getCounter() + "");
 //
-//			count.setText(mService.getCounter() + "");
-
-			 breading = mService.getBatteryReading();
-			 lreading = mService.getLocationReading();
-			 aReading = mService.getAccelerometerReading();
-			 
-			 switch(fragment.type){
-			 case 0:
-				 updateStatus(aReading);
-				 break;
-			 case 1:
-				 updateStatus(breading);
-				 break;
-			 case 6:
-				 updateStatus(lreading);
-				 break;
-					 
-			 }
-			
-			 
-			 
-//			if (breading != null) {
-//				System.out.println("Set Battery Reading");
-//				battery_percent.setText("Charge Remaining = " + breading.getPercent() * 100 + " %");
-//				battery_isCharging.setText("Charging: " + (breading.isCharging() ? "YES" : "NO"));
-//				battery_isUSB.setText("USB Charging: " + (breading.getCharging_type() == 1 ? "YES" : "NO"));
-//				battery_isAC.setText("AC Charging: " + (breading.getCharging_type() == 2 ? "YES" : "NO"));
-//				temp.setText("Temperature: " + breading.getTemp() + " C");
-//				volt.setText("Voltage: " + breading.getVolt() + " mV");
-//				health.setText("Health Status: " + breading.getHealthString());
+//			 breading = mService.getBatteryReading();
+//			 lreading = mService.getLocationReading();
+//			 cReading = mService.getConnectivityReading();
+//			 aReading = mService.getAccelerometerReading();
+//			 gReading = mService.getGyroReading();
+//			 
+//			 switch(fragment.type){
+//			 case 0:
+//				 updateStatus(aReading);
+//				 break;
+//			 case 1:
+//				 updateStatus(breading);
+//				 break;
+//			 case 3:
+//				 updateStatus(cReading);
+//				 break;
+//			 case 4:
+//				 updateStatus(gReading);
+//				 break;
+//			 case 6:
+//				 updateStatus(lreading);
+//				 break;
+//					 
+//			 }
+//			
+//			 
+//			 
+////			if (breading != null) {
+////				System.out.println("Set Battery Reading");
+////				battery_percent.setText("Charge Remaining = " + breading.getPercent() * 100 + " %");
+////				battery_isCharging.setText("Charging: " + (breading.isCharging() ? "YES" : "NO"));
+////				battery_isUSB.setText("USB Charging: " + (breading.getCharging_type() == 1 ? "YES" : "NO"));
+////				battery_isAC.setText("AC Charging: " + (breading.getCharging_type() == 2 ? "YES" : "NO"));
+////				temp.setText("Temperature: " + breading.getTemp() + " C");
+////				volt.setText("Voltage: " + breading.getVolt() + " mV");
+////				health.setText("Health Status: " + breading.getHealthString());
+////
+////			} else {
+////				System.out.println("Set Location Reading");
+////				battery_percent.setText("Battery sensor not responding.");
+////			}
+////
+////			if (lreading != null) {
+////
+////				location_values.setText(lreading.toString());
+////			}
+////
+////			if (aReading != null) {
+////				accelX.setText("X: " + aReading.getX());
+////				accelY.setText("Y: " + aReading.getY());
+////				accelZ.setText("Z: " + aReading.getZ());
+////
+////			}
+////			//
 //
-//			} else {
-//				System.out.println("Set Location Reading");
-//				battery_percent.setText("Battery sensor not responding.");
-//			}
-//
-//			if (lreading != null) {
-//
-//				location_values.setText(lreading.toString());
-//			}
-//
-//			if (aReading != null) {
-//				accelX.setText("X: " + aReading.getX());
-//				accelY.setText("Y: " + aReading.getY());
-//				accelZ.setText("Z: " + aReading.getZ());
-//
-//			}
-//			//
-
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+//		} catch (RemoteException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
 }

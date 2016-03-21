@@ -18,7 +18,7 @@
  *  *     GNU General Public License for more details.
  *  *
  *  *     You should have received a copy of the GNU General Public License
- *  *     along with SwarmPulse. If not, see <http://www.gnu.org/licenses/>.
+ *  *     along with NervousNet. If not, see <http://www.gnu.org/licenses/>.
  *  *
  *  *
  *  * 	Contributors:
@@ -36,6 +36,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import ch.ethz.coss.nervousnet.sample.R;
+import ch.ethz.coss.nervousnet.lib.AccelerometerReading;
 import ch.ethz.coss.nervousnet.lib.SensorReading;
 
 /**
@@ -66,6 +67,17 @@ public class ConnectivityFragment extends BaseFragment {
 	@Override
 	public void updateReadings(SensorReading reading) {
 		// TODO Auto-generated method stub
+		
+//		 TextView x_value = (TextView) getActivity().findViewById(R.id.accel_x);
+//		 x_value.setText("" + ((AccelerometerReading)reading).getX());
+//	     
+//
+//		 TextView y_value = (TextView) getActivity().findViewById(R.id.accel_y);
+//		 y_value.setText("" + ((AccelerometerReading)reading).getY());
+//	     
+//
+//		 TextView z_value = (TextView) getActivity().findViewById(R.id.accel_z);
+//		 z_value.setText("" + ((AccelerometerReading)reading).getZ());
 		
 	}
 

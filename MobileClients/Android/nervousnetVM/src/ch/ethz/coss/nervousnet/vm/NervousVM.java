@@ -78,7 +78,7 @@ public class NervousVM {
 		 
 	    boolean hasVMConfig = loadVMConfig();
 		if (!hasVMConfig) {
-			Log.d(TAG, "Inside no config found. Create a new config.");
+			Log.d(TAG, "Inside Constructure after loadVMConfig() no config found. Create a new config.");
 			uuid = UUID.randomUUID();
 			 
 			storeVMConfig();

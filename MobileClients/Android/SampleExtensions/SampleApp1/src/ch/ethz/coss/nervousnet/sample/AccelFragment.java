@@ -1,7 +1,7 @@
 /*******************************************************************************
  *
  *  *     Nervousnet - a distributed middleware software for social sensing. 
- *  *      It is responsible for collecting and managing data in a fully de-centralised fashion
+ *  *     It is responsible for collecting and managing data in a fully de-centralised fashion
  *  *
  *  *     Copyright (C) 2016 ETH Zürich, COSS
  *  *
@@ -18,7 +18,7 @@
  *  *     GNU General Public License for more details.
  *  *
  *  *     You should have received a copy of the GNU General Public License
- *  *     along with SwarmPulse. If not, see <http://www.gnu.org/licenses/>.
+ *  *     along with NervousNet. If not, see <http://www.gnu.org/licenses/>.
  *  *
  *  *
  *  * 	Contributors:
@@ -42,7 +42,6 @@ import android.widget.TextView;
 
 public class AccelFragment extends BaseFragment{
 
-
 	 TextView x_value;
 	 TextView y_value;
 	 TextView z_value;
@@ -58,30 +57,24 @@ public class AccelFragment extends BaseFragment{
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_accel, container, false);
 
-		x_value = (TextView) getActivity().findViewById(R.id.accel_x);
-		y_value = (TextView) getActivity().findViewById(R.id.accel_y);
-		z_value = (TextView) getActivity().findViewById(R.id.accel_z);
 		
 		return rootView;
 	}
 	
 
-	/* (non-Javadoc)
-	 * @see ch.ethz.coss.nervousnet.sample.BaseFragment#updateReadings()
-	 */
 	@Override
 	public void updateReadings(SensorReading reading){
 		 Log.d("AccelFragment", "Inside updateReadings, X = "+((AccelerometerReading)reading).getX());
-
-		
+		 
+		 TextView x_value = (TextView) getActivity().findViewById(R.id.accel_x);
+		 TextView y_value = (TextView) getActivity().findViewById(R.id.accel_y);
+		 TextView z_value = (TextView) getActivity().findViewById(R.id.accel_z);
+		 
 		 x_value.setText("" + ((AccelerometerReading)reading).getX());
-	     
-		 y_value.setText("" + ((AccelerometerReading)reading).getY());
-	     
-		 z_value.setText("" + ((AccelerometerReading)reading).getZ());
+	     y_value.setText("" + ((AccelerometerReading)reading).getY());
+	     z_value.setText("" + ((AccelerometerReading)reading).getZ());
 		
 	}
-	
 
 	
 
