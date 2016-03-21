@@ -37,9 +37,12 @@ import android.media.MediaRecorder;
 import android.os.AsyncTask;
 import ch.ethz.coss.nervousnet.utils.FFT;
 
+import ch.ethz.coss.nervousnet.lib.NoiseReading;
+
 public class NoiseSensor {
 
 	public static NoiseSensor _instance;
+	private NoiseReading reading;
 
 	public static final int BANDCOUNT = 12;
 	public static final int SAMPPERSEC = 8000; // 8000Hz sampling rate, the
@@ -82,7 +85,7 @@ public class NoiseSensor {
 	}
 
 	public interface NoiseSensorListener {
-		public void noiseSensorDataReady(long recordTime, float rms, float spl, float[] bands);
+		public void noiseSensorDataReady(NoiseReading reading);
 	}
 
 	public void addListener(NoiseSensorListener listener) {
@@ -106,7 +109,7 @@ public class NoiseSensor {
 	public void dataReady(long recordTime, float rms, float spl, float[] bands) {
 		listenerMutex.lock();
 		for (NoiseSensorListener listener : listenerList) {
-			listener.noiseSensorDataReady(recordTime, rms, spl, bands);
+			listener.noiseSensorDataReady(new NoiseReading(recordTime, rms));
 		}
 		listenerMutex.unlock();
 	}

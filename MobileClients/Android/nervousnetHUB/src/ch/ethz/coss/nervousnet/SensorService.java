@@ -362,7 +362,7 @@ public class SensorService extends Service implements SensorEventListener, Batte
 		// scheduleSensor(LibConstants.SENSOR_TEMPERATURE);
 		 scheduleSensor(LibConstants.SENSOR_HUMIDITY);
 		// scheduleSensor(LibConstants.SENSOR_PRESSURE);
-		// scheduleSensor(LibConstants.SENSOR_NOISE);
+		 scheduleSensor(LibConstants.SENSOR_NOISE);
 		// scheduleSensor(LibConstants.SENSOR_BLEBEACON);
 		 scheduleSensor(LibConstants.SENSOR_CONNECTIVITY);
 	}
@@ -545,11 +545,10 @@ public class SensorService extends Service implements SensorEventListener, Batte
 	};
 
 	@Override
-	public void noiseSensorDataReady(long timestamp, float rms, float spl, float[] bands) {
-		// SensorReading Reading = new NoiseRea(timestamp, rms, spl, bands);
-
+	public void noiseSensorDataReady(NoiseReading reading) {
+		noiseReading = reading;
+		store(noiseReading);
 		Log.d(LOG_TAG, "Noise data collected");
-		// store(sensorDesc.getSensorId(), sensorDescs);
 	}
 
 	@Override
