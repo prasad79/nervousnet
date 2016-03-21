@@ -34,12 +34,12 @@ import android.os.Parcelable;
  */
 public class NoiseReading extends SensorReading {
 
-	private float value;
+	private float dbValue;
 
 	public NoiseReading(long timestamp, float value) {
 		this.type = LibConstants.SENSOR_NOISE;
 		this.timestamp = timestamp;
-		this.value = value;
+		this.dbValue = value;
 	}
 
 	/**
@@ -51,11 +51,11 @@ public class NoiseReading extends SensorReading {
 
 	public void readFromParcel(Parcel in) {
 		timestamp = in.readInt();
-		value = in.readFloat();
+		dbValue = in.readFloat();
 	}
 
-	public float getLuxValue() {
-		return value;
+	public float getdbValue() {
+		return dbValue;
 	}
 
 	/*
@@ -77,7 +77,7 @@ public class NoiseReading extends SensorReading {
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
 		out.writeLong(timestamp);
-		out.writeFloat(value);
+		out.writeFloat(dbValue);
 	}
 
 	public static final Parcelable.Creator<NoiseReading> CREATOR = new Parcelable.Creator<NoiseReading>() {
