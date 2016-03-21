@@ -51,11 +51,15 @@ import android.telephony.TelephonyManager;
 import android.telephony.cdma.CdmaCellLocation;
 import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
+import ch.ethz.coss.nervousnet.SensorService;
 import ch.ethz.coss.nervousnet.lib.ConnectivityReading;
 import ch.ethz.coss.nervousnet.utils.ValueFormatter;
 
 public class ConnectivitySensor {
 
+
+	private static final String LOG_TAG = ConnectivitySensor.class.getSimpleName();
+	
 	private Context context;
 	private ConnectivityReading reading;
 
@@ -93,7 +97,8 @@ public class ConnectivitySensor {
 	}
 
 	public void runConnectivitySensor() {
-
+		Log.d(LOG_TAG, "Inside runConnectivitySensor");
+		
 		ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 		boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();

@@ -31,13 +31,16 @@ package ch.ethz.coss.nervousnet.ui.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import ch.ethz.coss.nervousnet.R;
 import ch.ethz.coss.nervousnet.lib.AccelerometerReading;
+import ch.ethz.coss.nervousnet.lib.ConnectivityReading;
 import ch.ethz.coss.nervousnet.lib.SensorReading;
+import ch.ethz.coss.nervousnet.lib.Utils;
 
 /**
  * @author prasad
@@ -66,18 +69,17 @@ public class ConnectivityFragment extends BaseFragment {
 	 */
 	@Override
 	public void updateReadings(SensorReading reading) {
-		// TODO Auto-generated method stub
 		
-//		 TextView x_value = (TextView) getActivity().findViewById(R.id.accel_x);
-//		 x_value.setText("" + ((AccelerometerReading)reading).getX());
-//	     
-//
-//		 TextView y_value = (TextView) getActivity().findViewById(R.id.accel_y);
-//		 y_value.setText("" + ((AccelerometerReading)reading).getY());
-//	     
-//
-//		 TextView z_value = (TextView) getActivity().findViewById(R.id.accel_z);
-//		 z_value.setText("" + ((AccelerometerReading)reading).getZ());
+		 Log.d("ConnectivityFragment", "Inside updateReadings");
+		 
+		 TextView isConnectedTV = (TextView) getActivity().findViewById(R.id.isConnectedTV);
+		 TextView netwType = (TextView) getActivity().findViewById(R.id.netwType);
+		 TextView isRoaming = (TextView) getActivity().findViewById(R.id.isRoaming);
+		 
+		 isConnectedTV.setText("" + (((ConnectivityReading)reading).isConnected() ? "Yes" : "No"));
+		 netwType.setText("" +  Utils.getConnectivityTypeString(((ConnectivityReading)reading).getNetworkType()));
+		 isRoaming.setText("" + ((((ConnectivityReading)reading).isRoaming()) ? "Yes" : "No"));
+	
 		
 	}
 
