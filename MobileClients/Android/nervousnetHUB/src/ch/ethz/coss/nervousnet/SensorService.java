@@ -311,11 +311,12 @@ public class SensorService extends Service implements SensorEventListener, Batte
 
 	private void initSensors() {
 		storeMutex = new ReentrantLock();
-
 		sensorConfiguration = SensorConfiguration.getInstance(getApplicationContext());
 
 		// Initialize sensor manager
 		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+		LocationManager locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		
 
 		// Hash map to register sensor collect status references
 		sensorCollected = new ConcurrentHashMap<Long, SensorCollectStatus>();
@@ -348,8 +349,7 @@ public class SensorService extends Service implements SensorEventListener, Batte
 		sensorBattery = BatterySensor.getInstance(getApplicationContext());
 		sensorConnectivity = ConnectivitySensor.getInstance(getApplicationContext());
 		sensorNoise = NoiseSensor.getInstance();
-		LocationManager locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		sensorLocation = LocationSensor.getInstance(locManager);
+		sensorLocation = LocationSensor.getInstance(getApplicationContext());
 
 		// Schedule all sensors (initially)
 		scheduleSensor(LibConstants.SENSOR_LOCATION);

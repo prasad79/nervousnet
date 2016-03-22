@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ch.ethz.coss.nervousnet"
-    android:versionCode="9"
-    android:versionName="0.7.2 beta" >
+    android:versionCode="10"
+    android:versionName="0.7.3 alpha" >
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
