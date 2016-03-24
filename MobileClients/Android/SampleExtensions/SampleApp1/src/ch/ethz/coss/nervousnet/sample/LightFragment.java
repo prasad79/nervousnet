@@ -30,14 +30,16 @@
 package ch.ethz.coss.nervousnet.sample;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import ch.ethz.coss.nervousnet.sample.R;
 import ch.ethz.coss.nervousnet.lib.BatteryReading;
+import ch.ethz.coss.nervousnet.lib.ConnectivityReading;
 import ch.ethz.coss.nervousnet.lib.LightReading;
 import ch.ethz.coss.nervousnet.lib.SensorReading;
+import ch.ethz.coss.nervousnet.lib.Utils;
 
 public class LightFragment extends BaseFragment {
 
@@ -60,14 +62,14 @@ public class LightFragment extends BaseFragment {
 	 */
 	@Override
 	public void updateReadings(SensorReading reading) {
-		if(reading.isCollect){
-			TextView lux = (TextView) getActivity().findViewById(R.id.lux);
-			 lux.setText("" + ((LightReading)reading).getLuxValue());
-			
-		} else {
-			TextView status = (TextView) getActivity().findViewById(R.id.sensor_status);
-			 status.setText("Please enable the Light Sensor Log checkbox in Nervousnet HUB");
-		}
+	
+		
+
+		 Log.d("LightFragment", "Inside updateReadings");
+		 TextView lux = (TextView) getActivity().findViewById(R.id.lux);
+		 lux.setText("" + ((LightReading)reading).getLuxValue());
+		
+	
 		 
 	}
 

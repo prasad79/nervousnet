@@ -27,36 +27,65 @@
 package ch.ethz.coss.nervousnet.sample;
 
 
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 
 import android.app.ActionBar;
+import android.content.ComponentName;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
+import android.widget.Toast;
 import ch.ethz.coss.nervousnet.sample.R;
+import ch.ethz.coss.nervousnet.lib.NervousnetRemote;
 import ch.ethz.coss.nervousnet.lib.SensorReading;
+import ch.ethz.coss.nervousnet.lib.Utils;
 
-public class SampleAppActivity extends BaseSampleActivity {
-	 
+public class SampleAppActivity extends FragmentActivity {
 	 	
 	SampleAppPagerAdapter sapAdapter;
 	ViewPager vPager;
+	private static BaseFragment fragment;
+	
+	 protected NervousnetRemote mService;
+	 private ServiceConnection mServiceConnection;
+	 private Boolean bindFlag;
 
+	 int m_interval = 100; // 1 seconds by default, can be changed later
+	 Handler m_handler = new Handler();
+	 Runnable m_statusChecker = new Runnable() {
+		@Override
+		public void run() {
+
+		    Log.d("SampleAppActivity", "before updating");
+		    if(mService != null)
+		    	update(); // this function can change value of m_interval.
+		    else 
+		    	 Log.d("SampleAppActivity", "mService is null");
+
+			m_handler.postDelayed(m_statusChecker, m_interval);
+		}
+	};
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_sample_app);
 		
-		sapAdapter = new SampleAppPagerAdapter(getSupportFragmentManager());
-
+		
 	        // Set up action bar.
 	        final ActionBar actionBar = getActionBar();
 
@@ -64,16 +93,119 @@ public class SampleAppActivity extends BaseSampleActivity {
 	        // button will take the user one step up in the application's hierarchy.
 	        actionBar.setDisplayHomeAsUpEnabled(true);
 
+	        sapAdapter = new SampleAppPagerAdapter(getSupportFragmentManager());
+
+	       
 	        // Set up the ViewPager, attaching the adapter.
 	        vPager = (ViewPager) findViewById(R.id.pager);
 	        vPager.setAdapter(sapAdapter);
+	        
+	        if(mServiceConnection == null){
+				initConnection();		
+			}
+							
+			if(mService == null) {
+				if (mService == null) {
+					try {
+
+						doBindService();
+						Log.d("SampleAppActivity", bindFlag.toString()); // will return "true"
+						if (!bindFlag){
+
+							Utils.displayAlert(SampleAppActivity.this, "Alert",
+									"Nervousnet HUB application is required to be running to use this app. Please download it from the App Store.",
+									"Download Now", new DialogInterface.OnClickListener() {
+										public void onClick(DialogInterface dialog, int id) {
+											startActivity(new Intent(Intent.ACTION_VIEW,
+													Uri.parse("https://play.google.com/store/apps/details?id=ch.ethz.soms.nervousnet")));
+										}
+									}, "Exit", new DialogInterface.OnClickListener() {
+										public void onClick(DialogInterface dialog, int id) {
+											System.exit(0);
+										}
+									});
+							Toast.makeText(SampleAppActivity.this,
+									"Please check if the Nervousnet Remote Service is installed and running.",
+									Toast.LENGTH_SHORT).show();
+						} else{
+							startRepeatingTask();
+							Toast.makeText(SampleAppActivity.this, "Nervousnet Remote is running fine and startRepeatingTask() called", Toast.LENGTH_SHORT).show();
+
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+						Log.e("SensorDisplayActivity", "not able to bind ! ");
+					}
+
+					// //binding to remote service
+					// boolean flag = bindService(it, mServiceConnection,
+					// Service.BIND_AUTO_CREATE);
+					//
+					//
+				}
+			}
 	}
+	
+	void initConnection() {
+
+		Log.d("SensorDisplayActivity", "Inside initConnection");
+		mServiceConnection = new ServiceConnection() {
+
+			
+			@Override
+			public void onServiceDisconnected(ComponentName name) {
+				 Log.d("SensorDisplayActivity", "Inside onServiceDisconnected 2");
+				System.out.println("onServiceDisconnected");
+				// TODO Auto-generated method stub
+				mService = null;
+				mServiceConnection = null;
+				Toast.makeText(getApplicationContext(), "NervousnetRemote Service not connected", Toast.LENGTH_SHORT)
+						.show();
+				Log.d("SensorDisplayActivity", "Binding - Service disconnected");
+			}
+
+			@Override
+			public void onServiceConnected(ComponentName name, IBinder service) {
+				Log.d("SensorDisplayActivity", "onServiceConnected");
+				Log.d("SensorDisplayActivity", "Inside onServiceConnected 2");
+				 
+				mService = NervousnetRemote.Stub.asInterface(service);
+
+//				try {
+//					count.setText(mService.getCounter() + "");
+//				} catch (RemoteException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+
+				// try {
+				// BatteryReading reading = mService.getBatteryReading();
+				// System.out.println("onServiceConnected 2");
+				// if(reading != null)
+				// counter.setText(reading.getBatteryPercent()+"");
+				// else
+				// counter.setText("Null object returned");
+				// } catch (RemoteException e) {
+				// // TODO Auto-generated catch block
+				// System.out.println("Exception thrown here");
+				// e.printStackTrace();
+				// }
+				// m_handler.post(m_statusChecker);
+
+				startRepeatingTask();
+				Toast.makeText(getApplicationContext(), "Nervousnet Remote Service Connected", Toast.LENGTH_SHORT)
+						.show();
+				Log.d("SensorDisplayActivity", "Binding is done - Service connected");
+			}
+		};
+		
+
+	}
+	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.sample_app, menu);
-		return true;
+		return false;
 	}
 
 	@Override
@@ -91,76 +223,44 @@ public class SampleAppActivity extends BaseSampleActivity {
 	
 	
     public static class SampleAppPagerAdapter extends FragmentStatePagerAdapter {
-    	
-    	private FragmentManager mFragmentManager;
-    	private Map<Integer, String> mFragmentTags;
-    	
+    
         public SampleAppPagerAdapter(FragmentManager fm) {
             super(fm);
-            mFragmentManager = fm;
-            mFragmentTags = new HashMap<Integer, String>();
         }
-        
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            Object obj = super.instantiateItem(container, position);
-            if (obj instanceof BaseFragment) {
-                // record the fragment tag here.
-            	BaseFragment f = (BaseFragment) obj;
-                String tag = f.getTag();
-                mFragmentTags.put(position, tag);
-                Log.d("BaseSampleActivity", "Inside instantiateItem instanceof Fragment - "+tag);
-            }
-            return obj;
-        }
-        
+  
         @Override
         public Fragment getItem(int i) {
         	
-        	BaseFragment fragment;
-        	String tag;
             switch(i){
             case 0:
             	fragment = new AccelFragment(0);
-            	tag = "accel";
             	break;
             case 1:
             	fragment = new BatteryFragment(1);
-            	tag = "battery";
             	break;     	
             case 2:
             	fragment = new BeaconsFragment(2);
-              	tag = "beacons";
             	break;
             case 3:
             	fragment = new ConnectivityFragment(3);
-              	tag = "connectivity";
             	break;
             case 4:
             	fragment = new GyroFragment(4);
-            	tag = "gyro";
             	break;
             case 5:
             	fragment = new HumidFragment(5);
-            	tag = "humid";
             	break;
             case 6:
             	fragment = new LocationFragment(6);
-            	tag = "location";
             	break; 	
             case 7:
             	fragment = new LightFragment(7);
-            	tag = "light";
-            	break;
-            	
+            	break;       	
             default:
             	fragment = new DummyFragment(-1);
-            	tag = "dummy";
             	break;	
             }
 
-            mFragmentTags.put(i, tag);
-            Log.d("SampleAppActivity", "mFragmentTags size = "+mFragmentTags.size()+", "+tag);
             return fragment;
         }
 
@@ -179,87 +279,97 @@ public class SampleAppActivity extends BaseSampleActivity {
             return POSITION_NONE;
         }
         
-        public Fragment getFragment(int position) {
-            String tag = mFragmentTags.get(position);
-            Log.d("SampleAppActivity", "Inside getFragment - "+position+", "+tag);
-            
-            if (tag == null)
-                return null;
-            
-            return mFragmentManager.findFragmentByTag(tag);
-        }
         
-      
+        @SuppressWarnings("unchecked")
+	    public Fragment getFragment(int position) {
+	        try {
+	            Field f = FragmentStatePagerAdapter.class.getDeclaredField("mFragments");
+	            f.setAccessible(true);
+	            ArrayList<Fragment> fragments = (ArrayList<Fragment>) f.get(this);
+	            if (fragments.size() > position) {
+	                return fragments.get(position);
+	            }
+	            return null;
+	        } catch (Exception e) {
+	            throw new RuntimeException(e);
+	        }
+	    }
         
     }
 
 
 
 
-	/* (non-Javadoc)
-	 * @see ch.ethz.coss.nervousnet.sample.BaseSampleActivity#updateStatus()
-	 */
-	@Override
+
 	protected void updateStatus(SensorReading reading, int index) {
+
+		 BaseFragment fragment =  (BaseFragment) sapAdapter.getFragment(index);
 		
-		BaseFragment fragment =  (BaseFragment) sapAdapter.getFragment(index);
 		 Log.d("SampleAppActivity", "Inside updateStatus "+fragment.type);
 		 
-		 if(reading != null)
+		 if(reading != null) {
+			 
 			 fragment.updateReadings(reading);
+		 }
 		 else
 			 fragment.handleError("Reading is null");
 	}
 	
 	
-	@Override
-	public void onResume() {
-		super.onResume();
-		doBindService();
-	}
-	
-	@Override
-	public void onPause() {
-		super.onPause();
-		doUnbindService();
-	}
+
 	
 	@Override
 	public void onBackPressed() {
-		doUnbindService();
+		stopRepeatingTask();
 		finish();
-		System.exit(0);
 	}
 
-	
+
+	void startRepeatingTask() {
+		m_statusChecker.run();
+	}
+
+	void stopRepeatingTask() {
+		m_handler.removeCallbacks(m_statusChecker);
+	}
 	
 	protected void update() {
 		try {
 			int index = vPager.getCurrentItem();
-			 Log.d("BaseSampleActivity", "Inside update : index  = "+index);
-			 
+			Log.d("BaseSampleActivity", "Inside update : index  = "+index);
 		
 			 switch(index){
 			 case 0:
-				 aReading = mService.getAccelerometerReading();
-				 updateStatus(aReading, index);
+				 updateStatus((SensorReading)mService.getAccelerometerReading(), index);
 				 break;
 			 case 1:
-				 breading = mService.getBatteryReading();
-				 updateStatus(breading, index);
+				 updateStatus((SensorReading)mService.getBatteryReading(), index);
+				 break;
+			 case 2:
+				//beacons
 				 break;
 			 case 3:
-				 cReading = mService.getConnectivityReading();
-				 updateStatus(cReading, index);
+				 updateStatus((SensorReading)mService.getConnectivityReading(), index);
 				 break;
 			 case 4:
-				 gReading = mService.getGyroReading();
-				 updateStatus(gReading, index);
+				 updateStatus((SensorReading)mService.getGyroReading(), index);
+				 break;
+			 case 5:
+				 //HUmidity
 				 break;
 			 case 6:
-				 lreading = mService.getLocationReading();
-				 updateStatus(lreading, index);
+				 updateStatus((SensorReading)mService.getLocationReading(), index);
 				 break;
+			 case 7:
+				 updateStatus((SensorReading)mService.getLightReading(), index);
+				 break;
+			 case 8:
+				//Magnetic
+				 break;		 
+			 case 9:
+				 updateStatus((SensorReading)mService.getNoiseReading(), index);
+				 break;
+					 
 					 
 			 }
 
@@ -272,5 +382,19 @@ public class SampleAppActivity extends BaseSampleActivity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	protected void doBindService() {
+		Log.d("SensorDisplayActivity", "doBindService successfull");
+		Intent it = new Intent();
+		it.setClassName("ch.ethz.coss.nervousnet", "ch.ethz.coss.nervousnet.SensorService");
+		bindFlag = getApplicationContext().bindService(it, mServiceConnection, 0);
+		 
+	}
+	
+	protected void doUnbindService() {
+		getApplicationContext().unbindService(mServiceConnection);
+		bindFlag = false;
+		 Log.d("SensorDisplayActivity ", "doUnbindService successfull");
 	}
 }

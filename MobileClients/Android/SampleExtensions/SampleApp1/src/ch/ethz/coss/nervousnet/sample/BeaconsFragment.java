@@ -35,7 +35,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import ch.ethz.coss.nervousnet.sample.R;
 import ch.ethz.coss.nervousnet.lib.SensorReading;
 
 /**

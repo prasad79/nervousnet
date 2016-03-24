@@ -30,7 +30,6 @@
 package ch.ethz.coss.nervousnet.sample;
 
 import android.os.Bundle;
-import ch.ethz.coss.nervousnet.sample.R;
 import ch.ethz.coss.nervousnet.lib.AccelerometerReading;
 import ch.ethz.coss.nervousnet.lib.SensorReading;
 import android.util.Log;
@@ -42,9 +41,6 @@ import android.widget.TextView;
 
 public class AccelFragment extends BaseFragment{
 
-	 TextView x_value;
-	 TextView y_value;
-	 TextView z_value;
 	
 	public AccelFragment() {
 	}
@@ -56,12 +52,12 @@ public class AccelFragment extends BaseFragment{
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_accel, container, false);
-
 		
 		return rootView;
 	}
 	
 
+	
 	@Override
 	public void updateReadings(SensorReading reading){
 		 Log.d("AccelFragment", "Inside updateReadings, X = "+((AccelerometerReading)reading).getX());
@@ -75,6 +71,7 @@ public class AccelFragment extends BaseFragment{
 	     z_value.setText("" + ((AccelerometerReading)reading).getZ());
 		
 	}
+	
 
 	
 

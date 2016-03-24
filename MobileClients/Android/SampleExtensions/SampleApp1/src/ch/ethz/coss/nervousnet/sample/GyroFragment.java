@@ -31,11 +31,12 @@ package ch.ethz.coss.nervousnet.sample;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import ch.ethz.coss.nervousnet.sample.R;
+import ch.ethz.coss.nervousnet.lib.GyroReading;
 import ch.ethz.coss.nervousnet.lib.SensorReading;
 
 /**
@@ -65,7 +66,15 @@ public class GyroFragment extends BaseFragment {
 	 */
 	@Override
 	public void updateReadings(SensorReading reading) {
-		// TODO Auto-generated method stub
+		Log.d("GyroFragment", "Inside updateReadings, X = "+((GyroReading)reading).getGyroX());
+		 
+		 TextView x_value = (TextView) getActivity().findViewById(R.id.gyro_x);
+		 TextView y_value = (TextView) getActivity().findViewById(R.id.gyro_y);
+		 TextView z_value = (TextView) getActivity().findViewById(R.id.gyro_z);
+		 
+		 x_value.setText("" + ((GyroReading)reading).getGyroX());
+	     y_value.setText("" + ((GyroReading)reading).getGyroY());
+	     z_value.setText("" + ((GyroReading)reading).getGyroZ());
 		
 	}
 	

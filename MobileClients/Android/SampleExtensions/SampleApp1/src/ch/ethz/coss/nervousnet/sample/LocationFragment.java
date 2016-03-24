@@ -30,11 +30,11 @@
 package ch.ethz.coss.nervousnet.sample;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import ch.ethz.coss.nervousnet.sample.R;
 import ch.ethz.coss.nervousnet.lib.BatteryReading;
 import ch.ethz.coss.nervousnet.lib.LocationReading;
 import ch.ethz.coss.nervousnet.lib.SensorReading;
@@ -60,11 +60,13 @@ public class LocationFragment extends BaseFragment {
 	 */
 	@Override
 	public void updateReadings(SensorReading reading) {
-		if(reading.isCollect){
 			double[] location = ((LocationReading)reading).getLatnLong();
-			TextView latitude = (TextView) getActivity().findViewById(R.id.lat);
+			FragmentActivity fragAct = getActivity(); 
+			if(fragAct == null)
+				System.out.println("FragmentAcvitivity is null");
+			
+			TextView latitude = (TextView) fragAct.findViewById(R.id.lat);
 			latitude.setText("" + location[0]);
-		     
 
 			 TextView longitude = (TextView) getActivity().findViewById(R.id.longitude);
 			 longitude.setText("" + location[1]);
@@ -73,10 +75,7 @@ public class LocationFragment extends BaseFragment {
 			 TextView altitude = (TextView) getActivity().findViewById(R.id.alti);
 			 altitude.setText("" + ((LocationReading)reading).getAltitude());
 			
-		} else {
-			TextView status = (TextView) getActivity().findViewById(R.id.sensor_status);
-			 status.setText("Please enable the Location Sensor Log checkbox in Nervousnet HUB");
-		}
+		
 		 
 	}
 

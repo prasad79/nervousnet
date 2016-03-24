@@ -29,52 +29,51 @@
  */
 package ch.ethz.coss.nervousnet.sample;
 
-import android.support.v4.app.Fragment;
+import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
+import ch.ethz.coss.nervousnet.lib.BatteryReading;
+import ch.ethz.coss.nervousnet.lib.ConnectivityReading;
+import ch.ethz.coss.nervousnet.lib.LightReading;
+import ch.ethz.coss.nervousnet.lib.NoiseReading;
 import ch.ethz.coss.nervousnet.lib.SensorReading;
+import ch.ethz.coss.nervousnet.lib.Utils;
 
-/**
- * @author prasad
- *
- */
-public abstract class BaseFragment extends Fragment {
-	
-	public int type = 0;
+public class NoiseFragment extends BaseFragment {
 
 	
-	
-	
-	public BaseFragment(){
-		
+	public NoiseFragment() {
 	}
 	
-	public BaseFragment(int type) {
-		// TODO Auto-generated constructor stub
-		
-		this.type = type;
+	public NoiseFragment(int type) {
+		super(type);
 	}
 	
-	
-	public abstract void updateReadings(SensorReading reading);
-	
-	
-	public void handleError(String message) {
-		TextView status = (TextView) getActivity().findViewById(R.id.sensor_status);
-		 status.setText(message);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		View rootView = inflater.inflate(R.layout.fragment_noise, container, false);
 		
+		return rootView;
 	}
-	
-	 @Override
-	  public void onResume() {
-	     Log.d("BaseFragment", "onResume of BaseFragment");
-	     super.onResume();
-	  }
 
-	  @Override
-	  public void onPause() {
-	    Log.d("BaseFragment", "OnPause of BaseFragment");
-	    super.onPause();
-	  }
+	/* (non-Javadoc)
+	 * @see ch.ethz.coss.nervousnet.sample.BaseFragment#updateReadings(ch.ethz.coss.nervousnet.vm.SensorReading)
+	 */
+	@Override
+	public void updateReadings(SensorReading reading) {
+	
+		
+
+		 Log.d("NoiseFragment", "Inside updateReadings");
+		 
+		 TextView db = (TextView) getActivity().findViewById(R.id.dbValue);
+		 db.setText("" + ((NoiseReading)reading).getdbValue());
+		
+	
+		 
+	}
+
 
 }

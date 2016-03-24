@@ -35,7 +35,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import ch.ethz.coss.nervousnet.sample.R;
 import ch.ethz.coss.nervousnet.lib.SensorReading;
 
 /**
@@ -52,8 +51,7 @@ public class DummyFragment extends BaseFragment {
 	}
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_dummy, container, false);
-		
+		View rootView = inflater.inflate(R.layout.fragment_dummy, container, false);	
 		return rootView;
 	}
 
@@ -63,7 +61,6 @@ public class DummyFragment extends BaseFragment {
 	@Override
 	public void updateReadings(SensorReading reading) {
 		// TODO Auto-generated method stub
-		
 	}
 
 
