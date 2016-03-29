@@ -31,10 +31,14 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.hardware.SensorEventListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 import ch.ethz.coss.nervousnet.lib.LocationReading;
@@ -103,8 +107,17 @@ public class LocationSensor implements SensorStatusImplementation, LocationListe
 		listenerMutex.unlock();
 	}
 
+	
+	@TargetApi(23)
 	public void startLocationCollection() {
 		Log.d(LOG_TAG, "startLocationCollection ");
+		
+		if ( Build.VERSION.SDK_INT >= 23 &&
+	             ContextCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED &&
+	             ContextCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+	            return  ;
+	        }
+		
 		if (locationManager == null)
 			return;
 		Log.d(LOG_TAG, "startLocationCollection2");
