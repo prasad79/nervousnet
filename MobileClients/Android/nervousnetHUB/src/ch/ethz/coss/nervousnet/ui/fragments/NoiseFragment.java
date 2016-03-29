@@ -45,36 +45,34 @@ import ch.ethz.coss.nervousnet.lib.Utils;
 
 public class NoiseFragment extends BaseFragment {
 
-	
 	public NoiseFragment() {
 	}
-	
+
 	public NoiseFragment(int type) {
 		super(type);
 	}
-	
+
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_noise, container, false);
-		
+
 		return rootView;
 	}
 
-	/* (non-Javadoc)
-	 * @see ch.ethz.coss.nervousnet.sample.BaseFragment#updateReadings(ch.ethz.coss.nervousnet.vm.SensorReading)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.ethz.coss.nervousnet.sample.BaseFragment#updateReadings(ch.ethz.coss.
+	 * nervousnet.vm.SensorReading)
 	 */
 	@Override
 	public void updateReadings(SensorReading reading) {
-	
-		
 
-		 Log.d("NoiseFragment", "Inside updateReadings");
-		 
-		 TextView db = (TextView) getActivity().findViewById(R.id.dbValue);
-		 db.setText("" + ((NoiseReading)reading).getdbValue());
-		
-	
-		 
+		Log.d("NoiseFragment", "Inside updateReadings");
+
+		TextView db = (TextView) getActivity().findViewById(R.id.dbValue);
+		db.setText("" + ((NoiseReading) reading).getdbValue());
+
 	}
-
 
 }

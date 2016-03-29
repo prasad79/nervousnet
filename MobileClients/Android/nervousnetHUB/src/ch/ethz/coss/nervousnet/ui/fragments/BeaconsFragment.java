@@ -44,30 +44,30 @@ import ch.ethz.coss.nervousnet.lib.SensorReading;
  */
 public class BeaconsFragment extends BaseFragment {
 
-	
-	
 	public BeaconsFragment() {
 	}
-	
+
 	public BeaconsFragment(int type) {
 		super(type);
 	}
 
-	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_beacons, container, false);
-		
+
 		return rootView;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see ch.ethz.coss.nervousnet.sample.BaseFragment#updateReadings(ch.ethz.coss.nervousnet.vm.SensorReading)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.ethz.coss.nervousnet.sample.BaseFragment#updateReadings(ch.ethz.coss.
+	 * nervousnet.vm.SensorReading)
 	 */
 	@Override
 	public void updateReadings(SensorReading reading) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

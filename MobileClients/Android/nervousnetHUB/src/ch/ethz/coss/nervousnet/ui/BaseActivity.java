@@ -50,7 +50,6 @@ import ch.ethz.coss.nervousnet.SensorService;
  */
 public abstract class BaseActivity extends Activity implements ActionBarImplementation {
 
-
 	protected View parentView;
 
 	@Override
@@ -59,7 +58,7 @@ public abstract class BaseActivity extends Activity implements ActionBarImplemen
 		updateActionBar();
 
 	}
-	
+
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -127,13 +126,13 @@ public abstract class BaseActivity extends Activity implements ActionBarImplemen
 		startActivity(intent);
 	}
 
-//	@Override
-//	public void onRestoreInstanceState(Bundle savedInstanceState) {
-//		super.onRestoreInstanceState(savedInstanceState);
-//	}
-//
-//	@Override
-//	public void onSaveInstanceState(Bundle outState) {
-//		super.onSaveInstanceState(outState);
-//	}
+	// @Override
+	// public void onRestoreInstanceState(Bundle savedInstanceState) {
+	// super.onRestoreInstanceState(savedInstanceState);
+	// }
+	//
+	// @Override
+	// public void onSaveInstanceState(Bundle outState) {
+	// super.onSaveInstanceState(outState);
+	// }
 }

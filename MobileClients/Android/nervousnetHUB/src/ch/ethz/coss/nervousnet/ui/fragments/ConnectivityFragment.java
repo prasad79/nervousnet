@@ -48,39 +48,39 @@ import ch.ethz.coss.nervousnet.lib.Utils;
  */
 public class ConnectivityFragment extends BaseFragment {
 
-	
 	public ConnectivityFragment() {
 	}
-	
+
 	public ConnectivityFragment(int type) {
 		super(type);
 	}
-	
-	
+
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_connectivity, container, false);
-		
+
 		return rootView;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see ch.ethz.coss.nervousnet.sample.BaseFragment#updateReadings(ch.ethz.coss.nervousnet.vm.SensorReading)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.ethz.coss.nervousnet.sample.BaseFragment#updateReadings(ch.ethz.coss.
+	 * nervousnet.vm.SensorReading)
 	 */
 	@Override
 	public void updateReadings(SensorReading reading) {
-		
-		 Log.d("ConnectivityFragment", "Inside updateReadings");
-		 
-		 TextView isConnectedTV = (TextView) getActivity().findViewById(R.id.isConnectedTV);
-		 TextView netwType = (TextView) getActivity().findViewById(R.id.netwType);
-		 TextView isRoaming = (TextView) getActivity().findViewById(R.id.isRoaming);
-		 
-		 isConnectedTV.setText("" + (((ConnectivityReading)reading).isConnected() ? "Yes" : "No"));
-		 netwType.setText("" +  Utils.getConnectivityTypeString(((ConnectivityReading)reading).getNetworkType()));
-		 isRoaming.setText("" + ((((ConnectivityReading)reading).isRoaming()) ? "Yes" : "No"));
-	
-		
+
+		Log.d("ConnectivityFragment", "Inside updateReadings");
+
+		TextView isConnectedTV = (TextView) getActivity().findViewById(R.id.isConnectedTV);
+		TextView netwType = (TextView) getActivity().findViewById(R.id.netwType);
+		TextView isRoaming = (TextView) getActivity().findViewById(R.id.isRoaming);
+
+		isConnectedTV.setText("" + (((ConnectivityReading) reading).isConnected() ? "Yes" : "No"));
+		netwType.setText("" + Utils.getConnectivityTypeString(((ConnectivityReading) reading).getNetworkType()));
+		isRoaming.setText("" + ((((ConnectivityReading) reading).isRoaming()) ? "Yes" : "No"));
+
 	}
 
 }

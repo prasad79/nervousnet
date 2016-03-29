@@ -46,38 +46,38 @@ import ch.ethz.coss.nervousnet.lib.SensorReading;
  */
 public class GyroFragment extends BaseFragment {
 
-	
-	
 	public GyroFragment() {
 	}
-	
+
 	public GyroFragment(int type) {
 		super(type);
 	}
-	
-	
+
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_gyro, container, false);
-		
+
 		return rootView;
 	}
 
-	/* (non-Javadoc)
-	 * @see ch.ethz.coss.nervousnet.sample.BaseFragment#updateReadings(ch.ethz.coss.nervousnet.vm.SensorReading)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.ethz.coss.nervousnet.sample.BaseFragment#updateReadings(ch.ethz.coss.
+	 * nervousnet.vm.SensorReading)
 	 */
 	@Override
 	public void updateReadings(SensorReading reading) {
-		Log.d("GyroFragment", "Inside updateReadings, X = "+((GyroReading)reading).getGyroX());
-		 
-		 TextView x_value = (TextView) getActivity().findViewById(R.id.gyro_x);
-		 TextView y_value = (TextView) getActivity().findViewById(R.id.gyro_y);
-		 TextView z_value = (TextView) getActivity().findViewById(R.id.gyro_z);
-		 
-		 x_value.setText("" + ((GyroReading)reading).getGyroX());
-	     y_value.setText("" + ((GyroReading)reading).getGyroY());
-	     z_value.setText("" + ((GyroReading)reading).getGyroZ());
-		
+		Log.d("GyroFragment", "Inside updateReadings, X = " + ((GyroReading) reading).getGyroX());
+
+		TextView x_value = (TextView) getActivity().findViewById(R.id.gyro_x);
+		TextView y_value = (TextView) getActivity().findViewById(R.id.gyro_y);
+		TextView z_value = (TextView) getActivity().findViewById(R.id.gyro_z);
+
+		x_value.setText("" + ((GyroReading) reading).getGyroX());
+		y_value.setText("" + ((GyroReading) reading).getGyroY());
+		z_value.setText("" + ((GyroReading) reading).getGyroZ());
+
 	}
-	
 
 }

@@ -176,8 +176,8 @@ public class SensorService extends Service implements SensorEventListener, Batte
 													// entry is clicked
 				.build();
 
-		if(mNM != null)
-		mNM.notify(NOTIFICATION, notification);
+		if (mNM != null)
+			mNM.notify(NOTIFICATION, notification);
 	}
 
 	public LocationReading getLocReading() {
@@ -239,7 +239,6 @@ public class SensorService extends Service implements SensorEventListener, Batte
 			return lightReading;
 		}
 
-		
 		@Override
 		public BatteryReading getBatteryReading() throws RemoteException {
 			Log.d(LOG_TAG, "Battery reading requested ");
@@ -269,7 +268,7 @@ public class SensorService extends Service implements SensorEventListener, Batte
 			Log.d(LOG_TAG, "Connectivity reading requested ");
 			return connReading;
 		}
-		
+
 		@Override
 		public NoiseReading getNoiseReading() throws RemoteException {
 			Log.d(LOG_TAG, "Noise reading requested ");
@@ -299,12 +298,12 @@ public class SensorService extends Service implements SensorEventListener, Batte
 		Intent sensorIntent = new Intent(context, SensorService.class);
 		context.stopService(sensorIntent);
 		removeNotification();
-		
+
 	}
 
 	private static void removeNotification() {
-		if(mNM != null)
-		mNM.cancel(NOTIFICATION);
+		if (mNM != null)
+			mNM.cancel(NOTIFICATION);
 	}
 
 	SensorConfiguration sensorConfiguration;
@@ -316,7 +315,6 @@ public class SensorService extends Service implements SensorEventListener, Batte
 		// Initialize sensor manager
 		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 		LocationManager locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		
 
 		// Hash map to register sensor collect status references
 		sensorCollected = new ConcurrentHashMap<Long, SensorCollectStatus>();
@@ -358,13 +356,13 @@ public class SensorService extends Service implements SensorEventListener, Batte
 		scheduleSensor(LibConstants.SENSOR_LIGHT);
 		// scheduleSensor(LibConstants.SENSOR_MAGNETIC);
 		// scheduleSensor(LibConstants.SENSOR_PROXIMITY);
-		 scheduleSensor(LibConstants.SENSOR_GYROSCOPE);
+		scheduleSensor(LibConstants.SENSOR_GYROSCOPE);
 		// scheduleSensor(LibConstants.SENSOR_TEMPERATURE);
-		 scheduleSensor(LibConstants.SENSOR_HUMIDITY);
+		scheduleSensor(LibConstants.SENSOR_HUMIDITY);
 		// scheduleSensor(LibConstants.SENSOR_PRESSURE);
-		 scheduleSensor(LibConstants.SENSOR_NOISE);
+		scheduleSensor(LibConstants.SENSOR_NOISE);
 		// scheduleSensor(LibConstants.SENSOR_BLEBEACON);
-		 scheduleSensor(LibConstants.SENSOR_CONNECTIVITY);
+		scheduleSensor(LibConstants.SENSOR_CONNECTIVITY);
 	}
 
 	private void scheduleSensor(final long sensorId) {
@@ -609,10 +607,11 @@ public class SensorService extends Service implements SensorEventListener, Batte
 
 		case LibConstants.SENSOR_LIGHT:
 			LightReading lreading = (LightReading) reading;
-			sensorData = new LightData(null, lreading.timestamp, lreading.getLuxValue(), lreading.volatility, lreading.isShare);
+			sensorData = new LightData(null, lreading.timestamp, lreading.getLuxValue(), lreading.volatility,
+					lreading.isShare);
 			sensorData.setType(LibConstants.SENSOR_LIGHT);
 			return sensorData;
-			
+
 		case LibConstants.SENSOR_LOCATION:
 			LocationReading locReading = (LocationReading) reading;
 			sensorData = new LocationData(null, reading.timestamp, locReading.getLatnLong()[0],

@@ -39,44 +39,33 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+public class AccelFragment extends BaseFragment {
 
-public class AccelFragment extends BaseFragment{
-
-	
 	public AccelFragment() {
 	}
-	
-	
+
 	public AccelFragment(int type) {
 		super(type);
 	}
-	
+
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_accel, container, false);
 
-		
-		
 		return rootView;
 	}
-	
 
-	
 	@Override
-	public void updateReadings(SensorReading reading){
-		 Log.d("AccelFragment", "Inside updateReadings, X = "+((AccelerometerReading)reading).getX());
-		 
-		 TextView x_value = (TextView) getActivity().findViewById(R.id.accel_x);
-		 TextView y_value = (TextView) getActivity().findViewById(R.id.accel_y);
-		 TextView z_value = (TextView) getActivity().findViewById(R.id.accel_z);
-		 
-		 x_value.setText("" + ((AccelerometerReading)reading).getX());
-	     y_value.setText("" + ((AccelerometerReading)reading).getY());
-	     z_value.setText("" + ((AccelerometerReading)reading).getZ());
-		
+	public void updateReadings(SensorReading reading) {
+		Log.d("AccelFragment", "Inside updateReadings, X = " + ((AccelerometerReading) reading).getX());
+
+		TextView x_value = (TextView) getActivity().findViewById(R.id.accel_x);
+		TextView y_value = (TextView) getActivity().findViewById(R.id.accel_y);
+		TextView z_value = (TextView) getActivity().findViewById(R.id.accel_z);
+
+		x_value.setText("" + ((AccelerometerReading) reading).getX());
+		y_value.setText("" + ((AccelerometerReading) reading).getY());
+		z_value.setText("" + ((AccelerometerReading) reading).getZ());
+
 	}
-	
-
-	
-
 
 }

@@ -47,10 +47,12 @@ public class LocationSensor implements SensorStatusImplementation, LocationListe
 	private static String LOG_TAG = "LocationSensor";
 
 	public static LocationSensor _instance = null;
-	
+
 	private LocationManager locationManager;
-	private final float MIN_UPDATE_DISTANCE = 1; //Minimum Distance between updates in meters
-	private final long MIN_TIME_BW_UPDATES = 100; //Minimum Time between updates in milliseconds.
+	private final float MIN_UPDATE_DISTANCE = 1; // Minimum Distance between
+													// updates in meters
+	private final long MIN_TIME_BW_UPDATES = 100; // Minimum Time between
+													// updates in milliseconds.
 
 	private boolean isGPSEnabled = false;
 	private boolean isNetworkEnabled = false;
@@ -60,11 +62,9 @@ public class LocationSensor implements SensorStatusImplementation, LocationListe
 	private LocationReading reading;
 	private Location location;
 	private Context mContext;
-	
-	
 
 	private LocationSensor(Context context) {
-		this.locationManager = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
+		this.locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 		this.mContext = context;
 	}
 
@@ -116,10 +116,9 @@ public class LocationSensor implements SensorStatusImplementation, LocationListe
 		isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
 		if (!isGPSEnabled && !isNetworkEnabled) {
-			 Log.d(LOG_TAG, "Location settings disabled");
-			 // no network provider is enabled
-			 Toast.makeText(mContext, "Location settings disabled",
-			 Toast.LENGTH_LONG).show();
+			Log.d(LOG_TAG, "Location settings disabled");
+			// no network provider is enabled
+			Toast.makeText(mContext, "Location settings disabled", Toast.LENGTH_LONG).show();
 		} else {
 			this.canGetLocation = true;
 			// First get location from Network Provider

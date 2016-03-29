@@ -42,43 +42,42 @@ import ch.ethz.coss.nervousnet.lib.SensorReading;
 
 public class LocationFragment extends BaseFragment {
 
-	
 	public LocationFragment() {
 	}
-	
+
 	public LocationFragment(int type) {
 		super(type);
 	}
-	
+
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_location, container, false);
-		
+
 		return rootView;
 	}
 
-	/* (non-Javadoc)
-	 * @see ch.ethz.coss.nervousnet.sample.BaseFragment#updateReadings(ch.ethz.coss.nervousnet.vm.SensorReading)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.ethz.coss.nervousnet.sample.BaseFragment#updateReadings(ch.ethz.coss.
+	 * nervousnet.vm.SensorReading)
 	 */
 	@Override
 	public void updateReadings(SensorReading reading) {
-			double[] location = ((LocationReading)reading).getLatnLong();
-			FragmentActivity fragAct = getActivity(); 
-			if(fragAct == null)
-				System.out.println("FragmentAcvitivity is null");
-			
-			TextView latitude = (TextView) fragAct.findViewById(R.id.lat);
-			latitude.setText("" + location[0]);
+		double[] location = ((LocationReading) reading).getLatnLong();
+		FragmentActivity fragAct = getActivity();
+		if (fragAct == null)
+			System.out.println("FragmentAcvitivity is null");
 
-			 TextView longitude = (TextView) getActivity().findViewById(R.id.longitude);
-			 longitude.setText("" + location[1]);
-		     
+		TextView latitude = (TextView) fragAct.findViewById(R.id.lat);
+		latitude.setText("" + location[0]);
 
-			 TextView altitude = (TextView) getActivity().findViewById(R.id.alti);
-			 altitude.setText("" + ((LocationReading)reading).getAltitude());
-			
-		
-		 
+		TextView longitude = (TextView) getActivity().findViewById(R.id.longitude);
+		longitude.setText("" + location[1]);
+
+		TextView altitude = (TextView) getActivity().findViewById(R.id.alti);
+		altitude.setText("" + ((LocationReading) reading).getAltitude());
+
 	}
-
 
 }

@@ -91,8 +91,6 @@ public class MainActivity extends BaseActivity {
 		}
 	}
 
-	
-
 	public void toastToScreen(String msg, boolean lengthLong) {
 		int toastLength = lengthLong ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT;
 		Toast.makeText(getApplicationContext(), msg, toastLength).show();

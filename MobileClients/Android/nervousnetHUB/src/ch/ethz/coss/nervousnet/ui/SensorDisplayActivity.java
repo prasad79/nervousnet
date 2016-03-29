@@ -73,24 +73,24 @@ import ch.ethz.coss.nervousnet.ui.fragments.LocationFragment;
 import ch.ethz.coss.nervousnet.ui.fragments.NoiseFragment;
 
 public class SensorDisplayActivity extends FragmentActivity implements ActionBarImplementation {
-	 protected NervousnetRemote mService;
-	 private ServiceConnection mServiceConnection;
-	 private Boolean bindFlag;
+	protected NervousnetRemote mService;
+	private ServiceConnection mServiceConnection;
+	private Boolean bindFlag;
 	private SensorDisplayPagerAdapter sapAdapter;
 	private ViewPager viewPager;
 	private static BaseFragment fragment;
-	
-	 int m_interval = 100; // 1 seconds by default, can be changed later
-	 Handler m_handler = new Handler();
+
+	int m_interval = 100; // 1 seconds by default, can be changed later
+	Handler m_handler = new Handler();
 	Runnable m_statusChecker = new Runnable() {
 		@Override
 		public void run() {
 
-		    Log.d("SensorDisplayActivity", "before updating");
-		    if(mService != null)
-		    	update(); // this function can change value of m_interval.
-		    else 
-		    	 Log.d("SensorDisplayActivity", "mService is null");
+			Log.d("SensorDisplayActivity", "before updating");
+			if (mService != null)
+				update(); // this function can change value of m_interval.
+			else
+				Log.d("SensorDisplayActivity", "mService is null");
 
 			m_handler.postDelayed(m_statusChecker, m_interval);
 		}
@@ -106,26 +106,27 @@ public class SensorDisplayActivity extends FragmentActivity implements ActionBar
 
 		viewPager = (ViewPager) findViewById(R.id.pager);
 		viewPager.setAdapter(sapAdapter);
-		
-		if(mServiceConnection == null){
-			initConnection();		
+
+		if (mServiceConnection == null) {
+			initConnection();
 		}
-			
-			
-		if(mService == null) {
+
+		if (mService == null) {
 			if (mService == null) {
 				try {
 
 					doBindService();
-					Log.d("SensorDisplayActivity", bindFlag.toString()); // will return "true"
-					if (!bindFlag){
+					Log.d("SensorDisplayActivity", bindFlag.toString()); // will
+																			// return
+																			// "true"
+					if (!bindFlag) {
 
 						Utils.displayAlert(SensorDisplayActivity.this, "Alert",
 								"Nervousnet HUB application is required to be running to use this app. Please download it from the App Store.",
 								"Download Now", new DialogInterface.OnClickListener() {
 									public void onClick(DialogInterface dialog, int id) {
-										startActivity(new Intent(Intent.ACTION_VIEW,
-												Uri.parse("https://play.google.com/store/apps/details?id=ch.ethz.soms.nervousnet")));
+										startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(
+												"https://play.google.com/store/apps/details?id=ch.ethz.soms.nervousnet")));
 									}
 								}, "Exit", new DialogInterface.OnClickListener() {
 									public void onClick(DialogInterface dialog, int id) {
@@ -136,10 +137,12 @@ public class SensorDisplayActivity extends FragmentActivity implements ActionBar
 								"Please check if the Nervousnet Remote Service is installed and running.",
 								Toast.LENGTH_SHORT).show();
 					}
-						
-					else{
+
+					else {
 						startRepeatingTask();
-						Toast.makeText(SensorDisplayActivity.this, "Nervousnet Remote is running fine and startRepeatingTask() called", Toast.LENGTH_SHORT).show();
+						Toast.makeText(SensorDisplayActivity.this,
+								"Nervousnet Remote is running fine and startRepeatingTask() called", Toast.LENGTH_SHORT)
+								.show();
 
 					}
 				} catch (Exception e) {
@@ -155,85 +158,80 @@ public class SensorDisplayActivity extends FragmentActivity implements ActionBar
 			}
 		}
 	}
-		
-		void initConnection() {
 
-			Log.d("SensorDisplayActivity", "Inside initConnection");
-			mServiceConnection = new ServiceConnection() {
+	void initConnection() {
 
-				
-				@Override
-				public void onServiceDisconnected(ComponentName name) {
-					 Log.d("SensorDisplayActivity", "Inside onServiceDisconnected 2");
-					System.out.println("onServiceDisconnected");
-					// TODO Auto-generated method stub
-					mService = null;
-					mServiceConnection = null;
-					Toast.makeText(getApplicationContext(), "NervousnetRemote Service not connected", Toast.LENGTH_SHORT)
-							.show();
-					Log.d("SensorDisplayActivity", "Binding - Service disconnected");
-				}
+		Log.d("SensorDisplayActivity", "Inside initConnection");
+		mServiceConnection = new ServiceConnection() {
 
-				@Override
-				public void onServiceConnected(ComponentName name, IBinder service) {
-					Log.d("SensorDisplayActivity", "onServiceConnected");
-					Log.d("SensorDisplayActivity", "Inside onServiceConnected 2");
-					 
-					mService = NervousnetRemote.Stub.asInterface(service);
+			@Override
+			public void onServiceDisconnected(ComponentName name) {
+				Log.d("SensorDisplayActivity", "Inside onServiceDisconnected 2");
+				System.out.println("onServiceDisconnected");
+				// TODO Auto-generated method stub
+				mService = null;
+				mServiceConnection = null;
+				Toast.makeText(getApplicationContext(), "NervousnetRemote Service not connected", Toast.LENGTH_SHORT)
+						.show();
+				Log.d("SensorDisplayActivity", "Binding - Service disconnected");
+			}
 
-//					try {
-//						count.setText(mService.getCounter() + "");
-//					} catch (RemoteException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
+			@Override
+			public void onServiceConnected(ComponentName name, IBinder service) {
+				Log.d("SensorDisplayActivity", "onServiceConnected");
+				Log.d("SensorDisplayActivity", "Inside onServiceConnected 2");
 
-					// try {
-					// BatteryReading reading = mService.getBatteryReading();
-					// System.out.println("onServiceConnected 2");
-					// if(reading != null)
-					// counter.setText(reading.getBatteryPercent()+"");
-					// else
-					// counter.setText("Null object returned");
-					// } catch (RemoteException e) {
-					// // TODO Auto-generated catch block
-					// System.out.println("Exception thrown here");
-					// e.printStackTrace();
-					// }
-					// m_handler.post(m_statusChecker);
+				mService = NervousnetRemote.Stub.asInterface(service);
 
-					startRepeatingTask();
-					Toast.makeText(getApplicationContext(), "Nervousnet Remote Service Connected", Toast.LENGTH_SHORT)
-							.show();
-					Log.d("SensorDisplayActivity", "Binding is done - Service connected");
-				}
-			};
-			
-	
-		}
-		
+				// try {
+				// count.setText(mService.getCounter() + "");
+				// } catch (RemoteException e) {
+				// // TODO Auto-generated catch block
+				// e.printStackTrace();
+				// }
+
+				// try {
+				// BatteryReading reading = mService.getBatteryReading();
+				// System.out.println("onServiceConnected 2");
+				// if(reading != null)
+				// counter.setText(reading.getBatteryPercent()+"");
+				// else
+				// counter.setText("Null object returned");
+				// } catch (RemoteException e) {
+				// // TODO Auto-generated catch block
+				// System.out.println("Exception thrown here");
+				// e.printStackTrace();
+				// }
+				// m_handler.post(m_statusChecker);
+
+				startRepeatingTask();
+				Toast.makeText(getApplicationContext(), "Nervousnet Remote Service Connected", Toast.LENGTH_SHORT)
+						.show();
+				Log.d("SensorDisplayActivity", "Binding is done - Service connected");
+			}
+		};
+
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		return false;
 	}
 
-	
 	@Override
 	public void updateActionBar() {
 		LayoutInflater inflator = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View v = inflator.inflate(R.layout.ab_nn, null);
-		 ActionBar actionBar;
-		 Switch mainSwitch;
-		
-			actionBar = getActionBar();
-			actionBar.setDisplayHomeAsUpEnabled(false);
-			actionBar.setDisplayShowHomeEnabled(false);
-			actionBar.setDisplayShowCustomEnabled(true);
-			actionBar.setDisplayShowTitleEnabled(false);
-			actionBar.setCustomView(v);
-			mainSwitch = (Switch) findViewById(R.id.mainSwitch);
-		
+		ActionBar actionBar;
+		Switch mainSwitch;
+
+		actionBar = getActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(false);
+		actionBar.setDisplayShowHomeEnabled(false);
+		actionBar.setDisplayShowCustomEnabled(true);
+		actionBar.setDisplayShowTitleEnabled(false);
+		actionBar.setCustomView(v);
+		mainSwitch = (Switch) findViewById(R.id.mainSwitch);
 
 		byte state = NervousnetManager.getInstance().getState(this);
 		Log.d("SensorDisplayActivity", "state = " + state);
@@ -344,42 +342,40 @@ public class SensorDisplayActivity extends FragmentActivity implements ActionBar
 		public CharSequence getPageTitle(int position) {
 			return Constants.sensor_labels[position];
 		}
-		
+
 		@SuppressWarnings("unchecked")
-	    public Fragment getFragment(int position) {
-	        try {
-	            Field f = FragmentStatePagerAdapter.class.getDeclaredField("mFragments");
-	            f.setAccessible(true);
-	            ArrayList<Fragment> fragments = (ArrayList<Fragment>) f.get(this);
-	            if (fragments.size() > position) {
-	                return fragments.get(position);
-	            }
-	            return null;
-	        } catch (Exception e) {
-	            throw new RuntimeException(e);
-	        }
-	    }
+		public Fragment getFragment(int position) {
+			try {
+				Field f = FragmentStatePagerAdapter.class.getDeclaredField("mFragments");
+				f.setAccessible(true);
+				ArrayList<Fragment> fragments = (ArrayList<Fragment>) f.get(this);
+				if (fragments.size() > position) {
+					return fragments.get(position);
+				}
+				return null;
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
 	}
 
 	protected void updateStatus(SensorReading reading, int index) {
-		
-		BaseFragment fragment =  (BaseFragment) sapAdapter.getFragment(index);
-		 Log.d("SensorDisplayActivity", "Inside updateStatus "+fragment.type);
-		 
-		 if(reading != null)
-			 fragment.updateReadings(reading);
-		 else
-			 fragment.handleError("Reading is null");
+
+		BaseFragment fragment = (BaseFragment) sapAdapter.getFragment(index);
+		Log.d("SensorDisplayActivity", "Inside updateStatus " + fragment.type);
+
+		if (reading != null)
+			fragment.updateReadings(reading);
+		else
+			fragment.handleError("Reading is null");
 	}
-	
 
 	@Override
 	public void onBackPressed() {
 		stopRepeatingTask();
 		finish();
 	}
-	
-	
+
 	void startRepeatingTask() {
 		m_statusChecker.run();
 	}
@@ -387,48 +383,48 @@ public class SensorDisplayActivity extends FragmentActivity implements ActionBar
 	void stopRepeatingTask() {
 		m_handler.removeCallbacks(m_statusChecker);
 	}
-	
+
 	protected void update() {
 		try {
 			int index = viewPager.getCurrentItem();
-			Log.d("SensorDisplayActivity", "Inside update : index  = "+index);
-			 
-			 switch(index){
-			 case 0:
-				 updateStatus((SensorReading)mService.getAccelerometerReading(), index);
-				 break;
-			 case 1:
-				 updateStatus((SensorReading)mService.getBatteryReading(), index);
-				 break;
-			 case 2:
-				//beacons
-				 break;
-			 case 3:
-				 updateStatus((SensorReading)mService.getConnectivityReading(), index);
-				 break;
-			 case 4:
-				 updateStatus((SensorReading)mService.getGyroReading(), index);
-				 break;
-			 case 5:
-				 //HUmidity
-				 break;
-			 case 6:
-				 updateStatus((SensorReading)mService.getLocationReading(), index);
-				 break;
-			 case 7:
-				 updateStatus((SensorReading)mService.getLightReading(), index);
-				 break;
-			 case 8:
-				//Magnetic
-				 break;
-				 
-			 case 9:
-				 updateStatus((SensorReading)mService.getNoiseReading(), index);
-				 break;
-					 
-			 }
+			Log.d("SensorDisplayActivity", "Inside update : index  = " + index);
 
-			 viewPager.getAdapter().notifyDataSetChanged();
+			switch (index) {
+			case 0:
+				updateStatus((SensorReading) mService.getAccelerometerReading(), index);
+				break;
+			case 1:
+				updateStatus((SensorReading) mService.getBatteryReading(), index);
+				break;
+			case 2:
+				// beacons
+				break;
+			case 3:
+				updateStatus((SensorReading) mService.getConnectivityReading(), index);
+				break;
+			case 4:
+				updateStatus((SensorReading) mService.getGyroReading(), index);
+				break;
+			case 5:
+				// HUmidity
+				break;
+			case 6:
+				updateStatus((SensorReading) mService.getLocationReading(), index);
+				break;
+			case 7:
+				updateStatus((SensorReading) mService.getLightReading(), index);
+				break;
+			case 8:
+				// Magnetic
+				break;
+
+			case 9:
+				updateStatus((SensorReading) mService.getNoiseReading(), index);
+				break;
+
+			}
+
+			viewPager.getAdapter().notifyDataSetChanged();
 
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
@@ -438,18 +434,19 @@ public class SensorDisplayActivity extends FragmentActivity implements ActionBar
 			e.printStackTrace();
 		}
 	}
+
 	protected void doBindService() {
 		Log.d("SensorDisplayActivity", "doBindService successfull");
-		 
+
 		Intent it = new Intent();
 		it.setClassName("ch.ethz.coss.nervousnet", "ch.ethz.coss.nervousnet.SensorService");
 		bindFlag = getApplicationContext().bindService(it, mServiceConnection, 0);
-		 
+
 	}
-	
+
 	protected void doUnbindService() {
 		getApplicationContext().unbindService(mServiceConnection);
 		bindFlag = false;
-		 Log.d("SensorDisplayActivity ", "doUnbindService successfull");
+		Log.d("SensorDisplayActivity ", "doUnbindService successfull");
 	}
 }

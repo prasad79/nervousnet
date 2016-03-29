@@ -56,7 +56,8 @@ import ch.ethz.coss.nervousnet.SensorService;
  *
  */
 
-public class SettingsActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener, ActionBarImplementation {
+public class SettingsActivity extends PreferenceActivity
+		implements OnSharedPreferenceChangeListener, ActionBarImplementation {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -129,17 +130,16 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 	public void updateActionBar() {
 		LayoutInflater inflator = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View v = inflator.inflate(R.layout.ab_nn, null);
-		 ActionBar actionBar;
-		 Switch mainSwitch;
-		
-			actionBar = getActionBar();
-			actionBar.setDisplayHomeAsUpEnabled(false);
-			actionBar.setDisplayShowHomeEnabled(false);
-			actionBar.setDisplayShowCustomEnabled(true);
-			actionBar.setDisplayShowTitleEnabled(false);
-			actionBar.setCustomView(v);
-			mainSwitch = (Switch) findViewById(R.id.mainSwitch);
-		
+		ActionBar actionBar;
+		Switch mainSwitch;
+
+		actionBar = getActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(false);
+		actionBar.setDisplayShowHomeEnabled(false);
+		actionBar.setDisplayShowCustomEnabled(true);
+		actionBar.setDisplayShowTitleEnabled(false);
+		actionBar.setCustomView(v);
+		mainSwitch = (Switch) findViewById(R.id.mainSwitch);
 
 		byte state = NervousnetManager.getInstance().getState(this);
 		Log.d("SettingsActivity", "state = " + state);
@@ -153,7 +153,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 		});
 
 	}
-	
+
 	public void startStopSensorService(boolean on) {
 		if (on) {
 			SensorService.startService(this);
