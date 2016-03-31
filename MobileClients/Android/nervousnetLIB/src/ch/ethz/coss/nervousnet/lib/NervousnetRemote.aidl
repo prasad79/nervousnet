@@ -23,4 +23,8 @@ import ch.ethz.coss.nervousnet.lib.NoiseReading;
 	    GyroReading getGyroReading();
 	    
 	    NoiseReading getNoiseReading();
+	    
+	    float getStdev(int type);
+	    
+	    float getVar(int type);
 	}

@@ -3,7 +3,6 @@ package ch.ethz.coss.nervousnet;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
-import ch.ethz.coss.nervousnet.utils.NervousStatics;
 
 public class SensorConfiguration {
 
@@ -23,11 +22,11 @@ public class SensorConfiguration {
 	}
 
 	public SensorCollectStatus getInitialSensorCollectStatus(int sensorType) {
-		SharedPreferences settings = context.getSharedPreferences(NervousStatics.SENSOR_PREFS, 0);
+		SharedPreferences settings = context.getSharedPreferences(Constants.SENSOR_PREFS, 0);
 		boolean doMeasure = settings.getBoolean(sensorType + "_doMeasure", true);
 		boolean doShare = settings.getBoolean(sensorType + "_doShare", true);
 
-		int measureInterval = (int) context.getSharedPreferences(NervousStatics.SENSOR_FREQ, 0)
+		int measureInterval = (int) context.getSharedPreferences(Constants.SENSOR_FREQ, 0)
 				.getInt(sensorType + "_freqValue", 2) * 2000;
 
 		Log.d("SensorConfiguration", "MeasureInterval = " + measureInterval);
