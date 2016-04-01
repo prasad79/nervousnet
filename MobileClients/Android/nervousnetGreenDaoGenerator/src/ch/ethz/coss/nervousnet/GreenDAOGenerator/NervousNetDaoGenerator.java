@@ -41,6 +41,7 @@ public class NervousNetDaoGenerator {
         Schema schema = new Schema(3, "ch.ethz.coss.nervousnet.vm.model");
         schema.enableKeepSectionsByDefault();
         addConfig(schema);
+        addAuthentication(schema);
         addSensors(schema);
         new DaoGenerator().generateAll(schema, OUTPUT_FOLDER);
     }
@@ -54,6 +55,15 @@ public class NervousNetDaoGenerator {
         config.addStringProperty("DeviceOS");
         config.addStringProperty("DeviceOSversion");
         config.addLongProperty("LastSyncTime");
+        
+    }
+    
+    private static void addAuthentication(Schema schema) {
+        Entity config = schema.addEntity("Authentication");
+        config.addStringProperty("AppName");
+        config.addByteProperty("Authorized");
+        config.addStringProperty("AccessRights");
+        config.addLongProperty("LastVerifiedTime");
         
     }
     
