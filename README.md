@@ -9,7 +9,8 @@ The social sensing services of the planetary nervous system can be publicly used
 
 ### Authors and Contributors
 Prasad P. Pulikal (@prasad79) <br>
-Patrick Mistelli (@mistelip)
+Patrick Mistelli (@mistelip) <br>
+Dinesh Acharya
 
 ### Support or Contact
 For more information or support check out our website http://www.nervousnet.info
