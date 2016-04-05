@@ -6,10 +6,9 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="ch.ethz.coss.nervousnet.ui.AccSensorActivity" >
+    tools:context="ch.ethz.coss.nervousnet.hub.ui.AccSensorActivity" >
 
     <TextView
-        android:id="@+id/sensorLabelHeader"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -22,7 +21,6 @@
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
         android:layout_marginBottom="30dp"
         android:layout_marginTop="30dp"
         android:orientation="vertical" >
@@ -31,6 +29,78 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
+
+            <LinearLayout
+                android:id="@+id/coll_rate_item"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:id="@+id/coll_rate_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|center_horizontal"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/ic_missing" >
+                </ImageView>
+
+                <TextView
+                    android:id="@+id/coll_rate_TV"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Collection Rate"
+                    android:textColor="@color/gray" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/sharing_nodes_item"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:id="@+id/sharing_nodes_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|center_horizontal"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/ic_missing" >
+                </ImageView>
+
+                <TextView
+                    android:id="@+id/sharing_nodes_TV"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Sharing Nodes"
+                    android:textColor="@color/gray" />
+            </LinearLayout>
+
+            <LinearLayout
+                 android:id="@+id/sensor_perm_item"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:id="@+id/sensor_perm_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|center_horizontal"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/ic_missing" >
+                </ImageView>
+
+                <TextView
+                    android:id="@+id/sensor_perm_TV"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Sensor Permissions"
+                    android:textColor="@color/gray" />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 
