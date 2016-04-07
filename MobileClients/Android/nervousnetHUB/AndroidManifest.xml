@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ch.ethz.coss.nervousnet.hub"
-    android:versionCode="11"
-    android:versionName="0.7.4 alpha" >
+    android:versionCode="13"
+    android:versionName="0.7.6 alpha" >
 
     <!--
     <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -44,7 +44,7 @@
             android:enabled="true"
             android:exported="true" >
             <intent-filter>
-                <action android:name="ch.ethz.nervousnet" />
+                <action android:name="ch.ethz.coss.nervousnet.hub" />
             </intent-filter>
         </service>
 
