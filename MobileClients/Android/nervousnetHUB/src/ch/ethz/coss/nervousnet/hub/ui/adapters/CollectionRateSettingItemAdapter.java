@@ -70,9 +70,9 @@ public class CollectionRateSettingItemAdapter extends ArrayAdapter<String> {
 	public Dialog createDialog() {
 	    AlertDialog.Builder builder = new AlertDialog.Builder(context);
 	    builder.setTitle("Title if Any");
-	    builder.setItems(NervousnetConstants.sensor_levels, new DialogInterface.OnClickListener() {
+	    builder.setItems(NervousnetConstants.sensor_freq_labels, new DialogInterface.OnClickListener() {
 	               public void onClick(DialogInterface dialog, int itemClicked) {
-	                   String[] option_array = NervousnetConstants.sensor_levels;
+	                   String[] option_array = NervousnetConstants.sensor_freq_labels;
 	                   String optionSelected = option_array[itemClicked];
 	           }
 	    });

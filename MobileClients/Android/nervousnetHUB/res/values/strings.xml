@@ -22,11 +22,10 @@ Clausiusstrasse 50,\n 8092 Zürich,\n Switzerland\n</string>
     <string-array name="main_grid">
         <item>Sensors</item>
         <item>Sensor Analytics</item>
-        <item>App Showcase</item>
+        <item>nervousnet Space</item>
         <item>Settings</item>
         <item>Help</item>
         <item>About</item>
-        <item>Show Sensor</item>
     </string-array>
     <string-array name="sensors_list">
         <item>Accelerometer</item>

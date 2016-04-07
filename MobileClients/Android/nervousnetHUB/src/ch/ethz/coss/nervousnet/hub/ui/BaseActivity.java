@@ -44,7 +44,7 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import ch.ethz.coss.nervousnet.hub.R;
 import ch.ethz.coss.nervousnet.hub.R.layout;
-import ch.ethz.coss.nervousnet.hub.NervousnetHubManager;
+import ch.ethz.coss.nervousnet.hub.Application;
 import ch.ethz.coss.nervousnet.hub.NervousnetHubApiService;
 
 /**
@@ -82,7 +82,7 @@ public abstract class BaseActivity extends Activity implements ActionBarImplemen
 		actionBar.setCustomView(v);
 		mainSwitch = (Switch) findViewById(R.id.mainSwitch);
 
-		byte state = NervousnetHubManager.getInstance().getState(this);
+		byte state = ((Application)getApplication()).getState(this);
 		Log.d("BaseActivity", "state = " + state);
 		mainSwitch.setChecked(state == 0 ? false : true);
 
@@ -97,31 +97,12 @@ public abstract class BaseActivity extends Activity implements ActionBarImplemen
 
 	public void startStopSensorService(boolean on) {
 		if (on) {
-			NervousnetHubApiService.startService(this);
-
-			// UploadService.startService(this);
-			// serviceRunning = true;
-			//
-			// // If the user wants to collect BT/BLE data, ask to enable
-			// bluetooth
-			// // if disabled
-			// SensorConfiguration sc =
-			// SensorConfiguration.getInstance(getApplicationContext());
-			// SensorCollectStatus scs =
-			// sc.getInitialSensorCollectStatus(Constants.SENSOR_BLEBEACON);
-			// if (scs.isCollect()) {
-			// // This will only work on API level 18 or higher
-			// initializeBluetooth();
-			// }
-
+			((Application)getApplication()).startService(this);
 		} else {
-			NervousnetHubApiService.stopService(this);
-			// UploadService.stopService(this);
-			// serviceRunning = false;
+			((Application)getApplication()).stopService(this);
 		}
 
-		NervousnetHubManager.getInstance().setState(this, on ? (byte) 1 : (byte) 0);
-		//updateServiceInfo();
+		((Application)getApplication()).setState(this, on ? (byte) 1 : (byte) 0);
 	}
 
 	protected void startNextActivity(Intent intent) {

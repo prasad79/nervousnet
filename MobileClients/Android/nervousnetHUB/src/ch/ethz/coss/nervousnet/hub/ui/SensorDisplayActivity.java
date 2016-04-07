@@ -55,7 +55,7 @@ import android.widget.Switch;
 import android.widget.Toast;
 import ch.ethz.coss.nervousnet.vm.NervousnetConstants;
 import ch.ethz.coss.nervousnet.hub.R;
-import ch.ethz.coss.nervousnet.hub.NervousnetHubManager;
+import ch.ethz.coss.nervousnet.hub.Application;
 import ch.ethz.coss.nervousnet.hub.NervousnetHubApiService;
 import ch.ethz.coss.nervousnet.hub.ui.fragments.AccelFragment;
 import ch.ethz.coss.nervousnet.hub.ui.fragments.BaseFragment;
@@ -82,20 +82,8 @@ public class SensorDisplayActivity extends FragmentActivity implements ActionBar
 
 	int m_interval = 100; // 1 seconds by default, can be changed later
 	Handler m_handler = new Handler();
-	Runnable m_statusChecker = new Runnable() {
-		@Override
-		public void run() {
-
-			Log.d("SensorDisplayActivity", "before updating");
-			if (mService != null)
-				update(); // this function can change value of m_interval.
-			else
-				Log.d("SensorDisplayActivity", "mService is null");
-
-			m_handler.postDelayed(m_statusChecker, m_interval);
-		}
-	};
-
+	Runnable m_statusChecker;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -111,7 +99,6 @@ public class SensorDisplayActivity extends FragmentActivity implements ActionBar
 			initConnection();
 		}
 
-		if (mService == null) {
 			if (mService == null) {
 				try {
 
@@ -119,44 +106,41 @@ public class SensorDisplayActivity extends FragmentActivity implements ActionBar
 					Log.d("SensorDisplayActivity", bindFlag.toString()); // will
 																			// return
 																			// "true"
-					if (!bindFlag) {
-
-						Utils.displayAlert(SensorDisplayActivity.this, "Alert",
-								"Nervousnet HUB application is required to be running to use this app. Please download it from the App Store.",
-								"Download Now", new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog, int id) {
-										startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(
-												"https://play.google.com/store/apps/details?id=ch.ethz.soms.nervousnet")));
-									}
-								}, "Exit", new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog, int id) {
-										System.exit(0);
-									}
-								});
-						Toast.makeText(SensorDisplayActivity.this,
-								"Please check if the Nervousnet Remote Service is installed and running.",
-								Toast.LENGTH_SHORT).show();
-					}
-
-					else {
-						startRepeatingTask();
-						Toast.makeText(SensorDisplayActivity.this,
-								"Nervousnet Remote is running fine and startRepeatingTask() called", Toast.LENGTH_SHORT)
-								.show();
-
-					}
+//		
+//					if (!bindFlag) {
+//						Utils.displayAlert(SensorDisplayActivity.this, "Alert",
+//								"Please switch on the data collection option to access this feature.",
+//								"Switch On", new DialogInterface.OnClickListener() {
+//									public void onClick(DialogInterface dialog, int id) {
+//										startStopSensorService(true);
+//										
+//									}
+//								}, "Back", new DialogInterface.OnClickListener() {
+//									public void onClick(DialogInterface dialog, int id) {
+//										
+//									}
+//								});
+//						Toast.makeText(SensorDisplayActivity.this,
+//								"Please check if the Nervousnet Remote Service is installed and running.",
+//								Toast.LENGTH_SHORT).show();
+//					}
+//
+//					else {
+//						startRepeatingTask();
+//						Toast.makeText(SensorDisplayActivity.this,
+//								"Nervousnet Remote is running fine and startRepeatingTask() called", Toast.LENGTH_SHORT)
+//								.show();
+//
+//					}
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 					Log.e("SensorDisplayActivity", "not able to bind ! ");
 				}
 
-				// //binding to remote service
-				// boolean flag = bindService(it, mServiceConnection,
-				// Service.BIND_AUTO_CREATE);
-				//
-				//
+				
 			}
-		}
+		
 	}
 
 	void initConnection() {
@@ -182,28 +166,8 @@ public class SensorDisplayActivity extends FragmentActivity implements ActionBar
 				Log.d("SensorDisplayActivity", "Inside onServiceConnected 2");
 
 				mService = NervousnetRemote.Stub.asInterface(service);
-
-				// try {
-				// count.setText(mService.getCounter() + "");
-				// } catch (RemoteException e) {
-				// // TODO Auto-generated catch block
-				// e.printStackTrace();
-				// }
-
-				// try {
-				// BatteryReading reading = mService.getBatteryReading();
-				// System.out.println("onServiceConnected 2");
-				// if(reading != null)
-				// counter.setText(reading.getBatteryPercent()+"");
-				// else
-				// counter.setText("Null object returned");
-				// } catch (RemoteException e) {
-				// // TODO Auto-generated catch block
-				// System.out.println("Exception thrown here");
-				// e.printStackTrace();
-				// }
-				// m_handler.post(m_statusChecker);
-
+				
+		
 				startRepeatingTask();
 				Toast.makeText(getApplicationContext(), "Nervousnet Remote Service Connected", Toast.LENGTH_SHORT)
 						.show();
@@ -233,7 +197,7 @@ public class SensorDisplayActivity extends FragmentActivity implements ActionBar
 		actionBar.setCustomView(v);
 		mainSwitch = (Switch) findViewById(R.id.mainSwitch);
 
-		byte state = NervousnetHubManager.getInstance().getState(this);
+		byte state = ((Application)getApplication()).getState(this);
 		Log.d("SensorDisplayActivity", "state = " + state);
 		mainSwitch.setChecked(state == 0 ? false : true);
 
@@ -248,8 +212,9 @@ public class SensorDisplayActivity extends FragmentActivity implements ActionBar
 
 	public void startStopSensorService(boolean on) {
 		if (on) {
-			NervousnetHubApiService.startService(this);
-			startRepeatingTask();
+			((Application)getApplication()).startService(this);
+			initConnection();
+//			startRepeatingTask();
 
 			// UploadService.startService(this);
 			// serviceRunning = true;
@@ -267,13 +232,13 @@ public class SensorDisplayActivity extends FragmentActivity implements ActionBar
 			// }
 
 		} else {
-			NervousnetHubApiService.stopService(this);
+			((Application)getApplication()).stopService(this);
 			stopRepeatingTask();
 			// UploadService.stopService(this);
 			// serviceRunning = false;
 		}
 
-		NervousnetHubManager.getInstance().setState(this, on ? (byte) 1 : (byte) 0);
+		((Application)getApplication()).setState(this, on ? (byte) 1 : (byte) 0);
 		// updateServiceInfo();
 	}
 
@@ -377,11 +342,44 @@ public class SensorDisplayActivity extends FragmentActivity implements ActionBar
 	}
 
 	void startRepeatingTask() {
+		m_statusChecker = new Runnable() {
+			@Override
+			public void run() {
+
+				Log.d("SensorDisplayActivity", "before updating");
+				if (mService != null)
+					update(); // this function can change value of m_interval.
+				else {
+					Log.d("SensorDisplayActivity", "mService is null");
+					
+					
+					Utils.displayAlert(SensorDisplayActivity.this, "Alert",
+							"Please switch on the data collection option to access this feature.",
+							"Switch On", new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int id) {
+									startStopSensorService(true);
+								}
+							}, "Back", new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int id) {
+									
+									finish();
+								}
+							});
+					
+					stopRepeatingTask();
+				}
+					
+				m_handler.postDelayed(m_statusChecker, m_interval);
+			}
+		};
+		
 		m_statusChecker.run();
 	}
 
 	void stopRepeatingTask() {
 		m_handler.removeCallbacks(m_statusChecker);
+		m_statusChecker = null;
+		
 	}
 
 	protected void update() {
@@ -439,8 +437,8 @@ public class SensorDisplayActivity extends FragmentActivity implements ActionBar
 		Log.d("SensorDisplayActivity", "doBindService successfull");
 
 		Intent it = new Intent();
-		it.setClassName("ch.ethz.coss.nervousnet", "ch.ethz.coss.nervousnet.SensorService");
-		bindFlag = getApplicationContext().bindService(it, mServiceConnection, 0);
+		it.setClassName("ch.ethz.coss.nervousnet.hub", "ch.ethz.coss.nervousnet.hub.NervousnetHubApiService");
+		bindFlag = getApplicationContext().bindService(it, mServiceConnection, Context.BIND_AUTO_CREATE);
 
 	}
 

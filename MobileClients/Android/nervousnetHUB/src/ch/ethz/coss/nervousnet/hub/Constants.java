@@ -34,15 +34,11 @@ import ch.ethz.coss.nervousnet.hub.R;
  */
 public final class Constants {
 
-	public final static String APPLICATION_LOG_TAG = "NervousNetHUB";
-
-	public static boolean DEBUG = true;
 
 	public final static int VIBRATION_DURATION = 50;
 
-	public static Integer[] dummy_icon_array_home = { R.drawable.ic_missing, R.drawable.ic_missing,
-			R.drawable.ic_missing, R.drawable.ic_missing, R.drawable.ic_missing, R.drawable.ic_missing,
-			R.drawable.ic_missing };
+	public static Integer[] icons_main_screen = { R.drawable.ic_sensors, R.drawable.ic_analytics,
+			R.drawable.ic_apps, R.drawable.ic_settings, R.drawable.ic_help, R.drawable.ic_about};
 
 	public static Integer[] dummy_icon_array_sensors = { R.drawable.ic_missing, R.drawable.ic_missing,
 			R.drawable.ic_missing, R.drawable.ic_missing, R.drawable.ic_missing, R.drawable.ic_missing,
@@ -50,14 +46,7 @@ public final class Constants {
 			R.drawable.ic_missing, R.drawable.ic_missing, R.drawable.ic_missing };
 
 
-
-	/****************** Preferences ****************/
-	public final static String SENSOR_PREFS = "SensorPreferences";
-	public final static String SENSOR_FREQ = "SensorFrequencies";
-	public final static String SERVICE_PREFS = "ServicePreferences";
-	public final static String UPLOAD_PREFS = "UploadPreferences";
-
-	public final static int REQUEST_ENABLE_BT = 0;
+	
 
 
 }

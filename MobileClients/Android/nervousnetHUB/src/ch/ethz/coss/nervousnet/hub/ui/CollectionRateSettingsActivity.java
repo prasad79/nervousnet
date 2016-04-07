@@ -55,7 +55,6 @@ import android.widget.Switch;
 import android.widget.Toast;
 import ch.ethz.coss.nervousnet.hub.R;
 import ch.ethz.coss.nervousnet.hub.Constants;
-import ch.ethz.coss.nervousnet.hub.NervousnetHubManager;
 import ch.ethz.coss.nervousnet.hub.NervousnetHubApiService;
 import ch.ethz.coss.nervousnet.hub.ui.adapters.CollectionRateSettingItemAdapter;
 import ch.ethz.coss.nervousnet.vm.NervousnetConstants;

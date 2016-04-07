@@ -53,7 +53,7 @@ public class MainActivity extends BaseActivity {
 		parentView = findViewById(R.id.main_grid);
 		GridView gridview = (GridView) parentView.findViewById(R.id.main_grid);
 		gridview.setAdapter(new ImageAdapter(MainActivity.this, getResources().getStringArray(R.array.main_grid),
-				Constants.dummy_icon_array_home));
+				Constants.icons_main_screen));
 		gridview.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {

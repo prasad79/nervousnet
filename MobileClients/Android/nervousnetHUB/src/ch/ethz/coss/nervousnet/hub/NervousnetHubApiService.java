@@ -74,15 +74,14 @@ import ch.ethz.coss.nervousnet.vm.storage.LocationData;
 import ch.ethz.coss.nervousnet.vm.storage.SensorDataImpl;
 import ch.ethz.coss.nervousnet.vm.storage.StoreTask;
 
+import ch.ethz.coss.nervousnet.vm.SensorCollectStatus;
+import ch.ethz.coss.nervousnet.vm.SensorConfiguration;
+
 public class NervousnetHubApiService extends Service implements SensorEventListener, BatterySensorListener,
 		ConnectivitySensorListener, LocationSensorListener, NoiseSensorListener {
 
 	private static final String LOG_TAG = NervousnetHubApiService.class.getSimpleName();
-
 	private SensorManager sensorManager = null;
-
-	private static NotificationManager mNM;
-	private static int NOTIFICATION = R.string.local_service_started;
 
 	private PowerManager.WakeLock wakeLock;
 	private HandlerThread hthread;
@@ -143,44 +142,14 @@ public class NervousnetHubApiService extends Service implements SensorEventListe
 			wakeLock.acquire();
 		}
 
-		mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+	
 
 		// Display a notification about us starting. We put an icon in the
 		// status bar.
-		showNotification();
+		((Application)getApplication()).showNotification();
 	}
 
-	/**
-	 * Show a notification while this service is running.
-	 */
-	private void showNotification() {
-		// In this sample, we'll use the same text for the ticker and the
-		// expanded notification
-		CharSequence text = getText(R.string.local_service_started);
 
-		// The PendingIntent to launch our activity if the user selects this
-		// notification
-		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, StartUpActivity.class), 0);
-
-		// Set the info for the views that show in the notification panel.
-		Notification notification = new Notification.Builder(this).setSmallIcon(getNotificationIcon()) // the
-																										// status
-																										// icon
-				.setTicker(text) // the status text
-				.setWhen(System.currentTimeMillis()) // the time stamp
-				.setContentTitle(getText(R.string.local_service_label)) // the
-																		// label
-																		// of
-																		// the
-																		// entry
-				.setContentText(text) // the contents of the entry
-				.setContentIntent(contentIntent) // The intent to send when the
-													// entry is clicked
-				.build();
-
-		if (mNM != null)
-			mNM.notify(NOTIFICATION, notification);
-	}
 
 	public LocationReading getLocReading() {
 		return locReading;
@@ -210,15 +179,12 @@ public class NervousnetHubApiService extends Service implements SensorEventListe
 		return lightReading;
 	}
 
-	private int getNotificationIcon() {
-		boolean useWhiteIcon = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP);
-		return useWhiteIcon ? R.drawable.ic_logo_white : R.drawable.ic_logo;
-	}
+
 
 	@Override
 	public void onDestroy() {
 		Log.d(LOG_TAG, "********SERVICE Destroyed ");
-		removeNotification();
+		((Application)getApplication()).removeNotification();
 		// Release the wakelock here, just to be safe, in order something went
 		// wrong
 		if (wakeLock.isHeld()) {
@@ -300,26 +266,9 @@ public class NervousnetHubApiService extends Service implements SensorEventListe
 		return START_STICKY;
 	}
 
-	public static void startService(Context context) {
-		Log.d(LOG_TAG, "inside startService");
-		Toast.makeText(context, "Service Started", Toast.LENGTH_SHORT).show();
-		Intent sensorIntent = new Intent(context, NervousnetHubApiService.class);
-		context.startService(sensorIntent);
-	}
 
-	public static void stopService(Context context) {
-		Log.d(LOG_TAG, "inside stopService");
-		Toast.makeText(context, "Service Stopped", Toast.LENGTH_SHORT).show();
-		Intent sensorIntent = new Intent(context, NervousnetHubApiService.class);
-		context.stopService(sensorIntent);
-		removeNotification();
 
-	}
 
-	private static void removeNotification() {
-		if (mNM != null)
-			mNM.cancel(NOTIFICATION);
-	}
 
 	SensorConfiguration sensorConfiguration;
 
@@ -508,7 +457,7 @@ public class NervousnetHubApiService extends Service implements SensorEventListe
 		};
 
 		// 10 seconds initial delay
-		handler.postDelayed(run, 10000);
+		handler.postDelayed(run, 100);
 	}
 
 	@Override
