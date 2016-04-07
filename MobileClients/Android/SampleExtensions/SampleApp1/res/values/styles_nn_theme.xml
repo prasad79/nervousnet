@@ -38,8 +38,7 @@
         <item name="android:spinnerStyle">@style/Widget.Spinner</item>
         <!-- Light.DarkActionBar specific -->
         <item name="android:actionBarWidgetTheme">@style/Theme.nn_theme.Widget</item>
-             <item name="android:progressBarStyle">@style/ProgressBar.nn_theme</item>
-   
+        <item name="android:progressBarStyle">@style/ProgressBar.nn_theme</item>
     </style>
 
     <style name="Widget.Spinner" parent="android:Widget">
@@ -71,11 +70,11 @@
         <item name="android:background">@drawable/ab_transparent_nn_theme</item>
         <item name="android:progressBarStyle">@style/ProgressBar.nn_theme</item>
     </style>
-    
+
     <style name="MyTheme" parent="@android:style/Theme.Dialog">
-  
-   	 <item name="android:textColorPrimary">#000000</item>
-	</style>
+        <item name="android:textColorPrimary">#000000</item>
+    </style>
+
     <style name="Button.nn_theme" parent="@android:style/Widget.Button">
         <item name="android:textSize">15sp</item>
         <item name="android:textStyle">bold</item>
@@ -112,7 +111,7 @@
 
     <style name="ProgressBar.nn_theme" parent="@android:style/Widget.Holo.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/progress_horizontal_nn_theme</item>
-         <item name="android:textColor">@color/nnorange</item>
+        <item name="android:textColor">@color/nnorange</item>
     </style>
 
     <style name="ActionButton.CloseMode.nn_theme" parent="@android:style/Widget.Holo.ActionButton.CloseMode">
@@ -128,7 +127,7 @@
     <style name="TextView.nn_theme" parent="android:Widget.TextView">
         <item name="android:textColor">#000000</item>
         <item name="android:textSize">@dimen/text_view_text_size</item>
-          <item name="android:padding">@dimen/activity_vertical_margin</item>
+        <item name="android:padding">@dimen/activity_vertical_margin</item>
     </style>
 
     <style name="EditText.nn_theme" parent="android:Widget.EditText">
@@ -142,7 +141,7 @@
         <item name="android:maxLines">1</item>
         <item name="android:singleLine">true</item>
         <item name="android:textSize">@dimen/edit_text_size</item>
-          <item name="android:padding">@dimen/activity_vertical_margin</item>
+        <item name="android:padding">@dimen/activity_vertical_margin</item>
     </style>
 
 </resources>

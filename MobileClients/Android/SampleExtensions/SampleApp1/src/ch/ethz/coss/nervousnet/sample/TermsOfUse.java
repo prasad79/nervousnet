@@ -34,10 +34,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.text.Html;
 import android.util.Log;
 import android.widget.TextView;
+import ch.ethz.coss.nervousnet.lib.Utils;
 import ch.ethz.coss.nervousnet.sample.R;
 
 /**
@@ -114,11 +116,27 @@ public class TermsOfUse {
 			TextView textView = (TextView) alert.findViewById(android.R.id.message);
 			textView.setTextSize(12);
 		} else {
-			Intent intent = new Intent(mActivity, SampleAppActivity.class);
-			intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-
-			mActivity.startActivity(intent);
-			mActivity.finish();
+			if(SampleUtils.checkForNervousnetHubApp("ch.ethz.coss.nervousnet.hub", mActivity)){
+				Intent intent = new Intent(mActivity, SampleAppActivity.class);
+				intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+				mActivity.startActivity(intent);
+				mActivity.finish();
+			} else {
+				Utils.displayAlert(mActivity, "Alert",
+						"Nervousnet HUB application is required to be installed. If not installed please download it from the App Store. If already installed, please turn on the Data Collection option inside the Nervousnet HUB application.",
+						"Download Now", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								mActivity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(
+										"https://play.google.com/apps/testing/ch.ethz.coss.nervousnet.hub")));
+							}
+						}, "Exit", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								System.exit(0);
+							}
+						});
+			}
+			
+			
 
 		}
 

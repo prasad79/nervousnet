@@ -1,7 +1,7 @@
 /*******************************************************************************
  *
  *  *     Nervousnet - a distributed middleware software for social sensing. 
- *  *     It is responsible for collecting and managing data in a fully de-centralised fashion
+ *  *      It is responsible for collecting and managing data in a fully de-centralised fashion
  *  *
  *  *     Copyright (C) 2016 ETH Zürich, COSS
  *  *
@@ -27,53 +27,54 @@
 /**
  * 
  */
-package ch.ethz.coss.nervousnet.sample;
+package ch.ethz.coss.nervousnet.sample.fragments;
 
 import android.os.Bundle;
-import ch.ethz.coss.nervousnet.lib.AccelerometerReading;
-import ch.ethz.coss.nervousnet.lib.SensorReading;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import ch.ethz.coss.nervousnet.lib.BatteryReading;
+import ch.ethz.coss.nervousnet.lib.ConnectivityReading;
+import ch.ethz.coss.nervousnet.lib.LightReading;
+import ch.ethz.coss.nervousnet.lib.NoiseReading;
+import ch.ethz.coss.nervousnet.lib.SensorReading;
+import ch.ethz.coss.nervousnet.lib.Utils;
+import ch.ethz.coss.nervousnet.sample.R;
+import ch.ethz.coss.nervousnet.sample.R.id;
+import ch.ethz.coss.nervousnet.sample.R.layout;
 
+public class NoiseFragment extends BaseFragment {
 
-public class AccelFragment extends BaseFragment{
-
-	
-	public AccelFragment() {
+	public NoiseFragment() {
 	}
-	
-	
-	public AccelFragment(int type) {
+
+	public NoiseFragment(int type) {
 		super(type);
 	}
-	
+
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_accel, container, false);
-		
+		View rootView = inflater.inflate(R.layout.fragment_noise, container, false);
+
 		return rootView;
 	}
-	
 
-	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.ethz.coss.nervousnet.sample.BaseFragment#updateReadings(ch.ethz.coss.
+	 * nervousnet.vm.SensorReading)
+	 */
 	@Override
-	public void updateReadings(SensorReading reading){
-		 Log.d("AccelFragment", "Inside updateReadings, X = "+((AccelerometerReading)reading).getX());
-		 
-		 TextView x_value = (TextView) getActivity().findViewById(R.id.accel_x);
-		 TextView y_value = (TextView) getActivity().findViewById(R.id.accel_y);
-		 TextView z_value = (TextView) getActivity().findViewById(R.id.accel_z);
-		 
-		 x_value.setText("" + ((AccelerometerReading)reading).getX());
-	     y_value.setText("" + ((AccelerometerReading)reading).getY());
-	     z_value.setText("" + ((AccelerometerReading)reading).getZ());
-		
+	public void updateReadings(SensorReading reading) {
+
+		Log.d("NoiseFragment", "Inside updateReadings");
+
+		TextView db = (TextView) getActivity().findViewById(R.id.dbValue);
+		db.setText("" + ((NoiseReading) reading).getdbValue());
+
 	}
-	
-
-	
-
 
 }

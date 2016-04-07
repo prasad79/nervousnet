@@ -6,7 +6,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="ch.ethz.coss.nervousnet.sample.AccelFragment" >
+    tools:context="ch.ethz.coss.nervousnet.sample.fragments.AccelFragment" >
 
     <ScrollView
         android:layout_width="fill_parent"
@@ -18,8 +18,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="top"
             android:orientation="vertical" >
-            
-            
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -47,44 +46,50 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
-                 <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="X axis" />
-                  <TextView
-                android:id="@+id/accel_x"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Accelerometer X value comes here" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="X axis" />
+
+                <TextView
+                    android:id="@+id/accel_x"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Accelerometer X value comes here" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
-                 <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Y axis" />
-                  <TextView
-                android:id="@+id/accel_y"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Accelerometer Y value comes here" />
-            </LinearLayout><LinearLayout
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Y axis" />
+
+                <TextView
+                    android:id="@+id/accel_y"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Accelerometer Y value comes here" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
-                 <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Z axis" />
-                  <TextView
-                android:id="@+id/accel_z"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Accelerometer Z value comes here" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Z axis" />
+
+                <TextView
+                    android:id="@+id/accel_z"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Accelerometer Z value comes here" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

@@ -27,51 +27,51 @@
 /**
  * 
  */
-package ch.ethz.coss.nervousnet.sample;
+package ch.ethz.coss.nervousnet.sample.fragments;
 
-import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
-import ch.ethz.coss.nervousnet.lib.BatteryReading;
-import ch.ethz.coss.nervousnet.lib.ConnectivityReading;
-import ch.ethz.coss.nervousnet.lib.LightReading;
 import ch.ethz.coss.nervousnet.lib.SensorReading;
-import ch.ethz.coss.nervousnet.lib.Utils;
+import ch.ethz.coss.nervousnet.sample.R;
+import ch.ethz.coss.nervousnet.sample.R.id;
 
-public class LightFragment extends BaseFragment {
+/**
+ * @author prasad
+ *
+ */
+public abstract class BaseFragment extends Fragment {
 
-	
-	public LightFragment() {
-	}
-	
-	public LightFragment(int type) {
-		super(type);
-	}
-	
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_light, container, false);
-		
-		return rootView;
+	public int type = 0;
+
+	public BaseFragment() {
+
 	}
 
-	/* (non-Javadoc)
-	 * @see ch.ethz.coss.nervousnet.sample.BaseFragment#updateReadings(ch.ethz.coss.nervousnet.vm.SensorReading)
-	 */
+	public BaseFragment(int type) {
+		// TODO Auto-generated constructor stub
+
+		this.type = type;
+	}
+
+	public abstract void updateReadings(SensorReading reading);
+
+	public void handleError(String message) {
+		TextView status = (TextView) getActivity().findViewById(R.id.sensor_status);
+		status.setText(message);
+
+	}
+
 	@Override
-	public void updateReadings(SensorReading reading) {
-	
-		
-
-		 Log.d("LightFragment", "Inside updateReadings");
-		 TextView lux = (TextView) getActivity().findViewById(R.id.lux);
-		 lux.setText("" + ((LightReading)reading).getLuxValue());
-		
-	
-		 
+	public void onResume() {
+		Log.d("BaseFragment", "onResume of BaseFragment");
+		super.onResume();
 	}
 
+	@Override
+	public void onPause() {
+		Log.d("BaseFragment", "OnPause of BaseFragment");
+		super.onPause();
+	}
 
 }

@@ -6,7 +6,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="ch.ethz.coss.nervousnet.sample.LocationFragment" >
+    tools:context="ch.ethz.coss.nervousnet.sample.fragments.LocationFragment" >
 
     <ScrollView
         android:layout_width="fill_parent"
@@ -19,7 +19,7 @@
             android:layout_gravity="top"
             android:orientation="vertical" >
 
-              <LinearLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
@@ -35,7 +35,7 @@
                     android:layout_height="wrap_content"
                     android:hint="Sensor Status comes here" />
             </LinearLayout>
-            
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -46,44 +46,50 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
-                 <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Latitude : " />
-                  <TextView
-                android:id="@+id/lat"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Latitude value comes here" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Latitude : " />
+
+                <TextView
+                    android:id="@+id/lat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Latitude value comes here" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
-                 <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Longitude : " />
-                  <TextView
-                android:id="@+id/longitude"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint=" Longitude value comes here" />
-            </LinearLayout><LinearLayout
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Longitude : " />
+
+                <TextView
+                    android:id="@+id/longitude"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint=" Longitude value comes here" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
-                 <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Altitude : " />
-                  <TextView
-                android:id="@+id/alti"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Altitude value comes here" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Altitude : " />
+
+                <TextView
+                    android:id="@+id/alti"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Altitude value comes here" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

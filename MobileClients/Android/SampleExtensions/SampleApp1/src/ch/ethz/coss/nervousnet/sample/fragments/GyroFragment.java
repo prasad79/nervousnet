@@ -27,54 +27,59 @@
 /**
  * 
  */
-package ch.ethz.coss.nervousnet.sample;
+package ch.ethz.coss.nervousnet.sample.fragments;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
+import ch.ethz.coss.nervousnet.lib.GyroReading;
 import ch.ethz.coss.nervousnet.lib.SensorReading;
+import ch.ethz.coss.nervousnet.sample.R;
+import ch.ethz.coss.nervousnet.sample.R.id;
+import ch.ethz.coss.nervousnet.sample.R.layout;
 
 /**
  * @author prasad
  *
  */
-public abstract class BaseFragment extends Fragment {
-	
-	public int type = 0;
+public class GyroFragment extends BaseFragment {
 
-	
-	
-	
-	public BaseFragment(){
-		
+	public GyroFragment() {
 	}
-	
-	public BaseFragment(int type) {
-		// TODO Auto-generated constructor stub
-		
-		this.type = type;
-	}
-	
-	
-	public abstract void updateReadings(SensorReading reading);
-	
-	
-	public void handleError(String message) {
-		TextView status = (TextView) getActivity().findViewById(R.id.sensor_status);
-		 status.setText(message);
-		
-	}
-	
-	 @Override
-	  public void onResume() {
-	     Log.d("BaseFragment", "onResume of BaseFragment");
-	     super.onResume();
-	  }
 
-	  @Override
-	  public void onPause() {
-	    Log.d("BaseFragment", "OnPause of BaseFragment");
-	    super.onPause();
-	  }
+	public GyroFragment(int type) {
+		super(type);
+	}
+
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		View rootView = inflater.inflate(R.layout.fragment_gyro, container, false);
+
+		return rootView;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.ethz.coss.nervousnet.sample.BaseFragment#updateReadings(ch.ethz.coss.
+	 * nervousnet.vm.SensorReading)
+	 */
+	@Override
+	public void updateReadings(SensorReading reading) {
+		Log.d("GyroFragment", "Inside updateReadings, X = " + ((GyroReading) reading).getGyroX());
+
+		TextView x_value = (TextView) getActivity().findViewById(R.id.gyro_x);
+		TextView y_value = (TextView) getActivity().findViewById(R.id.gyro_y);
+		TextView z_value = (TextView) getActivity().findViewById(R.id.gyro_z);
+
+		x_value.setText("" + ((GyroReading) reading).getGyroX());
+		y_value.setText("" + ((GyroReading) reading).getGyroY());
+		z_value.setText("" + ((GyroReading) reading).getGyroZ());
+
+	}
 
 }

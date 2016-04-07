@@ -27,53 +27,59 @@
 /**
  * 
  */
-package ch.ethz.coss.nervousnet.sample;
+package ch.ethz.coss.nervousnet.sample.fragments;
 
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import ch.ethz.coss.nervousnet.lib.BatteryReading;
-import ch.ethz.coss.nervousnet.lib.ConnectivityReading;
-import ch.ethz.coss.nervousnet.lib.LightReading;
-import ch.ethz.coss.nervousnet.lib.NoiseReading;
+import ch.ethz.coss.nervousnet.lib.LocationReading;
 import ch.ethz.coss.nervousnet.lib.SensorReading;
-import ch.ethz.coss.nervousnet.lib.Utils;
+import ch.ethz.coss.nervousnet.sample.R;
+import ch.ethz.coss.nervousnet.sample.R.id;
+import ch.ethz.coss.nervousnet.sample.R.layout;
 
-public class NoiseFragment extends BaseFragment {
+public class LocationFragment extends BaseFragment {
 
-	
-	public NoiseFragment() {
+	public LocationFragment() {
 	}
-	
-	public NoiseFragment(int type) {
+
+	public LocationFragment(int type) {
 		super(type);
 	}
-	
+
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_noise, container, false);
-		
+		View rootView = inflater.inflate(R.layout.fragment_location, container, false);
+
 		return rootView;
 	}
 
-	/* (non-Javadoc)
-	 * @see ch.ethz.coss.nervousnet.sample.BaseFragment#updateReadings(ch.ethz.coss.nervousnet.vm.SensorReading)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.ethz.coss.nervousnet.sample.BaseFragment#updateReadings(ch.ethz.coss.
+	 * nervousnet.vm.SensorReading)
 	 */
 	@Override
 	public void updateReadings(SensorReading reading) {
-	
-		
+		double[] location = ((LocationReading) reading).getLatnLong();
+		FragmentActivity fragAct = getActivity();
+		if (fragAct == null)
+			System.out.println("FragmentAcvitivity is null");
 
-		 Log.d("NoiseFragment", "Inside updateReadings");
-		 
-		 TextView db = (TextView) getActivity().findViewById(R.id.dbValue);
-		 db.setText("" + ((NoiseReading)reading).getdbValue());
-		
-	
-		 
+		TextView latitude = (TextView) fragAct.findViewById(R.id.lat);
+		latitude.setText("" + location[0]);
+
+		TextView longitude = (TextView) getActivity().findViewById(R.id.longitude);
+		longitude.setText("" + location[1]);
+
+		TextView altitude = (TextView) getActivity().findViewById(R.id.alti);
+		altitude.setText("" + ((LocationReading) reading).getAltitude());
+
 	}
-
 
 }

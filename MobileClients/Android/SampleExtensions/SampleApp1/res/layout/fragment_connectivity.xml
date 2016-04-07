@@ -6,7 +6,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="ch.ethz.coss.nervousnet.sample.ConnectivityFragment" >
+    tools:context="ch.ethz.coss.nervousnet.sample.fragments.ConnectivityFragment" >
 
     <ScrollView
         android:layout_width="fill_parent"
@@ -35,7 +35,7 @@
                     android:layout_height="wrap_content"
                     android:hint="Sensor Status comes here" />
             </LinearLayout>
-            
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -46,45 +46,50 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
-                 <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Connected : " />
-                  <TextView
-                android:id="@+id/isConnectedTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint=" is Connected or not." />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Connected : " />
+
+                <TextView
+                    android:id="@+id/isConnectedTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint=" is Connected or not." />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
-                 <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Network Type : " />
-                  <TextView
-                android:id="@+id/netwType"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint=" Wifi or Cellular" />
-                  
-            </LinearLayout><LinearLayout
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Network Type : " />
+
+                <TextView
+                    android:id="@+id/netwType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint=" Wifi or Cellular" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
-                 <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Roaming Status : " />
-                  <TextView
-                android:id="@+id/isRoaming"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint=" Home or Away" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Roaming Status : " />
+
+                <TextView
+                    android:id="@+id/isRoaming"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint=" Home or Away" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

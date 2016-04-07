@@ -27,8 +27,12 @@
 package ch.ethz.coss.nervousnet.sample;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import ch.ethz.coss.nervousnet.lib.Utils;
 
 /**
  * StartUpActivity is the main activity within the Nervousnet app. This activity
@@ -55,12 +59,31 @@ public class StartUpActivity extends Activity {
 	}
 
 	public void skipTermsScreen() {
-		Intent intent = new Intent(StartUpActivity.this, SampleAppActivity.class);
-		intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+		
+		if(SampleUtils.checkForNervousnetHubApp("ch.ethz.coss.nervousnet.hub", StartUpActivity.this)){
 
-		startActivity(intent);
-		finish();
+			Intent intent = new Intent(StartUpActivity.this, SampleAppActivity.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
+			startActivity(intent);
+			finish();
+		} else {
+			
+			Utils.displayAlert(StartUpActivity.this, "Alert",
+					"Nervousnet HUB application is required to be installed. If not installed please download it from the App Store. If already installed, please turn on the Data Collection option inside the Nervousnet HUB application.",
+					"Download Now", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(
+									"https://play.google.com/apps/testing/ch.ethz.coss.nervousnet.hub")));
+						}
+					}, "Exit", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							System.exit(0);
+						}
+					});
+		}
 
 	}
+
 
 }

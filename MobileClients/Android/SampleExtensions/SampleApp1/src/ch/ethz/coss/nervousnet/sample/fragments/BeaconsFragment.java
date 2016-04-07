@@ -27,59 +27,48 @@
 /**
  * 
  */
-package ch.ethz.coss.nervousnet.sample;
+package ch.ethz.coss.nervousnet.sample.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import ch.ethz.coss.nervousnet.lib.AccelerometerReading;
-import ch.ethz.coss.nervousnet.lib.ConnectivityReading;
 import ch.ethz.coss.nervousnet.lib.SensorReading;
-import ch.ethz.coss.nervousnet.lib.Utils;
+import ch.ethz.coss.nervousnet.sample.R;
+import ch.ethz.coss.nervousnet.sample.R.layout;
 
 /**
  * @author prasad
  *
  */
-public class ConnectivityFragment extends BaseFragment {
+public class BeaconsFragment extends BaseFragment {
 
-	
-	public ConnectivityFragment() {
+	public BeaconsFragment() {
 	}
-	
-	public ConnectivityFragment(int type) {
+
+	public BeaconsFragment(int type) {
 		super(type);
 	}
-	
-	
+
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_connectivity, container, false);
-		
+		View rootView = inflater.inflate(R.layout.fragment_beacons, container, false);
+
 		return rootView;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see ch.ethz.coss.nervousnet.sample.BaseFragment#updateReadings(ch.ethz.coss.nervousnet.vm.SensorReading)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.ethz.coss.nervousnet.sample.BaseFragment#updateReadings(ch.ethz.coss.
+	 * nervousnet.vm.SensorReading)
 	 */
 	@Override
 	public void updateReadings(SensorReading reading) {
-		
-		 Log.d("ConnectivityFragment", "Inside updateReadings");
-		 
-		 TextView isConnectedTV = (TextView) getActivity().findViewById(R.id.isConnectedTV);
-		 TextView netwType = (TextView) getActivity().findViewById(R.id.netwType);
-		 TextView isRoaming = (TextView) getActivity().findViewById(R.id.isRoaming);
-		 
-		 isConnectedTV.setText("" + (((ConnectivityReading)reading).isConnected() ? "Yes" : "No"));
-		 netwType.setText("" +  Utils.getConnectivityTypeString(((ConnectivityReading)reading).getNetworkType()));
-		 isRoaming.setText("" + ((((ConnectivityReading)reading).isRoaming()) ? "Yes" : "No"));
-	
-		
+		// TODO Auto-generated method stub
+
 	}
 
 }
