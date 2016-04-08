@@ -72,7 +72,7 @@ public class CollectionRateSettingsActivity extends BaseActivity {
 		setContentView(R.layout.activity_collection_rate);
 		final ListView listview = (ListView) findViewById(R.id.coll_rate_listview);
 		final CollectionRateSettingItemAdapter adapter = new CollectionRateSettingItemAdapter(CollectionRateSettingsActivity.this,
-				NervousnetConstants.sensor_labels, Constants.dummy_icon_array_sensors);
+				NervousnetConstants.sensor_labels, Constants.icon_array_sensors);
 		listview.setAdapter(adapter);
 	}
 	
