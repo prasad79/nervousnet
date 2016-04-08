@@ -79,7 +79,7 @@
             </LinearLayout>
 
             <LinearLayout
-                 android:id="@+id/sensor_perm_item"
+                android:id="@+id/sensor_perm_item"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >

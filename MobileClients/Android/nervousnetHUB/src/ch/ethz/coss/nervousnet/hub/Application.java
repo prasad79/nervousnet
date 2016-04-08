@@ -39,7 +39,7 @@ import ch.ethz.coss.nervousnet.vm.NervousnetVM;
 public class Application extends android.app.Application {
 	private static String LOG_TAG = Application.class.getSimpleName();
 	private static int NOTIFICATION = R.string.local_service_started;
-	
+
 	private static NotificationManager mNM;
 
 	public Application() {
@@ -74,7 +74,7 @@ public class Application extends android.app.Application {
 		e.printStackTrace();
 		System.exit(0);
 	}
-	
+
 	public byte getState(Context context) {
 		return NervousnetVM.getInstance(context).getState();
 	}
@@ -82,7 +82,7 @@ public class Application extends android.app.Application {
 	public void setState(Context context, byte state) {
 		NervousnetVM.getInstance(context).storeNervousnetState(state);
 	}
-	
+
 	public void startService(Context context) {
 		Log.d(LOG_TAG, "inside startService");
 		Toast.makeText(context, "Service Started", Toast.LENGTH_SHORT).show();
@@ -98,7 +98,7 @@ public class Application extends android.app.Application {
 		removeNotification();
 
 	}
-	
+
 	/**
 	 * Show a notification while this service is running.
 	 */
@@ -130,12 +130,12 @@ public class Application extends android.app.Application {
 		if (mNM != null)
 			mNM.notify(NOTIFICATION, notification);
 	}
-	
+
 	public void removeNotification() {
 		if (mNM != null)
 			mNM.cancel(NOTIFICATION);
 	}
-	
+
 	private int getNotificationIcon() {
 		boolean useWhiteIcon = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP);
 		return useWhiteIcon ? R.drawable.ic_logo_white : R.drawable.ic_logo;

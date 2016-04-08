@@ -43,30 +43,28 @@ public class SettingsActivity extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_settings);
-		
-		findViewById(R.id.coll_rate_item).setOnClickListener( new View.OnClickListener() {
-		    @Override
-		    public void onClick(View v) {
-		    	startNextActivity(new Intent(SettingsActivity.this, CollectionRateSettingsActivity.class));
-		    }
+
+		findViewById(R.id.coll_rate_item).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				startNextActivity(new Intent(SettingsActivity.this, CollectionRateSettingsActivity.class));
+			}
 		});
-		
-		findViewById(R.id.sharing_nodes_item).setOnClickListener( new View.OnClickListener() {
-		    @Override
-		    public void onClick(View v) {
-		    	startNextActivity(new Intent(SettingsActivity.this, CollectionRateSettingsActivity.class));
-		    }
+
+		findViewById(R.id.sharing_nodes_item).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				startNextActivity(new Intent(SettingsActivity.this, CollectionRateSettingsActivity.class));
+			}
 		});
-		
-		findViewById(R.id.sensor_perm_item).setOnClickListener( new View.OnClickListener() {
-		    @Override
-		    public void onClick(View v) {
-		    	startNextActivity(new Intent(SettingsActivity.this, CollectionRateSettingsActivity.class));
-		    }
+
+		findViewById(R.id.sensor_perm_item).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				startNextActivity(new Intent(SettingsActivity.this, CollectionRateSettingsActivity.class));
+			}
 		});
 
 	}
-
-	
 
 }

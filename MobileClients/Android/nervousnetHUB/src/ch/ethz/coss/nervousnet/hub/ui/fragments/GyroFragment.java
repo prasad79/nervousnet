@@ -30,7 +30,6 @@
 package ch.ethz.coss.nervousnet.hub.ui.fragments;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,6 +52,7 @@ public class GyroFragment extends BaseFragment {
 		super(type);
 	}
 
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_gyro, container, false);
 

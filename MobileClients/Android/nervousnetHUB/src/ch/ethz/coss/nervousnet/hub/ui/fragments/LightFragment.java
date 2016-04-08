@@ -36,11 +36,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import ch.ethz.coss.nervousnet.hub.R;
-import ch.ethz.coss.nervousnet.lib.BatteryReading;
-import ch.ethz.coss.nervousnet.lib.ConnectivityReading;
 import ch.ethz.coss.nervousnet.lib.LightReading;
 import ch.ethz.coss.nervousnet.lib.SensorReading;
-import ch.ethz.coss.nervousnet.lib.Utils;
 
 public class LightFragment extends BaseFragment {
 
@@ -51,6 +48,7 @@ public class LightFragment extends BaseFragment {
 		super(type);
 	}
 
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_light, container, false);
 

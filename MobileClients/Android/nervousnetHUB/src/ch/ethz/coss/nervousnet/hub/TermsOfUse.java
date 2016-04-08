@@ -38,7 +38,6 @@ import android.preference.PreferenceManager;
 import android.text.Html;
 import android.util.Log;
 import android.widget.TextView;
-import ch.ethz.coss.nervousnet.hub.R;
 import ch.ethz.coss.nervousnet.hub.ui.MainActivity;
 import ch.ethz.coss.nervousnet.hub.ui.StartUpActivity;
 

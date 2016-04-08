@@ -8,7 +8,8 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="ch.ethz.coss.nervousnet.hub.ui.AccSensorActivity" >
-   <TextView
+
+    <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -17,12 +18,13 @@
         android:gravity="top"
         android:text="Settings"
         android:textColor="@color/gray" />
- <ListView 
-    android:id="@+id/coll_rate_listview"
-    android:gravity="bottom"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/white">
-     
- </ListView>
- </RelativeLayout>
+
+    <ListView
+        android:id="@+id/coll_rate_listview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="bottom" >
+    </ListView>
+
+</RelativeLayout>

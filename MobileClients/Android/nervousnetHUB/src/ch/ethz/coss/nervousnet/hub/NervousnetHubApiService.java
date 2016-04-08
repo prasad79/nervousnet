@@ -28,9 +28,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -46,8 +43,6 @@ import android.os.PowerManager;
 import android.os.RemoteException;
 import android.util.Log;
 import android.widget.Toast;
-import ch.ethz.coss.nervousnet.hub.R;
-import ch.ethz.coss.nervousnet.hub.ui.StartUpActivity;
 import ch.ethz.coss.nervousnet.lib.AccelerometerReading;
 import ch.ethz.coss.nervousnet.lib.BatteryReading;
 import ch.ethz.coss.nervousnet.lib.ConnectivityReading;
@@ -58,14 +53,16 @@ import ch.ethz.coss.nervousnet.lib.LocationReading;
 import ch.ethz.coss.nervousnet.lib.NervousnetRemote;
 import ch.ethz.coss.nervousnet.lib.NoiseReading;
 import ch.ethz.coss.nervousnet.lib.SensorReading;
+import ch.ethz.coss.nervousnet.vm.SensorCollectStatus;
+import ch.ethz.coss.nervousnet.vm.SensorConfiguration;
 import ch.ethz.coss.nervousnet.vm.sensors.BatterySensor;
 import ch.ethz.coss.nervousnet.vm.sensors.BatterySensor.BatterySensorListener;
 import ch.ethz.coss.nervousnet.vm.sensors.ConnectivitySensor;
 import ch.ethz.coss.nervousnet.vm.sensors.ConnectivitySensor.ConnectivitySensorListener;
-import ch.ethz.coss.nervousnet.vm.sensors.LocationSensor.LocationSensorListener;
-import ch.ethz.coss.nervousnet.vm.sensors.NoiseSensor.NoiseSensorListener;
 import ch.ethz.coss.nervousnet.vm.sensors.LocationSensor;
+import ch.ethz.coss.nervousnet.vm.sensors.LocationSensor.LocationSensorListener;
 import ch.ethz.coss.nervousnet.vm.sensors.NoiseSensor;
+import ch.ethz.coss.nervousnet.vm.sensors.NoiseSensor.NoiseSensorListener;
 import ch.ethz.coss.nervousnet.vm.storage.AccelData;
 import ch.ethz.coss.nervousnet.vm.storage.ConnectivityData;
 import ch.ethz.coss.nervousnet.vm.storage.GyroData;
@@ -73,9 +70,6 @@ import ch.ethz.coss.nervousnet.vm.storage.LightData;
 import ch.ethz.coss.nervousnet.vm.storage.LocationData;
 import ch.ethz.coss.nervousnet.vm.storage.SensorDataImpl;
 import ch.ethz.coss.nervousnet.vm.storage.StoreTask;
-
-import ch.ethz.coss.nervousnet.vm.SensorCollectStatus;
-import ch.ethz.coss.nervousnet.vm.SensorConfiguration;
 
 public class NervousnetHubApiService extends Service implements SensorEventListener, BatterySensorListener,
 		ConnectivitySensorListener, LocationSensorListener, NoiseSensorListener {
@@ -142,14 +136,10 @@ public class NervousnetHubApiService extends Service implements SensorEventListe
 			wakeLock.acquire();
 		}
 
-	
-
 		// Display a notification about us starting. We put an icon in the
 		// status bar.
-		((Application)getApplication()).showNotification();
+		((Application) getApplication()).showNotification();
 	}
-
-
 
 	public LocationReading getLocReading() {
 		return locReading;
@@ -179,12 +169,10 @@ public class NervousnetHubApiService extends Service implements SensorEventListe
 		return lightReading;
 	}
 
-
-
 	@Override
 	public void onDestroy() {
 		Log.d(LOG_TAG, "********SERVICE Destroyed ");
-		((Application)getApplication()).removeNotification();
+		((Application) getApplication()).removeNotification();
 		// Release the wakelock here, just to be safe, in order something went
 		// wrong
 		if (wakeLock.isHeld()) {
@@ -246,14 +234,14 @@ public class NervousnetHubApiService extends Service implements SensorEventListe
 		@Override
 		public float getStdev(int type) {
 			Log.d(LOG_TAG, "Standard Deviation requested ");
-			
+
 			return 0;
 		}
-		
+
 		@Override
 		public float getVar(int type) {
 			Log.d(LOG_TAG, "Variation requested ");
-			
+
 			return 0;
 		}
 	};
@@ -265,10 +253,6 @@ public class NervousnetHubApiService extends Service implements SensorEventListe
 		initSensors();
 		return START_STICKY;
 	}
-
-
-
-
 
 	SensorConfiguration sensorConfiguration;
 
@@ -343,8 +327,8 @@ public class NervousnetHubApiService extends Service implements SensorEventListe
 				if (sensorId == LibConstants.SENSOR_ACCELEROMETER) {
 					scAccelerometer.setMeasureStart(startTime);
 					doCollect = scAccelerometer.isCollect();
-					doCollect = doCollect ? sensorManager.registerListener(NervousnetHubApiService.this, sensorAccelerometer,
-							SensorManager.SENSOR_DELAY_NORMAL) : false;
+					doCollect = doCollect ? sensorManager.registerListener(NervousnetHubApiService.this,
+							sensorAccelerometer, SensorManager.SENSOR_DELAY_NORMAL) : false;
 					sensorCollectStatus = scAccelerometer;
 				} else if (sensorId == LibConstants.SENSOR_PRESSURE) {
 					scPressure.setMeasureStart(startTime);
@@ -354,8 +338,8 @@ public class NervousnetHubApiService extends Service implements SensorEventListe
 					sensorCollectStatus = scPressure;
 				} else if (sensorId == LibConstants.SENSOR_GYROSCOPE) {
 					doCollect = scGyroscope.isCollect();
-					doCollect = doCollect ? sensorManager.registerListener(NervousnetHubApiService.this, sensorGyroscope,
-							SensorManager.SENSOR_DELAY_NORMAL) : false;
+					doCollect = doCollect ? sensorManager.registerListener(NervousnetHubApiService.this,
+							sensorGyroscope, SensorManager.SENSOR_DELAY_NORMAL) : false;
 					sensorCollectStatus = scGyroscope;
 				} else if (sensorId == LibConstants.SENSOR_HUMIDITY) {
 					scHumidity.setMeasureStart(startTime);
@@ -378,14 +362,14 @@ public class NervousnetHubApiService extends Service implements SensorEventListe
 				} else if (sensorId == LibConstants.SENSOR_PROXIMITY) {
 					scProximity.setMeasureStart(startTime);
 					doCollect = scProximity.isCollect();
-					doCollect = doCollect ? sensorManager.registerListener(NervousnetHubApiService.this, sensorProximity,
-							SensorManager.SENSOR_DELAY_NORMAL) : false;
+					doCollect = doCollect ? sensorManager.registerListener(NervousnetHubApiService.this,
+							sensorProximity, SensorManager.SENSOR_DELAY_NORMAL) : false;
 					sensorCollectStatus = scProximity;
 				} else if (sensorId == LibConstants.SENSOR_TEMPERATURE) {
 					scTemperature.setMeasureStart(startTime);
 					doCollect = scTemperature.isCollect();
-					doCollect = doCollect ? sensorManager.registerListener(NervousnetHubApiService.this, sensorTemperature,
-							SensorManager.SENSOR_DELAY_NORMAL) : false;
+					doCollect = doCollect ? sensorManager.registerListener(NervousnetHubApiService.this,
+							sensorTemperature, SensorManager.SENSOR_DELAY_NORMAL) : false;
 					sensorCollectStatus = scTemperature;
 				} else if (sensorId == LibConstants.SENSOR_BATTERY) {
 					scBattery.setMeasureStart(startTime);
@@ -500,6 +484,7 @@ public class NervousnetHubApiService extends Service implements SensorEventListe
 
 	}
 
+	@Override
 	public void connectivitySensorDataReady(ConnectivityReading reading) {
 		Log.d(LOG_TAG, "Connectivity data collected");
 		connReading = reading;

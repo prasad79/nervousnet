@@ -36,8 +36,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.Toast;
-import ch.ethz.coss.nervousnet.hub.R;
 import ch.ethz.coss.nervousnet.hub.Constants;
+import ch.ethz.coss.nervousnet.hub.R;
 import ch.ethz.coss.nervousnet.hub.ui.adapters.ImageAdapter;
 
 public class MainActivity extends BaseActivity {
@@ -84,9 +84,10 @@ public class MainActivity extends BaseActivity {
 		case 5:
 			startNextActivity(new Intent(MainActivity.this, AboutActivity.class));
 			break;
-//		case 6:
-//			startNextActivity(new Intent(MainActivity.this, ShowSensorListActivity.class));
-//			break;
+		// case 6:
+		// startNextActivity(new Intent(MainActivity.this,
+		// ShowSensorListActivity.class));
+		// break;
 		}
 	}
 

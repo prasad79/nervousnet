@@ -31,10 +31,7 @@ package ch.ethz.coss.nervousnet.hub.ui;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,10 +39,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
-import ch.ethz.coss.nervousnet.hub.R;
-import ch.ethz.coss.nervousnet.hub.R.layout;
 import ch.ethz.coss.nervousnet.hub.Application;
-import ch.ethz.coss.nervousnet.hub.NervousnetHubApiService;
+import ch.ethz.coss.nervousnet.hub.R;
 
 /**
  * @author prasad
@@ -68,6 +63,7 @@ public abstract class BaseActivity extends Activity implements ActionBarImplemen
 		updateActionBar();
 	}
 
+	@Override
 	public void updateActionBar() {
 		LayoutInflater inflator = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View v = inflator.inflate(R.layout.ab_nn, null);
@@ -82,7 +78,7 @@ public abstract class BaseActivity extends Activity implements ActionBarImplemen
 		actionBar.setCustomView(v);
 		mainSwitch = (Switch) findViewById(R.id.mainSwitch);
 
-		byte state = ((Application)getApplication()).getState(this);
+		byte state = ((Application) getApplication()).getState(this);
 		Log.d("BaseActivity", "state = " + state);
 		mainSwitch.setChecked(state == 0 ? false : true);
 
@@ -97,12 +93,12 @@ public abstract class BaseActivity extends Activity implements ActionBarImplemen
 
 	public void startStopSensorService(boolean on) {
 		if (on) {
-			((Application)getApplication()).startService(this);
+			((Application) getApplication()).startService(this);
 		} else {
-			((Application)getApplication()).stopService(this);
+			((Application) getApplication()).stopService(this);
 		}
 
-		((Application)getApplication()).setState(this, on ? (byte) 1 : (byte) 0);
+		((Application) getApplication()).setState(this, on ? (byte) 1 : (byte) 0);
 	}
 
 	protected void startNextActivity(Intent intent) {
@@ -110,21 +106,20 @@ public abstract class BaseActivity extends Activity implements ActionBarImplemen
 		startActivity(intent);
 	}
 
-	 @Override
-	 public void onRestart() {
-	 super.onRestart();
-	 updateActionBar();
-	 }
-	
-	 @Override
-	 public void onRestoreInstanceState(Bundle savedInstanceState) {
-	 super.onRestoreInstanceState(savedInstanceState);
-	 }
-	
-	 @Override
-	 public void onSaveInstanceState(Bundle outState) {
-	 super.onSaveInstanceState(outState);
-	 }
-	 
+	@Override
+	public void onRestart() {
+		super.onRestart();
+		updateActionBar();
+	}
+
+	@Override
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+	}
 
 }

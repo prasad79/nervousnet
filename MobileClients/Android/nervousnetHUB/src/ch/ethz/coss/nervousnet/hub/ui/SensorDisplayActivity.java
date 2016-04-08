@@ -35,7 +35,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -53,10 +52,8 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
-import ch.ethz.coss.nervousnet.vm.NervousnetConstants;
-import ch.ethz.coss.nervousnet.hub.R;
 import ch.ethz.coss.nervousnet.hub.Application;
-import ch.ethz.coss.nervousnet.hub.NervousnetHubApiService;
+import ch.ethz.coss.nervousnet.hub.R;
 import ch.ethz.coss.nervousnet.hub.ui.fragments.AccelFragment;
 import ch.ethz.coss.nervousnet.hub.ui.fragments.BaseFragment;
 import ch.ethz.coss.nervousnet.hub.ui.fragments.BatteryFragment;
@@ -71,6 +68,7 @@ import ch.ethz.coss.nervousnet.hub.ui.fragments.NoiseFragment;
 import ch.ethz.coss.nervousnet.lib.NervousnetRemote;
 import ch.ethz.coss.nervousnet.lib.SensorReading;
 import ch.ethz.coss.nervousnet.lib.Utils;
+import ch.ethz.coss.nervousnet.vm.NervousnetConstants;
 
 public class SensorDisplayActivity extends FragmentActivity implements ActionBarImplementation {
 	protected NervousnetRemote mService;
@@ -83,7 +81,7 @@ public class SensorDisplayActivity extends FragmentActivity implements ActionBar
 	int m_interval = 100; // 1 seconds by default, can be changed later
 	Handler m_handler = new Handler();
 	Runnable m_statusChecker;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -99,48 +97,50 @@ public class SensorDisplayActivity extends FragmentActivity implements ActionBar
 			initConnection();
 		}
 
-			if (mService == null) {
-				try {
+		if (mService == null) {
+			try {
 
-					doBindService();
-					Log.d("SensorDisplayActivity", bindFlag.toString()); // will
-																			// return
-																			// "true"
-//		
-//					if (!bindFlag) {
-//						Utils.displayAlert(SensorDisplayActivity.this, "Alert",
-//								"Please switch on the data collection option to access this feature.",
-//								"Switch On", new DialogInterface.OnClickListener() {
-//									public void onClick(DialogInterface dialog, int id) {
-//										startStopSensorService(true);
-//										
-//									}
-//								}, "Back", new DialogInterface.OnClickListener() {
-//									public void onClick(DialogInterface dialog, int id) {
-//										
-//									}
-//								});
-//						Toast.makeText(SensorDisplayActivity.this,
-//								"Please check if the Nervousnet Remote Service is installed and running.",
-//								Toast.LENGTH_SHORT).show();
-//					}
-//
-//					else {
-//						startRepeatingTask();
-//						Toast.makeText(SensorDisplayActivity.this,
-//								"Nervousnet Remote is running fine and startRepeatingTask() called", Toast.LENGTH_SHORT)
-//								.show();
-//
-//					}
-					
-				} catch (Exception e) {
-					e.printStackTrace();
-					Log.e("SensorDisplayActivity", "not able to bind ! ");
-				}
+				doBindService();
+				Log.d("SensorDisplayActivity", bindFlag.toString()); // will
+																		// return
+																		// "true"
+				//
+				// if (!bindFlag) {
+				// Utils.displayAlert(SensorDisplayActivity.this, "Alert",
+				// "Please switch on the data collection option to access this
+				// feature.",
+				// "Switch On", new DialogInterface.OnClickListener() {
+				// public void onClick(DialogInterface dialog, int id) {
+				// startStopSensorService(true);
+				//
+				// }
+				// }, "Back", new DialogInterface.OnClickListener() {
+				// public void onClick(DialogInterface dialog, int id) {
+				//
+				// }
+				// });
+				// Toast.makeText(SensorDisplayActivity.this,
+				// "Please check if the Nervousnet Remote Service is installed
+				// and running.",
+				// Toast.LENGTH_SHORT).show();
+				// }
+				//
+				// else {
+				// startRepeatingTask();
+				// Toast.makeText(SensorDisplayActivity.this,
+				// "Nervousnet Remote is running fine and startRepeatingTask()
+				// called", Toast.LENGTH_SHORT)
+				// .show();
+				//
+				// }
 
-				
+			} catch (Exception e) {
+				e.printStackTrace();
+				Log.e("SensorDisplayActivity", "not able to bind ! ");
 			}
-		
+
+		}
+
 	}
 
 	void initConnection() {
@@ -166,8 +166,7 @@ public class SensorDisplayActivity extends FragmentActivity implements ActionBar
 				Log.d("SensorDisplayActivity", "Inside onServiceConnected 2");
 
 				mService = NervousnetRemote.Stub.asInterface(service);
-				
-		
+
 				startRepeatingTask();
 				Toast.makeText(getApplicationContext(), "Nervousnet Remote Service Connected", Toast.LENGTH_SHORT)
 						.show();
@@ -197,7 +196,7 @@ public class SensorDisplayActivity extends FragmentActivity implements ActionBar
 		actionBar.setCustomView(v);
 		mainSwitch = (Switch) findViewById(R.id.mainSwitch);
 
-		byte state = ((Application)getApplication()).getState(this);
+		byte state = ((Application) getApplication()).getState(this);
 		Log.d("SensorDisplayActivity", "state = " + state);
 		mainSwitch.setChecked(state == 0 ? false : true);
 
@@ -212,9 +211,9 @@ public class SensorDisplayActivity extends FragmentActivity implements ActionBar
 
 	public void startStopSensorService(boolean on) {
 		if (on) {
-			((Application)getApplication()).startService(this);
+			((Application) getApplication()).startService(this);
 			initConnection();
-//			startRepeatingTask();
+			// startRepeatingTask();
 
 			// UploadService.startService(this);
 			// serviceRunning = true;
@@ -232,13 +231,13 @@ public class SensorDisplayActivity extends FragmentActivity implements ActionBar
 			// }
 
 		} else {
-			((Application)getApplication()).stopService(this);
+			((Application) getApplication()).stopService(this);
 			stopRepeatingTask();
 			// UploadService.stopService(this);
 			// serviceRunning = false;
 		}
 
-		((Application)getApplication()).setState(this, on ? (byte) 1 : (byte) 0);
+		((Application) getApplication()).setState(this, on ? (byte) 1 : (byte) 0);
 		// updateServiceInfo();
 	}
 
@@ -351,35 +350,36 @@ public class SensorDisplayActivity extends FragmentActivity implements ActionBar
 					update(); // this function can change value of m_interval.
 				else {
 					Log.d("SensorDisplayActivity", "mService is null");
-					
-					
+
 					Utils.displayAlert(SensorDisplayActivity.this, "Alert",
-							"Please switch on the data collection option to access this feature.",
-							"Switch On", new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int id) {
-									startStopSensorService(true);
-								}
-							}, "Back", new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int id) {
-									
-									finish();
-								}
-							});
-					
+							"Please switch on the data collection option to access this feature.", "Switch On",
+							new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int id) {
+							startStopSensorService(true);
+						}
+					}, "Back", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int id) {
+
+							finish();
+						}
+					});
+
 					stopRepeatingTask();
 				}
-					
+
 				m_handler.postDelayed(m_statusChecker, m_interval);
 			}
 		};
-		
+
 		m_statusChecker.run();
 	}
 
 	void stopRepeatingTask() {
 		m_handler.removeCallbacks(m_statusChecker);
 		m_statusChecker = null;
-		
+
 	}
 
 	protected void update() {
@@ -389,35 +389,35 @@ public class SensorDisplayActivity extends FragmentActivity implements ActionBar
 
 			switch (index) {
 			case 0:
-				updateStatus((SensorReading) mService.getAccelerometerReading(), index);
+				updateStatus(mService.getAccelerometerReading(), index);
 				break;
 			case 1:
-				updateStatus((SensorReading) mService.getBatteryReading(), index);
+				updateStatus(mService.getBatteryReading(), index);
 				break;
 			case 2:
 				// beacons
 				break;
 			case 3:
-				updateStatus((SensorReading) mService.getConnectivityReading(), index);
+				updateStatus(mService.getConnectivityReading(), index);
 				break;
 			case 4:
-				updateStatus((SensorReading) mService.getGyroReading(), index);
+				updateStatus(mService.getGyroReading(), index);
 				break;
 			case 5:
 				// HUmidity
 				break;
 			case 6:
-				updateStatus((SensorReading) mService.getLocationReading(), index);
+				updateStatus(mService.getLocationReading(), index);
 				break;
 			case 7:
-				updateStatus((SensorReading) mService.getLightReading(), index);
+				updateStatus(mService.getLightReading(), index);
 				break;
 			case 8:
 				// Magnetic
 				break;
 
 			case 9:
-				updateStatus((SensorReading) mService.getNoiseReading(), index);
+				updateStatus(mService.getNoiseReading(), index);
 				break;
 
 			}
