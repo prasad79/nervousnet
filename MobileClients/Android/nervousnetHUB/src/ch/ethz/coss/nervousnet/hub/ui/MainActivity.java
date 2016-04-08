@@ -84,9 +84,9 @@ public class MainActivity extends BaseActivity {
 		case 5:
 			startNextActivity(new Intent(MainActivity.this, AboutActivity.class));
 			break;
-		case 6:
-			startNextActivity(new Intent(MainActivity.this, ShowSensorListActivity.class));
-			break;
+//		case 6:
+//			startNextActivity(new Intent(MainActivity.this, ShowSensorListActivity.class));
+//			break;
 		}
 	}
 

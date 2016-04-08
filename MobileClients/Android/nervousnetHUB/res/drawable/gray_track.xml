@@ -4,8 +4,8 @@
     <size android:height="20dp" />
 
     <gradient
-        android:endColor="#FF569BDA"
+        android:endColor="#FF525252"
         android:height="20dp"
-        android:startColor="#AA569BDA" />
+        android:startColor="#AA525252" />
 
 </shape>
