@@ -9,6 +9,7 @@ import de.greenrobot.dao.AbstractDaoMaster;
 import de.greenrobot.dao.identityscope.IdentityScopeType;
 
 import ch.ethz.coss.nervousnet.vm.model.ConfigDao;
+import ch.ethz.coss.nervousnet.vm.model.AuthenticationDao;
 import ch.ethz.coss.nervousnet.vm.model.LocationDataDao;
 import ch.ethz.coss.nervousnet.vm.model.AccelDataDao;
 import ch.ethz.coss.nervousnet.vm.model.BatteryDataDao;
@@ -34,6 +35,7 @@ public class DaoMaster extends AbstractDaoMaster {
     /** Creates underlying database table using DAOs. */
     public static void createAllTables(SQLiteDatabase db, boolean ifNotExists) {
         ConfigDao.createTable(db, ifNotExists);
+        AuthenticationDao.createTable(db, ifNotExists);
         LocationDataDao.createTable(db, ifNotExists);
         AccelDataDao.createTable(db, ifNotExists);
         BatteryDataDao.createTable(db, ifNotExists);
@@ -53,6 +55,7 @@ public class DaoMaster extends AbstractDaoMaster {
     /** Drops underlying database table using DAOs. */
     public static void dropAllTables(SQLiteDatabase db, boolean ifExists) {
         ConfigDao.dropTable(db, ifExists);
+        AuthenticationDao.dropTable(db, ifExists);
         LocationDataDao.dropTable(db, ifExists);
         AccelDataDao.dropTable(db, ifExists);
         BatteryDataDao.dropTable(db, ifExists);
@@ -99,6 +102,7 @@ public class DaoMaster extends AbstractDaoMaster {
     public DaoMaster(SQLiteDatabase db) {
         super(db, SCHEMA_VERSION);
         registerDaoClass(ConfigDao.class);
+        registerDaoClass(AuthenticationDao.class);
         registerDaoClass(LocationDataDao.class);
         registerDaoClass(AccelDataDao.class);
         registerDaoClass(BatteryDataDao.class);

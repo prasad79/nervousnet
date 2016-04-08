@@ -69,7 +69,6 @@ import ch.ethz.coss.nervousnet.vm.storage.GyroData;
 import ch.ethz.coss.nervousnet.vm.storage.LightData;
 import ch.ethz.coss.nervousnet.vm.storage.LocationData;
 import ch.ethz.coss.nervousnet.vm.storage.SensorDataImpl;
-import ch.ethz.coss.nervousnet.vm.storage.StoreTask;
 
 public class NervousnetHubApiService extends Service implements SensorEventListener, BatterySensorListener,
 		ConnectivitySensorListener, LocationSensorListener, NoiseSensorListener {
@@ -519,7 +518,7 @@ public class NervousnetHubApiService extends Service implements SensorEventListe
 
 		SensorDataImpl sensorData = convertSensorReadingToSensorData(sensorReading);
 		if (sensorData != null)
-			new StoreTask(getApplicationContext()).execute(sensorData);
+			((Application) getApplication()).storeSensor(sensorData);
 		else
 			Log.d(LOG_TAG, "sensorData is null");
 

@@ -35,12 +35,14 @@ import android.util.Log;
 import android.widget.Toast;
 import ch.ethz.coss.nervousnet.hub.ui.StartUpActivity;
 import ch.ethz.coss.nervousnet.vm.NervousnetVM;
+import ch.ethz.coss.nervousnet.vm.storage.SensorDataImpl;
 
 public class Application extends android.app.Application {
 	private static String LOG_TAG = Application.class.getSimpleName();
 	private static int NOTIFICATION = R.string.local_service_started;
 
 	private static NotificationManager mNM;
+	private NervousnetVM nn_VM;
 
 	public Application() {
 	}
@@ -66,6 +68,8 @@ public class Application extends android.app.Application {
 	private void init() {
 		Log.d(LOG_TAG, "Inside Application init()");
 		mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		nn_VM = new NervousnetVM(getApplicationContext());
+		
 	}
 
 	private void handleUncaughtException(Thread thread, Throwable e) {
@@ -76,11 +80,11 @@ public class Application extends android.app.Application {
 	}
 
 	public byte getState(Context context) {
-		return NervousnetVM.getInstance(context).getState();
+		return nn_VM.getState();
 	}
 
 	public void setState(Context context, byte state) {
-		NervousnetVM.getInstance(context).storeNervousnetState(state);
+		nn_VM.storeNervousnetState(state);
 	}
 
 	public void startService(Context context) {
@@ -139,6 +143,10 @@ public class Application extends android.app.Application {
 	private int getNotificationIcon() {
 		boolean useWhiteIcon = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP);
 		return useWhiteIcon ? R.drawable.ic_logo_white : R.drawable.ic_logo;
+	}
+
+	public void storeSensor(SensorDataImpl sensorData) {
+		nn_VM.storeSensorAsync(sensorData);
 	}
 
 }

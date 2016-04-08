@@ -14,6 +14,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
         android:gravity="center"
         android:text="Settings"
         android:textColor="@color/gray" />
@@ -42,7 +43,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center|center_horizontal"
                     android:adjustViewBounds="true"
-                    android:src="@drawable/ic_missing" >
+                    android:src="@drawable/ic_sensors" >
                 </ImageView>
 
                 <TextView
@@ -66,7 +67,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center|center_horizontal"
                     android:adjustViewBounds="true"
-                    android:src="@drawable/ic_missing" >
+                    android:src="@drawable/ic_nodes" >
                 </ImageView>
 
                 <TextView
@@ -90,7 +91,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center|center_horizontal"
                     android:adjustViewBounds="true"
-                    android:src="@drawable/ic_missing" >
+                    android:src="@drawable/ic_perm" >
                 </ImageView>
 
                 <TextView

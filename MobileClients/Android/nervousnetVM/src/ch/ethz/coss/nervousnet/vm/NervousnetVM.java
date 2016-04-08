@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
 import ch.ethz.coss.nervousnet.lib.LibConstants;
@@ -19,15 +20,19 @@ import ch.ethz.coss.nervousnet.vm.storage.DaoMaster;
 import ch.ethz.coss.nervousnet.vm.storage.DaoSession;
 import ch.ethz.coss.nervousnet.vm.storage.GyroData;
 import ch.ethz.coss.nervousnet.vm.storage.GyroDataDao;
+import ch.ethz.coss.nervousnet.vm.storage.LightData;
+import ch.ethz.coss.nervousnet.vm.storage.LightDataDao;
 import ch.ethz.coss.nervousnet.vm.storage.LocationData;
 import ch.ethz.coss.nervousnet.vm.storage.LocationDataDao;
+import ch.ethz.coss.nervousnet.vm.storage.NoiseData;
+import ch.ethz.coss.nervousnet.vm.storage.NoiseDataDao;
 import ch.ethz.coss.nervousnet.vm.storage.SensorDataImpl;
 import ch.ethz.coss.nervousnet.vm.storage.DaoMaster.DevOpenHelper;
 
 
 public class NervousnetVM {
 
-	private static NervousnetVM nervousVM;
+//	private static NervousnetVM nervousVM;
 	private static String TAG = "NERVOUS_VM";
 	private static String DB_NAME = "NN-DB";
 	
@@ -40,16 +45,18 @@ public class NervousnetVM {
 	ConfigDao configDao;
 	AccelDataDao accDao;
 	BatteryDataDao battDao;
+	LightDataDao lightDao;
+	NoiseDataDao noiseDao;
 	LocationDataDao locDao;
 	ConnectivityDataDao connDao;
 	GyroDataDao gyroDao;
 	
-	public static synchronized  NervousnetVM getInstance(Context context) {
-		if (nervousVM == null) {
-			nervousVM = new NervousnetVM(context);
-		}
-		return nervousVM;
-	}
+//	public static synchronized  NervousnetVM getInstance(Context context) {
+//		if (nervousVM == null) {
+//			nervousVM = new NervousnetVM(context);
+//		}
+//		return nervousVM;
+//	}
 
 	public NervousnetVM(Context context) {
 		Log.d(TAG, "Inside constructor");
@@ -75,6 +82,10 @@ public class NervousnetVM {
 		 connDao = daoSession.getConnectivityDataDao();
 		 
 		 gyroDao = daoSession.getGyroDataDao();
+		 
+		 lightDao = daoSession.getLightDataDao();
+		 
+		 noiseDao = daoSession.getNoiseDataDao();
 		 
 	    boolean hasVMConfig = loadVMConfig();
 		if (!hasVMConfig) {
@@ -274,11 +285,19 @@ public class NervousnetVM {
 		case LibConstants.SENSOR_HUMIDITY:
 			return true;
 		case LibConstants.SENSOR_LIGHT:
+			LightData lightData = (LightData) sensorData;
+			Log.d(TAG, "LIGHT_DATA table count = "+lightDao.count());
+			Log.d(TAG, "Inside Switch, LightData Type = (Type = "+lightData.getType()+", Timestamp = "+lightData.getTimeStamp()+", Volatility = "+lightData.getVolatility());
+			lightDao.insert(lightData);
 			return true;
 			
 		case LibConstants.SENSOR_MAGNETIC:
 			return true;
 		case LibConstants.SENSOR_NOISE:
+			NoiseData noiseData = (NoiseData) sensorData;
+			Log.d(TAG, "NoiseData table count = "+noiseDao.count());
+			Log.d(TAG, "Inside Switch, noiseData Type = (Type = "+noiseData.getType()+", Timestamp = "+noiseData.getTimeStamp()+", Volatility = "+noiseData.getVolatility());
+			noiseDao.insert(noiseData);
 			return true;
 		case LibConstants.SENSOR_PRESSURE:
 			return true;
@@ -290,7 +309,35 @@ public class NervousnetVM {
 		}
 		return false;
 	}
+	
+	
+	
+	public void storeSensorAsync(SensorDataImpl sensorData){
+	
+		new StoreTask().execute(sensorData);
+	}
+	
+	class StoreTask extends AsyncTask<SensorDataImpl, Void, Void> {
 
+		public StoreTask() {
+		}
+
+		@Override
+		protected Void doInBackground(SensorDataImpl... params) {
+
+			if (params != null && params.length > 0) {
+				
+				for (int i = 0; i < params.length; i++) {
+					storeSensor(params[i]);
+				}
+			}
+			return null;
+		}
+
+	}
+
+	
+	
 //	public synchronized boolean storeSensor(long sensorID, SensorReading sensorReading) {
 //		if (sensorData != null) {
 //			boolean stmHasChanged = false;
@@ -375,3 +422,7 @@ public class NervousnetVM {
 //		return size;
 //	}
 }
+
+
+
+
