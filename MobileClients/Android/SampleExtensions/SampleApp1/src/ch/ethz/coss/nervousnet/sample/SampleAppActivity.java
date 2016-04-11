@@ -42,6 +42,7 @@ import android.os.RemoteException;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -73,22 +74,10 @@ public class SampleAppActivity extends FragmentActivity {
 	private ServiceConnection mServiceConnection;
 	private Boolean bindFlag;
 
-	int m_interval = 10; // 100 milliseconds by default, can be changed later
+	int m_interval = 100; // 100 milliseconds by default, can be changed later
 	Handler m_handler = new Handler();
-	Runnable m_statusChecker = new Runnable() {
-		@Override
-		public void run() {
-
-			Log.d("SampleAppActivity", "before updating");
-			if (mService != null)
-				update(); // this function can change value of m_interval.
-			else
-				Log.d("SampleAppActivity", "mService is null");
-
-			m_handler.postDelayed(m_statusChecker, m_interval);
-		}
-	};
-
+	Runnable m_statusChecker;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -238,7 +227,7 @@ public class SampleAppActivity extends FragmentActivity {
 		public Fragment getItem(int i) {
 
 			switch (i) {
-			case 0:
+			case 0:	
 				fragment = new AccelFragment(0);
 				break;
 			case 1:
@@ -280,13 +269,11 @@ public class SampleAppActivity extends FragmentActivity {
 			return Constants.sensor_labels[position];
 		}
 
-		@Override
-		public int getItemPosition(Object object) {
-			return POSITION_NONE;
-		}
+		
 
 		@SuppressWarnings("unchecked")
 		public Fragment getFragment(int position) {
+
 			try {
 				Field f = FragmentStatePagerAdapter.class.getDeclaredField("mFragments");
 				f.setAccessible(true);
@@ -313,6 +300,8 @@ public class SampleAppActivity extends FragmentActivity {
 			fragment.updateReadings(reading);
 		} else
 			fragment.handleError("Reading is null");
+		
+		sapAdapter.notifyDataSetChanged();
 	}
 
 	@Override
@@ -322,6 +311,24 @@ public class SampleAppActivity extends FragmentActivity {
 	}
 
 	void startRepeatingTask() {
+		m_statusChecker = new Runnable() {
+			@Override
+			public void run() {
+
+				Log.d("SampleAppActivity", "before updating");
+				if (mService != null){
+
+					update(); // this function can change value of m_interval.
+					if(vPager != null)
+						vPager.invalidate();
+				}
+				else
+					Log.d("SampleAppActivity", "mService is null");
+
+				m_handler.postDelayed(m_statusChecker, m_interval);
+			}
+		};
+
 		m_statusChecker.run();
 	}
 

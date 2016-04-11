@@ -36,11 +36,7 @@ import ch.ethz.coss.nervousnet.lib.SensorReading;
 import ch.ethz.coss.nervousnet.sample.R;
 import ch.ethz.coss.nervousnet.sample.R.id;
 
-/**
- * @author prasad
- *
- */
-public abstract class BaseFragment extends Fragment {
+public abstract class BaseFragment extends Fragment implements Updatable {
 
 	public int type = 0;
 
@@ -53,8 +49,6 @@ public abstract class BaseFragment extends Fragment {
 
 		this.type = type;
 	}
-
-	public abstract void updateReadings(SensorReading reading);
 
 	public void handleError(String message) {
 		TextView status = (TextView) getActivity().findViewById(R.id.sensor_status);

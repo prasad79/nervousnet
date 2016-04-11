@@ -29,14 +29,10 @@
  */
 package ch.ethz.coss.nervousnet.sample.fragments;
 
-import java.util.TimerTask;
-
 import android.os.Bundle;
 import ch.ethz.coss.nervousnet.lib.AccelerometerReading;
 import ch.ethz.coss.nervousnet.lib.SensorReading;
 import ch.ethz.coss.nervousnet.sample.R;
-import ch.ethz.coss.nervousnet.sample.R.id;
-import ch.ethz.coss.nervousnet.sample.R.layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,7 +40,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 public class AccelFragment extends BaseFragment {
+	View rootView;
 
+	TextView x_value;
+	TextView y_value;
+	TextView z_value;
 	public AccelFragment() {
 	}
 
@@ -53,31 +53,22 @@ public class AccelFragment extends BaseFragment {
 	}
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_accel, container, false);
-
+		 rootView = inflater.inflate(R.layout.fragment_accel, container, false);
+			 x_value = (TextView) rootView.findViewById(R.id.accel_x);
+			 y_value = (TextView) rootView.findViewById(R.id.accel_y);
+			 z_value = (TextView) rootView.findViewById(R.id.accel_z);
 		return rootView;
 	}
 
 	@Override
-	public void updateReadings(final SensorReading reading) {
+	public void updateReadings(SensorReading reading) {
 		Log.d("AccelFragment", "Inside updateReadings, X = " + ((AccelerometerReading) reading).getX());
 
-		getActivity().runOnUiThread(new Runnable() {
+		x_value.setText("" + ((AccelerometerReading) reading).getX());
+		y_value.setText("" + ((AccelerometerReading) reading).getY());
+		z_value.setText("" + ((AccelerometerReading) reading).getZ());
 
-			@Override
-			public void run() {
-				Log.d("AccelFragment", "Inside updateReadings, y = " + ((AccelerometerReading) reading).getY());
-
-				TextView x_value = (TextView) getActivity().findViewById(R.id.accel_x);
-				TextView y_value = (TextView) getActivity().findViewById(R.id.accel_y);
-				TextView z_value = (TextView) getActivity().findViewById(R.id.accel_z);
-
-				x_value.setText("" + ((AccelerometerReading) reading).getX());
-				y_value.setText("" + ((AccelerometerReading) reading).getY());
-				z_value.setText("" + ((AccelerometerReading) reading).getZ());
-			}
-		});
-
+		rootView.invalidate();
 	}
 
 }
