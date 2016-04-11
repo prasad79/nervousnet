@@ -35,10 +35,6 @@ import android.widget.TextView;
 import ch.ethz.coss.nervousnet.hub.R;
 import ch.ethz.coss.nervousnet.lib.SensorReading;
 
-/**
- * @author prasad
- *
- */
 public abstract class BaseFragment extends Fragment {
 
 	public int type = 0;

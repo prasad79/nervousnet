@@ -78,7 +78,7 @@ public class SensorDisplayActivity extends FragmentActivity implements ActionBar
 	private ViewPager viewPager;
 	private static BaseFragment fragment;
 
-	int m_interval = 100; // 1 seconds by default, can be changed later
+	int m_interval = 100; // 100 seconds by default, can be changed later
 	Handler m_handler = new Handler();
 	Runnable m_statusChecker;
 

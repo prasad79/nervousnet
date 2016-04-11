@@ -2129,9 +2129,8 @@ containing a value of this type.
         public static final int fragment_light=0x7f03002d;
         public static final int fragment_location=0x7f03002e;
         public static final int fragment_noise=0x7f03002f;
-        public static final int fragment_sample_app=0x7f030030;
-        public static final int nn_theme_tab_indicator_holo=0x7f030031;
-        public static final int support_simple_spinner_dropdown_item=0x7f030032;
+        public static final int nn_theme_tab_indicator_holo=0x7f030030;
+        public static final int support_simple_spinner_dropdown_item=0x7f030031;
     }
     public static final class menu {
         public static final int acc_sensor=0x7f0e0000;
