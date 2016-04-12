@@ -131,7 +131,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:hint="Error comes here" />
+                android:text="Nervousnet HUB application is required running to use this app. If already installed, please turn on the Data Collection option inside the Nervousnet HUB application." />
+            
+            <Button
+                android:id="@+id/startButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal"
+                android:text="Launch nervousnet HUB" />
         </LinearLayout>
     </LinearLayout>
     <!--
@@ -161,6 +169,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/about_button" />
+            
+            
         </LinearLayout>
     </FrameLayout>
 

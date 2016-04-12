@@ -49,16 +49,20 @@ public class AccelerometerActivity extends Activity {
 		setContentView(R.layout.activity_accelerometer);
 
 
-		// Upon interacting with UI controls, delay any scheduled hide()
-		// operations to prevent the jarring behavior of controls going away
-		// while interacting with the UI.
 		Button aboutButton = (Button)findViewById(R.id.about_button);
-//		aboutButton.setOnTouchListener(mDelayHideTouchListener);
 		aboutButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
             	Intent intent = new Intent(AccelerometerActivity.this, AboutActivity.class);
         		intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         		startActivity(intent);
+            }
+        });
+		
+		Button startButton = (Button)findViewById(R.id.startButton);
+		startButton.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+            	startActivity(getPackageManager().getLaunchIntentForPackage("ch.ethz.coss.nervousnet.hub"));
+            	System.exit(0);
             }
         });
 		
@@ -88,17 +92,18 @@ public class AccelerometerActivity extends Activity {
 							"Nervousnet HUB application is required to be installed and running to use this app. If not installed please download it from the App Store. If already installed, please turn on the Data Collection option inside the Nervousnet HUB application.",
 							"Download Now", new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog, int id) {
-									startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(
-											"https://play.google.com/apps/testing/ch.ethz.coss.nervousnet.hub")));
+									try {
+									    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=ch.ethz.coss.nervousnet.hub")));
+									} catch (android.content.ActivityNotFoundException anfe) {
+									    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=ch.ethz.coss.nervousnet.hub")));
+									}
+									
 								}
 							}, "Exit", new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog, int id) {
 									System.exit(0);
 								}
 							});
-					Toast.makeText(AccelerometerActivity.this,
-							"Please check if the Nervousnet HUB application is installed and running.",
-							Toast.LENGTH_SHORT).show();
 				} else {
 					// if(mService == null) {
 					// Utils.displayAlert(AccelerometerActivity.this, "Alert",
@@ -119,9 +124,6 @@ public class AccelerometerActivity extends Activity {
 					// return;
 					// }
 					startRepeatingTask();
-					Toast.makeText(AccelerometerActivity.this,
-							"Nervousnet Remote is running fine and startRepeatingTask() called", Toast.LENGTH_SHORT)
-							.show();
 
 				}
 			} catch (Exception e) {
@@ -236,8 +238,6 @@ public class AccelerometerActivity extends Activity {
 			 reading.setVisibility(View.VISIBLE);
 			 error.setVisibility(View.INVISIBLE);
 		} else {
-			errorView.setText(
-					"Nervousnet HUB application is required running to use this app. If already installed, please turn on the Data Collection option inside the Nervousnet HUB application.");
 			 error.setVisibility(View.VISIBLE);
 			 reading.setVisibility(View.INVISIBLE);
 		}
