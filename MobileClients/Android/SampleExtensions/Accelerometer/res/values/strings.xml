@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Accelerometer</string>
+    <string name="about_button">About</string>
+    <string name="organization">ETH Zürich,\n Department of Humanities and Social Sciences (D-GESS)\n
+Professorship of Computational Social Science (COSS)\n
+Clausiusstrasse 50,\n 8092 Zürich,\n Switzerland\n</string>
+    <string name="rate_app_label">Rate App</string>
+
+</resources>
